@@ -1,0 +1,8 @@
+TargetDatabase;TargetSchema;TargetTable;TargetColumn;TargetColumnOrdinal;TargetColumnNullable;TargetColumnDataType;TargetIsPrimaryKey;SourceDatabase;SourceSchema;SourceTable;SourceColumn;SourceColumnOrdinal;SourceColumnNullable;SourceColumnDataType;SourceIsPrimaryKey;TestType;TargetTableWhere;SourceTableWhere
+0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18
+MFI3Graenseflade;dbo;Ark;ArkID;1;NO;int;1;MFI3Graenseflade;dbo;Ark;ArkID;1;NO;int;1;COUNT,NONSENSE,SUMBY;ArkNavn = '';-
+MFI3Graenseflade;dbo;Ark;ArkNavn;2;NO;varchar;0;MFI3Graenseflade;dbo;Ark;left(ArkNavn,4);2;NO;varchar;0;GROUPBY;-;-
+MFI3Graenseflade;dbo;Ark;IndberetningsTypeKode;3;NO;varchar;0;MFI3Graenseflade;dbo;Ark;IndberetningsTypeKode;3;NO;varchar;0;-;-;-
+MFI3Graenseflade;dbo;Ark;1;3;NO;int;0;MFI3Graenseflade;dbo;Ark;1;3;NO;int;0;SUMBY;-;-
+MFI3Graenseflade;dbo;MFI3Rettelser;Regnr;1;YES;float;0;MFI3Graenseflade;dbo;MFI3Rettelser;Regnr;1;YES;float;0;COUNT;Regnr = 20;-
+MFI3Graenseflade;dbo;MFI3Rettelser;NyResidensLand;2;YES;nvarchar;0;MFI3Graenseflade;dbo;MFI3Rettelser;NyResidensLand;2;YES;nvarchar;0;-;-;-

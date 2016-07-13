@@ -1,0 +1,30 @@
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+repositories {
+   mavenCentral()
+}
+
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Main-Class': 'datenbank.Test'
+    }
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
+dependencies {
+	compile 'org.codehaus.groovy:groovy-all:2.4.7'
+	compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
+	compile group: 'log4j', name: 'log4j', version: '1.2.17'
+	compile 'net.sourceforge.jtds:jtds:1.2'
+
+	new File('libs').eachFile() {
+		compile files("$it")
+	}	
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
