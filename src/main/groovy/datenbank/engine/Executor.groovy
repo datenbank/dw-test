@@ -128,7 +128,7 @@ class Executor {
 			if(file.getName().endsWith(".sql"))
 				i++
 			
-			def qr = new QueryResult(i: 1, total: 1, file: file.getName())
+			def qr = new QueryResult(i: i, total: total, file: file.getName())
 			qr.addObserver(cp)
 			
 			qr.begin()				
