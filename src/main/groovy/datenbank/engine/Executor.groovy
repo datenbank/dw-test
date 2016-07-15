@@ -125,8 +125,8 @@ class Executor {
 		def sysTime = System.currentTimeMillis()
 		def errors = 0 
 		dir.eachFile() { file ->
-			if(file.getName().endsWith(".sql"))
-				i++
+			if(file.getName().endsWith(".sql")) {
+			i++
 			
 			def qr = new QueryResult(i: i, total: total, file: file.getName())
 			qr.addObserver(cp)
@@ -136,7 +136,7 @@ class Executor {
 			qr.errors = errors
 			
 			qr.stop()
-			summary.queryResults << qr
+			summary.queryResults << qr}
 			
 		}
 		summary.ready()
