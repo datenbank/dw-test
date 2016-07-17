@@ -1,11 +1,13 @@
 package datenbank.engine
-import datenbank.model.*
-import datenbank.view.*
-import groovy.util.logging.* 
 
-import org.apache.log4j.*
+import datenbank.model.Variables
+import datenbank.model.Summary
+import datenbank.model.TestResult
+import datenbank.view.ConsolePrinter
 
-import datenbank.model.Variables;
+import groovy.util.logging.Log4j
+import org.apache.log4j.Logger
+
 
 @Log4j
 class ResultTester {
@@ -107,22 +109,23 @@ class ResultTester {
 		def total = dir.listFiles().size()
 			
 		dir.eachFile() { file ->
-			
-			TestResult tr = new TestResult(file: file.getName())
-			tr.begin()
-			tr.addObserver(cp)
-			tr.begin()							
-			def result = run(file)
-			tr.total += total
-			tr.compared += result[0]
-			tr.skipped += result[1]
-			tr.errors += result[2]
-			tr.resultFlag += result[3]
-			tr.linesNotInSource += result[4]
-			tr.linesNotInTarget += result[5]
-			tr.stop()
-			tr.ready()
-			summary.testResults << tr
+			if(file.getName().endsWith(".csv")) {
+				TestResult tr = new TestResult(file: file.getName())
+				tr.begin()
+				tr.addObserver(cp)
+				tr.begin()							
+				def result = run(file)
+				tr.total += total
+				tr.compared += result[0]
+				tr.skipped += result[1]
+				tr.errors += result[2]
+				tr.resultFlag += result[3]
+				tr.linesNotInSource += result[4]
+				tr.linesNotInTarget += result[5]
+				tr.stop()
+				tr.ready()
+				summary.testResults << tr
+			}
 			
 		}
 		summary.ready()

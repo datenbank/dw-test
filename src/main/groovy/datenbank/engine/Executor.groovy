@@ -1,12 +1,13 @@
 package datenbank.engine
-import datenbank.model.*
-import datenbank.view.*
-import groovy.sql.Sql
-import groovy.util.logging.* 
-
-import org.apache.log4j.*
 
 import datenbank.model.Variables;
+import datenbank.model.Summary
+import datenbank.model.QueryResult
+import datenbank.view.ConsolePrinter
+
+import groovy.sql.Sql
+import groovy.util.logging.Log4j
+import org.apache.log4j.Logger
 
 @Log4j
 class Executor {
@@ -126,17 +127,18 @@ class Executor {
 		def errors = 0 
 		dir.eachFile() { file ->
 			if(file.getName().endsWith(".sql")) {
-			i++
-			
-			def qr = new QueryResult(i: i, total: total, file: file.getName())
-			qr.addObserver(cp)
-			
-			qr.begin()				
-			errors += run(file)
-			qr.errors = errors
-			
-			qr.stop()
-			summary.queryResults << qr}
+				i++
+				
+				def qr = new QueryResult(i: i, total: total, file: file.getName())
+				qr.addObserver(cp)
+				
+				qr.begin()				
+				errors += run(file)
+				qr.errors = errors
+				
+				qr.stop()
+				summary.queryResults << qr
+			}
 			
 		}
 		summary.ready()

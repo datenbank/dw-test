@@ -1,16 +1,20 @@
 package datenbank
+
+import datenbank.engine.Executor
+import datenbank.engine.ResultTester
+import datenbank.model.Variables
+import datenbank.model.Model
+import datenbank.view.ConsolePrinter
+
 import groovy.util.CliBuilder 
-import groovy.util.logging.* 
 
-import org.apache.log4j.*
+import groovy.util.logging.Log4j
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import org.apache.log4j.BasicConfigurator
 
-import datenbank.engine.Executor;
-import datenbank.engine.ResultTester;
-import datenbank.model.Model;
-import datenbank.model.Variables;
 
-import datenbank.view.*
-import datenbank.model.*
+
 
 @Log4j
 class Test {
