@@ -1,1 +1,1 @@
-java -jar ./build/libs/Test.jar %1 %2 %3 %4 %5 %6 %7 %8 %9
+java -jar ./build/libs/dw-test.jar %1 %2 %3 %4 %5 %6 %7 %8 %9
