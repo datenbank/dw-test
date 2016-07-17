@@ -100,7 +100,8 @@ class Executor {
 			
 			def errors = 0 
 			errors = run(file)
-			qr.errors = errors			
+			qr.errors = errors	
+			qr.ready()
 			qr.stop()
 			summary.queryResults << qr
 			
@@ -137,6 +138,7 @@ class Executor {
 				qr.errors = errors
 				
 				qr.stop()
+				qr.ready()
 				summary.queryResults << qr
 			}
 			
