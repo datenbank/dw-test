@@ -77,7 +77,7 @@ class ResultTester {
 		
 		ConsolePrinter cp = new ConsolePrinter()
 		def summary = new Summary()
-		
+		summary.addObserver(cp)
 		
 		def file = new File("${Variables.path}Target/Result/${test}.csv")
 		if(file.exists()) {
@@ -106,6 +106,8 @@ class ResultTester {
 		
 		ConsolePrinter cp = new ConsolePrinter()
 		def summary = new Summary()	
+		summary.addObserver(cp)
+		
 		def total = 0	
 		dir.eachFile() { file ->
 			if(file.getName().endsWith(".csv"))
