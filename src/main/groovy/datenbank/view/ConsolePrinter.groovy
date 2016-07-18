@@ -26,6 +26,10 @@ public class ConsolePrinter implements Observer {
 			print "\rExecuting ${arg0.i} of  ${arg0.total}, elapsed: $arg0.elapsed seconds"
 		} else if(arg0 instanceof Summary) {		
 			println ""
+			arg0.testResults.each {
+				println "$it.file\t->\t $it.errors"	
+			}
+			
 		} else {
 			log.debug("missing action to update ui")
 			
