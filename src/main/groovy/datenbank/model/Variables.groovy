@@ -42,7 +42,7 @@ class Variables {
 		
 	}
 	
-	static path = "C:/Users/khansen/Desktop/Test/"
+	static path = "./"
 	static model = "model.csv"
 	static sourceConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
 	static targetConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
