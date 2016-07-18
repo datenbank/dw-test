@@ -39,7 +39,7 @@ class Test {
 		def i = 0 
 		
 		BasicConfigurator.configure();
-		Logger.getLogger("datenbank").setLevel(Level.INFO);		
+		Logger.getLogger("datenbank").setLevel(Level.ERROR);		
 		
 		if(opt.i) {
 			Logger.getLogger("datenbank").setLevel(Level.INFO);
