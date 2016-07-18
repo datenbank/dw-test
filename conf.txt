@@ -1,6 +1,6 @@
 path=C:/Users/kha/Desktop/dw-test/
 model=model.csv
-source=jdbc:jtds:sqlserver://localhost:1433/MFI3Graenseflade;instance=MSSQL2014;user=test;password=testtest
-target=jdbc:jtds:sqlserver://localhost:1433/MFI3Graenseflade;instance=MSSQL2014;user=test;password=testtest
+source=jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest
+target=jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest
 sourceDriver=net.sourceforge.jtds.jdbc.Driver
 targetDriver=net.sourceforge.jtds.jdbc.Driver
