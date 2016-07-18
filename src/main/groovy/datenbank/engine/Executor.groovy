@@ -91,6 +91,7 @@ class Executor {
 	static runOne(def test) {
 		ConsolePrinter cp = new ConsolePrinter()
 		def summary = new Summary()
+		summary.addObserver(cp)
 		def file = new File("${Variables.path}Target/${test}.sql")
 		if(file.exists()) {
 			
@@ -115,7 +116,7 @@ class Executor {
 
 		ConsolePrinter cp = new ConsolePrinter()
 		def summary = new Summary()
-		
+		summary.addObserver(cp)
 		def dir = new File("${Variables.path}Target")
 		
 		def total = 0
@@ -143,6 +144,7 @@ class Executor {
 			}
 			
 		}
+		
 		summary.ready()
 		
 			
