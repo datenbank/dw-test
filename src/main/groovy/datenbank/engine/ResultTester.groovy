@@ -20,7 +20,7 @@ class ResultTester {
 		def linesNotInSource = 0
 		def linesNotInTarget = 0
 		def resultFlag = 0
-				
+		def runDate = Calendar.instance
 		def fileName = file.getName()
 		if(fileName.endsWith(".csv")) {	
 					
