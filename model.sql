@@ -1,4 +1,4 @@
-﻿SELECT '0TargetDatabase','TargetSchema','TargetTable','TargetColumn','TargetColumnOrdinal','TargetColumnNullable','TargetColumnDataType','TargetIsPrimaryKey','SourceDatabase','SourceSchema','SourceTable','SourceColumn','SourceColumnOrdinal','SourceColumnNullable','SourceColumnDataType','SourceIsPrimaryKey','TestType','TargetTableWhere','SourceTableWhere'
+SELECT '0TargetDatabase','TargetSchema','TargetTable','TargetColumn','TargetColumnOrdinal','TargetColumnNullable','TargetColumnDataType','TargetIsPrimaryKey','SourceDatabase','SourceSchema','SourceTable','SourceColumn','SourceColumnOrdinal','SourceColumnNullable','SourceColumnDataType','SourceIsPrimaryKey','TestType','TargetTableWhere','SourceTableWhere'
 
 UNION
 SELECT '0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18'
