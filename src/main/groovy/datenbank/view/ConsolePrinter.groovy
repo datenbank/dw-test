@@ -27,7 +27,14 @@ public class ConsolePrinter implements Observer {
 		} else if(arg0 instanceof Summary) {		
 			println ""
 			arg0.testResults.each {
-				println "$it.file\t->\t $it.errors"	
+				
+				if(it.errors == 0)
+					println "$it.file\t->\tSUCCESSS"	
+			}
+			arg0.testResults.each {
+
+				if(it.errors == 1)
+					println "$it.file\t->\tFAILURE\t[$it.resultFlag,$it.linesNotInTarget,$it.linesNotInSource]"
 			}
 			
 		} else {
