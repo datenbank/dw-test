@@ -105,9 +105,15 @@ class ResultTester {
 		def dir = new File("${Variables.path}Target/Result")
 		
 		ConsolePrinter cp = new ConsolePrinter()
-		def summary = new Summary()		
-		def total = dir.listFiles().size()
-			
+		def summary = new Summary()	
+		def total = 0	
+		dir.eachFile() { file ->
+			if(file.getName().endsWith(".csv"))
+				total++
+		}
+		def compared = 0
+		def skipped = 0	
+		def errors = 0
 		dir.eachFile() { file ->
 			if(file.getName().endsWith(".csv")) {
 				TestResult tr = new TestResult(file: file.getName())
@@ -116,12 +122,17 @@ class ResultTester {
 				tr.begin()							
 				def result = run(file)
 				tr.total += total
-				tr.compared += result[0]
-				tr.skipped += result[1]
-				tr.errors += result[2]
-				tr.resultFlag += result[3]
-				tr.linesNotInSource += result[4]
-				tr.linesNotInTarget += result[5]
+				compared += result[0]
+				skipped += result[1]
+				errors += result[2]
+				
+				tr.compared = compared
+				tr.skipped = skipped
+				tr.errors = errors
+				
+				tr.resultFlag = result[3]
+				tr.linesNotInSource = result[4]
+				tr.linesNotInTarget = result[5]
 				tr.stop()
 				tr.ready()
 				summary.testResults << tr
