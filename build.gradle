@@ -1,7 +1,8 @@
-apply plugin: 'application'
 apply plugin: 'groovy'
+apply plugin: 'application'
 apply plugin: 'eclipse'
 
+mainClassName = "datenbank.Test"
 repositories {
    mavenCentral()
 }
@@ -17,4 +18,8 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.00'
+}
+
+run {	
+	args System.getProperty("exec.args").split()
 }

@@ -13,15 +13,12 @@ import org.apache.log4j.Logger
 import org.apache.log4j.Level
 import org.apache.log4j.BasicConfigurator
 
-
-
-
 @Log4j
 class Test {
 	
 	public static void main(String[] args) {
 		Variables.load()
-
+		
 		def cli = new CliBuilder(usage:'groovy Test')
 		cli.h(longOpt: 'help', 'usage information', required: false)  
 		cli.a(longOpt: 'runAll', 'Execute and compare all tests', required: false) 
