@@ -87,27 +87,30 @@ class Test {
 			}
 			
 		}
-	
+		
+		ConsolePrinter cp = new ConsolePrinter()
+		Executor ex = new Executor(ui: cp)
+		ResultTester rt = new ResultTester(ui: cp)
 		
         if( opt.a ) {  
-             Executor.runAll()
-			 ResultTester.runAll()
+             ex.runAll()
+			 rt.runAll()
 			 i++
         }  
         if( opt.ea ) {  
-            Executor.runAll()
+            ex.runAll()
 			i++			
 		} 
 		if( opt.ta ) {  
-            ResultTester.runAll()
+            rt.runAll()
 			i++
 		} 
 		if( opt.e ) {  
-            Executor.runOne(opt.e)
+            ex.runOne(opt.e)
 			i++
 		} 
 		if( opt.t ) {  
-            ResultTester.runOne(opt.t)
+            rt.runOne(opt.t)
 			i++
 		}
 		if(opt.h || i==0) {  

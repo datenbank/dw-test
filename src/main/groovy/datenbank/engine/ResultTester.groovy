@@ -1,9 +1,12 @@
 package datenbank.engine
 
+import java.util.Observer;
+
 import datenbank.model.Variables
 import datenbank.model.Summary
 import datenbank.model.TestResult
 import datenbank.view.ConsolePrinter
+
 
 import groovy.util.logging.Log4j
 import org.apache.log4j.Logger
@@ -11,8 +14,9 @@ import org.apache.log4j.Logger
 
 @Log4j
 class ResultTester {
+	Observer ui;
 	
-	static run(def file) {
+	def run(def file) {
 				
 		def skipped = 0
 		def compared = 0		
@@ -73,16 +77,15 @@ class ResultTester {
 
 	}
 	
-	static runOne(def test) {
-		
-		ConsolePrinter cp = new ConsolePrinter()
+	def runOne(def test) {
+
 		def summary = new Summary()
-		summary.addObserver(cp)
+		summary.addObserver(ui)
 		
 		def file = new File("${Variables.path}Target/Result/${test}.csv")
 		if(file.exists()) {
 			TestResult tr = new TestResult(file: file.getName())
-			tr.addObserver(cp)
+			tr.addObserver(ui)
 			tr.begin()							
 			def result = run(file)
 			tr.total += result[0]
@@ -101,12 +104,11 @@ class ResultTester {
 	
 	}
 	
-	static runAll() {
+	def runAll() {
 		def dir = new File("${Variables.path}Target/Result")
-		
-		ConsolePrinter cp = new ConsolePrinter()
+				
 		def summary = new Summary()	
-		summary.addObserver(cp)
+		summary.addObserver(ui)
 		
 		def total = 0	
 		dir.eachFile() { file ->
@@ -120,7 +122,7 @@ class ResultTester {
 			if(file.getName().endsWith(".csv")) {
 				TestResult tr = new TestResult(file: file.getName())
 				tr.begin()
-				tr.addObserver(cp)
+				tr.addObserver(ui)
 				tr.begin()							
 				def result = run(file)
 				tr.total += total

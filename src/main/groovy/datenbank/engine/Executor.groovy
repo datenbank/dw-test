@@ -5,14 +5,19 @@ import datenbank.model.Summary
 import datenbank.model.QueryResult
 import datenbank.view.ConsolePrinter
 
+import java.util.Observer
+
 import groovy.sql.Sql
 import groovy.util.logging.Log4j
 import org.apache.log4j.Logger
 
 @Log4j
 class Executor {
+	
+	Observer ui;
+	
 
-	static int run(def file) {
+	def int run(def file) {
 		def dir = new File("${Variables.path}Target")
 		def error = 0
 		def fileName = file.getName()
@@ -88,15 +93,15 @@ class Executor {
 			
 	}
 	
-	static runOne(def test) {
-		ConsolePrinter cp = new ConsolePrinter()
+	def runOne(def test) {
+		
 		def summary = new Summary()
-		summary.addObserver(cp)
+		summary.addObserver(ui)
 		def file = new File("${Variables.path}Target/${test}.sql")
 		if(file.exists()) {
 			
 			def qr = new QueryResult(i: 1, total: 1, file: file.getName())
-			qr.addObserver(cp)
+			qr.addObserver(ui)
 			qr.begin()
 			
 			def errors = 0 
@@ -112,11 +117,11 @@ class Executor {
 		summary.ready()
 	}	
 	
-	static runAll() {
+	def runAll() {
 
-		ConsolePrinter cp = new ConsolePrinter()
+		
 		def summary = new Summary()
-		summary.addObserver(cp)
+		summary.addObserver(ui)
 		def dir = new File("${Variables.path}Target")
 		
 		def total = 0
@@ -132,7 +137,7 @@ class Executor {
 				i++
 				
 				def qr = new QueryResult(i: i, total: total, file: file.getName())
-				qr.addObserver(cp)
+				qr.addObserver(ui)
 				
 				qr.begin()				
 				errors += run(file)
