@@ -21,5 +21,7 @@ task wrapper(type: Wrapper) {
 }
 
 run {	
-	args System.getProperty("exec.args").split()
+	try { 
+		args System.getProperty("exec.args").split()
+	} catch(all) {}
 }
