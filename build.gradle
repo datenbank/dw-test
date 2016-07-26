@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 
-mainClassName = "datenbank.view.FxPrinter"
+mainClassName = "datenbank.Test"
 
 
 repositories {

@@ -1,6 +1,6 @@
 package datenbank.view
 
-import datenbank.model.TestResult
+import datenbank.model.TestCase
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +58,11 @@ class FxPrinter extends Application implements Observer {
 		tv.getColumns().addAll(colFile, colCompared, colSkipped, colError, colResultFlag)
 
 		def data = []
-		def i = new TestResult(file: "test.sql", compared:-1)
+		def i = new TestCase(file: "test.sql", compared:-1)
 
 		data << i
 		
-		i = new TestResult(file: "test2.sql", compared:-1)
+		i = new TestCase(file: "test2.sql", compared:-1)
 		
 		data << i
 		

@@ -1,7 +1,6 @@
 package datenbank.view;
 
-import datenbank.model.TestResult
-import datenbank.model.QueryResult
+import datenbank.model.TestCase
 import datenbank.model.Summary
 
 import java.util.Observer
@@ -20,18 +19,18 @@ public class ConsolePrinter implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		log.info("update gui $arg0")
-		if(arg0 instanceof TestResult) {		
+		if(arg0 instanceof TestCase && arg0.compared > 0) {		
 			print "\rCompare ${arg0.compared} of  ${arg0.total} (skipped: $arg0.skipped), elapsed: $arg0.elapsed seconds"
-		} else if(arg0 instanceof QueryResult) {		
+		} else if(arg0 instanceof TestCase && arg0.i > 0) {		
 			print "\rExecuting ${arg0.i} of  ${arg0.total}, elapsed: $arg0.elapsed seconds"
 		} else if(arg0 instanceof Summary) {		
 			println ""
-			arg0.testResults.each {
+			arg0.testCases.each {
 				
 				if(it.errors == 0)
 					println "$it.file\t->\tSUCCESSS"	
 			}
-			arg0.testResults.each {
+			arg0.testCases.each {
 
 				if(it.errors == 1)
 					println "$it.file\t->\tFAILURE\t[$it.resultFlag,$it.linesNotInTarget,$it.linesNotInSource]"

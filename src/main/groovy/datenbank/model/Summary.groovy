@@ -8,8 +8,7 @@ import org.apache.log4j.Logger
 @Log4j
 class Summary extends Observable {
 	
-	def testResults = []
-	def queryResults = []
+	def testCases = []
 	
 	def ready() {
 		setChanged()

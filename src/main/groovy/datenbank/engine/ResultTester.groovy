@@ -4,7 +4,7 @@ import java.util.Observer;
 
 import datenbank.model.Variables
 import datenbank.model.Summary
-import datenbank.model.TestResult
+import datenbank.model.TestCase
 import datenbank.view.ConsolePrinter
 
 
@@ -84,9 +84,9 @@ class ResultTester {
 		
 		def file = new File("${Variables.path}Target/Result/${test}.csv")
 		if(file.exists()) {
-			TestResult tr = new TestResult(file: file.getName())
+			TestCase tr = new TestCase(file: file.getName())
 			tr.addObserver(ui)
-			tr.begin()							
+			tr.beginTest()							
 			def result = run(file)
 			tr.total += result[0]
 			tr.compared += result[0]
@@ -95,9 +95,9 @@ class ResultTester {
 			tr.resultFlag += result[3]
 			tr.linesNotInSource += result[4]
 			tr.linesNotInTarget += result[5]
-			tr.stop()
+			tr.stopTest()
 			tr.ready()
-			summary.testResults << tr
+			summary.testCases << tr
 			
 		} 
 		summary.ready()
@@ -120,10 +120,10 @@ class ResultTester {
 		def errors = 0
 		dir.eachFile() { file ->
 			if(file.getName().endsWith(".csv")) {
-				TestResult tr = new TestResult(file: file.getName())
-				tr.begin()
+				TestCase tr = new TestCase(file: file.getName())
+			
 				tr.addObserver(ui)
-				tr.begin()							
+				tr.beginTest()							
 				def result = run(file)
 				tr.total += total
 				compared += result[0]
@@ -137,9 +137,9 @@ class ResultTester {
 				tr.resultFlag = result[3]
 				tr.linesNotInSource = result[4]
 				tr.linesNotInTarget = result[5]
-				tr.stop()
+				tr.stopTest()
 				tr.ready()
-				summary.testResults << tr
+				summary.testCases << tr
 			}
 			
 		}

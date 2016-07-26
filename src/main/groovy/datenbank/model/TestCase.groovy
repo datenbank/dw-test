@@ -6,14 +6,16 @@ import groovy.util.logging.Log4j
 import org.apache.log4j.Logger
 
 @Log4j
-class TestResult extends Observable {
+class TestCase extends Observable {
 	def file = ""
-	
+	def i = 0
+	def elapsed, start
+
 	def compared = 0
 	def skipped = 0
 	def errors = 0 
 	def total = 0 
-	def elapsed, start
+	def elapsedTest, startTest
 	def linesNotInSource = 0
 	def linesNotInTarget = 0
 	def resultFlag = 0
@@ -35,4 +37,13 @@ class TestResult extends Observable {
 		elapsed = (System.currentTimeMillis() - start) / 1000.0
 	}
 	
+	def beginTest() {
+		
+		startTest = System.currentTimeMillis()
+	}
+	
+	def stopTest() {
+		
+		elapsedTest = (System.currentTimeMillis() - startTest) / 1000.0
+	}
 }

@@ -2,7 +2,7 @@ package datenbank.engine
 
 import datenbank.model.Variables;
 import datenbank.model.Summary
-import datenbank.model.QueryResult
+import datenbank.model.TestCase
 import datenbank.view.ConsolePrinter
 
 import java.util.Observer
@@ -100,7 +100,7 @@ class Executor {
 		def file = new File("${Variables.path}Target/${test}.sql")
 		if(file.exists()) {
 			
-			def qr = new QueryResult(i: 1, total: 1, file: file.getName())
+			def qr = new TestCase(i: 1, total: 1, file: file.getName())
 			qr.addObserver(ui)
 			qr.begin()
 			
@@ -109,10 +109,10 @@ class Executor {
 			qr.errors = errors	
 			qr.ready()
 			qr.stop()
-			summary.queryResults << qr
+			summary.testCases << qr
 			
 		} else {
-			cp.message "No test to execute named: ${test}"
+			//
 		}
 		summary.ready()
 	}	
@@ -136,7 +136,7 @@ class Executor {
 			if(file.getName().endsWith(".sql")) {
 				i++
 				
-				def qr = new QueryResult(i: i, total: total, file: file.getName())
+				def qr = new TestCase(i: i, total: total, file: file.getName())
 				qr.addObserver(ui)
 				
 				qr.begin()				
@@ -145,7 +145,7 @@ class Executor {
 				
 				qr.stop()
 				qr.ready()
-				summary.queryResults << qr
+				summary.testCases << qr
 			}
 			
 		}

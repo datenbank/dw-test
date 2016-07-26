@@ -5,10 +5,10 @@ import datenbank.engine.ResultTester
 import datenbank.model.Variables
 import datenbank.model.Model
 import datenbank.view.ConsolePrinter
-
+import datenbank.view.FxPrinter;
 import groovy.util.CliBuilder 
-
 import groovy.util.logging.Log4j
+
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
 import org.apache.log4j.BasicConfigurator
@@ -29,6 +29,7 @@ class Test {
 		cli.ca(longOpt: 'create', 'Run all scripts to generate test cases (.sql files)', required: false)
 		cli.c(longOpt: 'create', 'Run all scripts to generate test cases (.sql files)', required: false, args: 1)
 		cli.l(longOpt: 'list', 'List all testcases (.sql files)', required: false)
+		cli.u(longOpt: 'gui', 'Start the GUI', required: false)
 		
 		cli.i(longOpt: 'info', 'Provide information level logging detail', required: false)
 		cli.d(longOpt: 'debug', 'Provide debugging level logging detail', required: false)
@@ -45,6 +46,11 @@ class Test {
 		
 		if(opt.d) {
 			Logger.getLogger("datenbank").setLevel(Level.DEBUG);
+			i++
+		}
+		
+		if(opt.u) {
+			new FxPrinter().launch(FxPrinter.class, args)
 			i++
 		}
 
