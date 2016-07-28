@@ -3,9 +3,6 @@ package datenbank.engine
 import datenbank.model.Variables;
 import datenbank.model.Summary
 import datenbank.model.TestCase
-import datenbank.view.ConsolePrinter
-
-import java.util.Observer
 
 import groovy.sql.Sql
 import groovy.util.logging.Log4j
@@ -13,11 +10,10 @@ import org.apache.log4j.Logger
 
 @Log4j
 class Executor {
-	
-	Observer ui;
+
 	
 
-	def int run(def file) {
+	def int run(file) {
 		def dir = new File("${Variables.path}Target")
 		def error = 0
 		def fileName = file.getName()
@@ -93,62 +89,34 @@ class Executor {
 			
 	}
 	
-	def runOne(def test) {
+	def runOne(testCase) {
 		
-		def summary = new Summary()
-		summary.addObserver(ui)
-		def file = new File("${Variables.path}Target/${test}.sql")
+		def file = new File("${Variables.path}Target/${testCase.name}.sql")
 		if(file.exists()) {
-			
-			def qr = new TestCase(i: 1, total: 1, file: file.getName())
-			qr.addObserver(ui)
-			qr.begin()
+			log.info("$testCase.name")
+			testCase.begin()
 			
 			def errors = 0 
 			errors = run(file)
-			qr.errors = errors	
-			qr.ready()
-			qr.stop()
-			summary.testCases << qr
+			testCase.errors = errors	
+			testCase.executor = 1
+			testCase.stop()
+			testCase.ready()
+
 			
 		} else {
 			//
 		}
-		summary.ready()
+
 	}	
 	
-	def runAll() {
+	def runAll(def summary) {
 
-		
-		def summary = new Summary()
-		summary.addObserver(ui)
-		def dir = new File("${Variables.path}Target")
-		
-		def total = 0
-		dir.eachFile() { file ->
-			if(file.getName().endsWith(".sql"))
-				total++
-		}
-		def i = 0
-		def sysTime = System.currentTimeMillis()
-		def errors = 0 
-		dir.eachFile() { file ->
-			if(file.getName().endsWith(".sql")) {
-				i++
-				
-				def qr = new TestCase(i: i, total: total, file: file.getName())
-				qr.addObserver(ui)
-				
-				qr.begin()				
-				errors += run(file)
-				qr.errors = errors
-				
-				qr.stop()
-				qr.ready()
-				summary.testCases << qr
-			}
+		summary.testCases.each { testCase ->
 			
+			runOne(testCase)
 		}
+		
 		
 		summary.ready()
 		

@@ -1,11 +1,9 @@
 package datenbank.engine
 
-import java.util.Observer;
 
 import datenbank.model.Variables
 import datenbank.model.Summary
 import datenbank.model.TestCase
-import datenbank.view.ConsolePrinter
 
 
 import groovy.util.logging.Log4j
@@ -14,8 +12,7 @@ import org.apache.log4j.Logger
 
 @Log4j
 class ResultTester {
-	Observer ui;
-	
+
 	def run(def file) {
 				
 		def skipped = 0
@@ -77,72 +74,36 @@ class ResultTester {
 
 	}
 	
-	def runOne(def test) {
+	def runOne(def testCase) {
 
-		def summary = new Summary()
-		summary.addObserver(ui)
 		
-		def file = new File("${Variables.path}Target/Result/${test}.csv")
+		def file = new File("${Variables.path}Target/Result/${testCase.name}.csv")
 		if(file.exists()) {
-			TestCase tr = new TestCase(file: file.getName())
-			tr.addObserver(ui)
-			tr.beginTest()							
+			log.info("$testCase.name")
+			testCase.beginTest()							
 			def result = run(file)
-			tr.total += result[0]
-			tr.compared += result[0]
-			tr.skipped += result[1]
-			tr.errors += result[2]
-			tr.resultFlag += result[3]
-			tr.linesNotInSource += result[4]
-			tr.linesNotInTarget += result[5]
-			tr.stopTest()
-			tr.ready()
-			summary.testCases << tr
+			testCase.compared += result[0]
+			testCase.skipped += result[1]
+			testCase.errors += result[2]
+			testCase.resultFlag += result[3]
+			testCase.linesNotInSource += result[4]
+			testCase.linesNotInTarget += result[5]
+			testCase.tester = 1
+			testCase.stopTest()
+			testCase.ready()
+			
 			
 		} 
-		summary.ready()
-	
+
 	}
 	
-	def runAll() {
-		def dir = new File("${Variables.path}Target/Result")
-				
-		def summary = new Summary()	
-		summary.addObserver(ui)
+	def runAll(summary) {
 		
-		def total = 0	
-		dir.eachFile() { file ->
-			if(file.getName().endsWith(".csv"))
-				total++
-		}
-		def compared = 0
-		def skipped = 0	
-		def errors = 0
-		dir.eachFile() { file ->
-			if(file.getName().endsWith(".csv")) {
-				TestCase tr = new TestCase(file: file.getName())
+		summary.testCases.each { testCase ->
 			
-				tr.addObserver(ui)
-				tr.beginTest()							
-				def result = run(file)
-				tr.total += total
-				compared += result[0]
-				skipped += result[1]
-				errors += result[2]
-				
-				tr.compared = compared
-				tr.skipped = skipped
-				tr.errors = errors
-				
-				tr.resultFlag = result[3]
-				tr.linesNotInSource = result[4]
-				tr.linesNotInTarget = result[5]
-				tr.stopTest()
-				tr.ready()
-				summary.testCases << tr
-			}
-			
+			runOne(testCase)
 		}
+		
 		summary.ready()
 
 	}

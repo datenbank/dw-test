@@ -1,6 +1,7 @@
 package datenbank
 
 import datenbank.engine.Executor
+import datenbank.engine.Init
 import datenbank.engine.ResultTester
 import datenbank.model.Variables
 import datenbank.model.Model
@@ -18,6 +19,13 @@ class Test {
 	
 	public static void main(String[] args) {
 		Variables.load()
+		
+		
+		ConsolePrinter cp = new ConsolePrinter()
+		def init = new Init(ui: cp)
+		def summary = init.init()
+		Executor ex = new Executor()
+		ResultTester rt = new ResultTester()
 		
 		def cli = new CliBuilder(usage:'groovy Test')
 		cli.h(longOpt: 'help', 'usage information', required: false)  
@@ -55,10 +63,9 @@ class Test {
 		}
 
 		if( opt.l ) {
-			def dir = new File("${Variables.path}Target")
-			dir.eachFile() { file ->
-				if(file.getName().endsWith(".sql"))
-					println file.getName().substring(0,file.getName().length()-4)
+			summary.testCases.each { testCase ->
+				println testCase.name
+				
 			}
 			i++
 		}
@@ -94,31 +101,32 @@ class Test {
 			
 		}
 		
-		ConsolePrinter cp = new ConsolePrinter()
-		Executor ex = new Executor(ui: cp)
-		ResultTester rt = new ResultTester(ui: cp)
+
 		
         if( opt.a ) {  
-             ex.runAll()
-			 rt.runAll()
+             ex.runAll(summary)
+			 rt.runAll(summary)
 			 i++
         }  
         if( opt.ea ) {  
-            ex.runAll()
+            ex.runAll(summary)
 			i++			
 		} 
 		if( opt.ta ) {  
-            rt.runAll()
+            rt.runAll(summary)
 			i++
 		} 
-		if( opt.e ) {  
-            ex.runOne(opt.e)
-			i++
-		} 
-		if( opt.t ) {  
-            rt.runOne(opt.t)
+		
+		if( opt.e ) {
+			ex.runOne(summary.testCases.find {name == opt.e})
 			i++
 		}
+		
+		if( opt.t ) {
+			rt.runOne(summary.testCases.find {name == opt.e})
+			i++
+		}
+		
 		if(opt.h || i==0) {  
             cli.usage()  
         } 

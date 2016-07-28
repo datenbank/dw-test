@@ -14,4 +14,5 @@ class Summary extends Observable {
 		setChanged()
 		notifyObservers()
 	}
+	
 }

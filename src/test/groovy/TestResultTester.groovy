@@ -12,6 +12,7 @@ import java.util.Observable;
 import java.util.Observer
 
 import datenbank.engine.ResultTester
+import datenbank.engine.Init
 
 class TestResultTester implements Observer {
 
@@ -60,15 +61,17 @@ class TestResultTester implements Observer {
 	public void tearDown() throws Exception {
 	}
 
-	def summary;
+
 	
 	@Test
 	public void test() {
 		
-		new ResultTester(ui: this).runAll()
+		def init = new Init(ui: this)
+		def summary = init.init()
+		new ResultTester().runAll(summary)
 		
-		summary.testResults.each {
-			if(it.file == "junit2.csv") {
+		summary.testCases.each {
+			if(it.name == "junit2") {
 				assert it.errors == 1
 				assert it.linesNotInSource == 1	
 				assert it.linesNotInTarget == 2
@@ -82,7 +85,7 @@ class TestResultTester implements Observer {
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		summary = arg0
+		
 		
 	}
 

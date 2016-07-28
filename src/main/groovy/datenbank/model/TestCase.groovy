@@ -7,18 +7,20 @@ import org.apache.log4j.Logger
 
 @Log4j
 class TestCase extends Observable {
-	def file = ""
-	def i = 0
-	def elapsed, start
+	def name = "" //
 
-	def compared = 0
-	def skipped = 0
-	def errors = 0 
-	def total = 0 
-	def elapsedTest, startTest
-	def linesNotInSource = 0
-	def linesNotInTarget = 0
-	def resultFlag = 0
+	def elapsed, start //Ex
+	def elapsedTest, startTest //
+	
+	def compared = 0 //
+	def skipped = 0 //
+	def errors = 0 //Ex
+	def resultFlag = 0 //
+	def linesNotInSource = 0 //
+	def linesNotInTarget = 0 //
+
+	def executor = 0
+	def tester = 0
 	
 	def runDate = new Date(System.currentTimeMillis())
 	
