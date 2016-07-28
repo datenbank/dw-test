@@ -1,5 +1,7 @@
 package datenbank.view
 
+import datenbank.engine.Init
+import datenbank.engine.ResultTester
 import datenbank.model.TestCase
 
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.Observer;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,7 +22,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 
 class FxPrinter extends Application implements Observer {
-	def tv
+	TableView tv
+	def summary
+	
 	static main(String[] args) {
 		launch(FxPrinter.class, args)
 	}
@@ -41,14 +47,14 @@ class FxPrinter extends Application implements Observer {
 		def resultFlag = 0
 		
 		
-        def colFile = new TableColumn("File")
+        def colFile = new TableColumn("Name")
 		def colCompared = new TableColumn("Compared")
 		def colSkipped = new TableColumn("Skipped")
 		def colError = new TableColumn("Error")
 		def colResultFlag = new TableColumn("Result flag")
 		
 		
-        colFile.setCellValueFactory(new PropertyValueFactory("file"))
+        colFile.setCellValueFactory(new PropertyValueFactory("name"))
  	    colCompared.setCellValueFactory(new PropertyValueFactory("compared"))
 		colSkipped.setCellValueFactory(new PropertyValueFactory("skipped"))
 		colError.setCellValueFactory(new PropertyValueFactory("errors"))
@@ -57,19 +63,21 @@ class FxPrinter extends Application implements Observer {
 		
 		tv.getColumns().addAll(colFile, colCompared, colSkipped, colError, colResultFlag)
 
-		def data = []
-		def i = new TestCase(file: "test.sql", compared:-1)
-
-		data << i
+		def init = new Init(ui: this)
+		summary = init.init()
 		
-		i = new TestCase(file: "test2.sql", compared:-1)
+		def rt = new ResultTester()
 		
-		data << i
-		
-		tv.setItems(FXCollections.observableArrayList(data))
+		tv.setItems(FXCollections.observableArrayList(summary.testCases))
 		
 		
         def run = new Button("Run...");
+		run.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				rt.runAll(summary)
+			}
+		});
         
         box.getChildren().addAll(tv, run);
         primaryStage.setScene(new Scene(box,400,400));
@@ -79,7 +87,9 @@ class FxPrinter extends Application implements Observer {
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		
+		println arg0
+		tv.getItems().removeAll(summary.testCases)
+		tv.setItems(FXCollections.observableArrayList(summary.testCases))
 		
 	}
 

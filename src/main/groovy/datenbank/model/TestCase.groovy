@@ -48,4 +48,9 @@ class TestCase extends Observable {
 		
 		elapsedTest = (System.currentTimeMillis() - startTest) / 1000.0
 	}
+	
+	def String toString() {
+		
+		"$name $compared"
+	}
 }
