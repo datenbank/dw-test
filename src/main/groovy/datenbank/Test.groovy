@@ -20,13 +20,6 @@ class Test {
 	public static void main(String[] args) {
 		Variables.load()
 		
-		
-		ConsolePrinter cp = new ConsolePrinter()
-		def init = new Init(ui: cp)
-		def summary = init.init()
-		Executor ex = new Executor()
-		ResultTester rt = new ResultTester()
-		
 		def cli = new CliBuilder(usage:'groovy Test')
 		cli.h(longOpt: 'help', 'usage information', required: false)  
 		cli.a(longOpt: 'runAll', 'Execute and compare all tests', required: false) 
@@ -58,9 +51,16 @@ class Test {
 		}
 		
 		if(opt.u) {
-			new FxPrinter().launch(FxPrinter.class, args)
-			i++
-		}
+			FxPrinter fx = new FxPrinter()			
+			fx.launch(FxPrinter.class, args)
+			System.exit(0)
+		} 
+		
+		ConsolePrinter cp = new ConsolePrinter()
+		def init = new Init(ui: cp)
+		def summary = init.init()
+		Executor ex = new Executor()
+		ResultTester rt = new ResultTester()
 
 		if( opt.l ) {
 			summary.testCases.each { testCase ->

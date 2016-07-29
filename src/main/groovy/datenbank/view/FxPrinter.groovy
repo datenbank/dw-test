@@ -2,12 +2,12 @@ package datenbank.view
 
 import datenbank.engine.Init
 import datenbank.engine.ResultTester
+import datenbank.model.Summary
 import datenbank.model.TestCase
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
 import java.util.Observer;
+
+import org.hamcrest.core.IsNull;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -22,30 +22,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 
 class FxPrinter extends Application implements Observer {
-	TableView tv
-	def summary
 	
-	static main(String[] args) {
-		launch(FxPrinter.class, args)
-	}
-
+	def tv
+	def run
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		def box = new VBox();
 		
-		tv = new TableView();
-		
-		def file = ""
-		
-		def compared = 0
-		def skipped = 0
-		def errors = 0
-		def total = 0
-		def elapsed, start
-		def linesNotInSource = 0
-		def linesNotInTarget = 0
-		def resultFlag = 0
-		
+		tv = new TableView()
+		def box = new VBox()		
+
 		
         def colFile = new TableColumn("Name")
 		def colCompared = new TableColumn("Compared")
@@ -61,20 +47,19 @@ class FxPrinter extends Application implements Observer {
 		colResultFlag.setCellValueFactory(new PropertyValueFactory("resultFlag"))
 		
 		
+		def init = new Init(ui: this)
+		def summary = init.init()
+		
 		tv.getColumns().addAll(colFile, colCompared, colSkipped, colError, colResultFlag)
 
-		def init = new Init(ui: this)
-		summary = init.init()
-		
 		def rt = new ResultTester()
 		
-		tv.setItems(FXCollections.observableArrayList(summary.testCases))
-		
-		
-        def run = new Button("Run...");
+        run = new Button("Run...");
 		run.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+				println "action.."
+				run.setDisable(true)
 				rt.runAll(summary)
 			}
 		});
@@ -88,9 +73,16 @@ class FxPrinter extends Application implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		println arg0
-		tv.getItems().removeAll(summary.testCases)
-		tv.setItems(FXCollections.observableArrayList(summary.testCases))
-		
+		if(arg0 instanceof Summary) {
+			
+				tv?.getItems().removeAll(arg0.testCases)
+				tv?.setItems(FXCollections.observableArrayList(arg0.testCases))
+				
+			
+		}
+
+		run?.setDisable(false)
+
 	}
 
 }

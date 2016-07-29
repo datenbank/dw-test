@@ -24,12 +24,13 @@ class Init {
 				
 				def testCase = new TestCase(name: name)
 				testCase.addObserver(ui)
-				
+				println "add $testCase.name"
 				summary.testCases << testCase
 			}
 				
 		}
-		
+		println "calling ready on Summary"
+		summary.ready()
 		summary
 	}
 
