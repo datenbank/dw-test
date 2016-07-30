@@ -5,7 +5,10 @@ import datenbank.model.Variables
 import datenbank.model.Summary
 import datenbank.model.TestCase
 
+import groovy.util.logging.Log4j
+import org.apache.log4j.Logger
 
+@Log4j
 class Init {
 	
 	def ui	
@@ -24,12 +27,12 @@ class Init {
 				
 				def testCase = new TestCase(name: name)
 				testCase.addObserver(ui)
-				println "add $testCase.name"
+				
 				summary.testCases << testCase
 			}
 				
 		}
-		println "calling ready on Summary"
+		
 		summary.ready()
 		summary
 	}

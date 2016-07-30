@@ -19,8 +19,8 @@ class TestCase extends Observable {
 	def linesNotInSource = 0 //
 	def linesNotInTarget = 0 //
 
-	def executor = 0
-	def tester = 0
+	def type = 0
+	
 	
 	def runDate = new Date(System.currentTimeMillis())
 	
@@ -50,7 +50,14 @@ class TestCase extends Observable {
 	}
 	
 	def String toString() {
+		def str = ""
+			
+		if(type == 1)
+			str += "${name}\t${errors}\t${elapsed}"
 		
-		"$name $compared"
+		if(type == 2)
+			str += "${name}\t${errors}\t${compared}\t${skipped}\t${resultFlag}\t${elapsedTest}"
+			
+		return str
 	}
 }

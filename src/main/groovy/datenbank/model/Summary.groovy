@@ -15,4 +15,19 @@ class Summary extends Observable {
 		notifyObservers()
 	}
 	
+	def String toString() {
+		def i = 0 
+		def errors = 0
+		def compared = 0
+		def skipped = 0
+		testCases.each { testCase ->
+			i++
+			errors += testCase.errors
+			compared += testCase.compared
+			skipped += testCase.skipped
+		}
+		
+		return "Test cases = ${i}, Errors = ${errors}, Compared = ${compared}, Skipped = ${skipped}"
+	}
+	
 }

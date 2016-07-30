@@ -1,5 +1,6 @@
 package datenbank.view
 
+import datenbank.engine.Executor
 import datenbank.engine.Init
 import datenbank.engine.ResultTester
 import datenbank.model.Summary
@@ -7,7 +8,6 @@ import datenbank.model.TestCase
 
 import java.util.Observer;
 
-import org.hamcrest.core.IsNull;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -19,12 +19,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox;
 
 class FxPrinter extends Application implements Observer {
 	
 	def tv
-	def run
+	def compare, exec
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -53,19 +54,32 @@ class FxPrinter extends Application implements Observer {
 		tv.getColumns().addAll(colFile, colCompared, colSkipped, colError, colResultFlag)
 
 		def rt = new ResultTester()
-		
-        run = new Button("Run...");
-		run.setOnAction(new EventHandler<ActionEvent>() {
+		def ex = new Executor()
+        compare = new Button("Compare...");
+		compare.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				println "action.."
-				run.setDisable(true)
+				
+				compare.setDisable(true)
 				rt.runAll(summary)
 			}
 		});
+	
+		exec = new Button("Execute...");
+		exec.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				
+				exec.setDisable(true)
+				ex.runAll(summary)
+			}
+		});
         
-        box.getChildren().addAll(tv, run);
+		def hbox = new HBox()
+		hbox.getChildren().addAll(exec, compare)
+        box.getChildren().addAll(tv, hbox);
         primaryStage.setScene(new Scene(box,400,400));
+		primaryStage.setTitle("DW Test Toolkit")
         primaryStage.show();
 		
 	}
@@ -81,7 +95,8 @@ class FxPrinter extends Application implements Observer {
 			
 		}
 
-		run?.setDisable(false)
+		compare?.setDisable(false)
+		exec?.setDisable(false)
 
 	}
 

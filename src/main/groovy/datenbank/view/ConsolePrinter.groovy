@@ -16,28 +16,7 @@ public class ConsolePrinter implements Observer {
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		log.info("update gui $arg0")
-		if(arg0 instanceof TestCase && arg0.tester > 0) {		
-			print "\rCompare ${comCount++} elapsed: $arg0.elapsed seconds"
-		} else if(arg0 instanceof TestCase && arg0.executor > 0 && arg0.tester == 0) {		
-			print "\rExecuting ${execCount++} elapsed: $arg0.elapsed seconds"
-		} else if(arg0 instanceof Summary) {		
-			println ""
-			arg0.testCases.each {
-				
-				if(it.errors == 0)
-					println "$it.name\t->\tSUCCESSS"	
-			}
-			arg0.testCases.each {
-
-				if(it.errors == 1)
-					println "$it.name\t->\tFAILURE"
-			}
-			
-		} else {
-			log.debug("missing action to update ui")
-			
-		}
+		println arg0
 		
 	}
 

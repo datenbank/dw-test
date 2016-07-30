@@ -99,7 +99,7 @@ class Executor {
 			def errors = 0 
 			errors = run(file)
 			testCase.errors = errors	
-			testCase.executor = 1
+			testCase.type = 1
 			testCase.stop()
 			testCase.ready()
 

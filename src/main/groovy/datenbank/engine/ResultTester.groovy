@@ -82,13 +82,13 @@ class ResultTester {
 			log.info("$testCase.name")
 			testCase.beginTest()							
 			def result = run(file)
-			testCase.compared += result[0]
-			testCase.skipped += result[1]
-			testCase.errors += result[2]
-			testCase.resultFlag += result[3]
-			testCase.linesNotInSource += result[4]
-			testCase.linesNotInTarget += result[5]
-			testCase.tester = 1
+			testCase.compared = result[0]
+			testCase.skipped = result[1]
+			testCase.errors = result[2]
+			testCase.resultFlag = result[3]
+			testCase.linesNotInSource = result[4]
+			testCase.linesNotInTarget = result[5]
+			testCase.type = 2
 			testCase.stopTest()
 			testCase.ready()
 			
