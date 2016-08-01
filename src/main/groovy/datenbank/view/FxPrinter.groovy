@@ -9,7 +9,10 @@ import datenbank.model.TestCase
 import java.util.Observer;
 
 
+
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
@@ -39,19 +42,22 @@ class FxPrinter extends Application implements Observer {
 		def colSkipped = new TableColumn("Skipped")
 		def colError = new TableColumn("Error")
 		def colResultFlag = new TableColumn("Result flag")
-		
+		def colElapsed = new TableColumn("Elapsed")
+		def colElapsedTest = new TableColumn("Elapsed compare")
 		
         colFile.setCellValueFactory(new PropertyValueFactory("name"))
  	    colCompared.setCellValueFactory(new PropertyValueFactory("compared"))
 		colSkipped.setCellValueFactory(new PropertyValueFactory("skipped"))
 		colError.setCellValueFactory(new PropertyValueFactory("errors"))
 		colResultFlag.setCellValueFactory(new PropertyValueFactory("resultFlag"))
-		
-		
+		colElapsed.setCellValueFactory(new PropertyValueFactory("elapsed"))
+		colElapsedTest.setCellValueFactory(new PropertyValueFactory("elapsedTest"))
 		def init = new Init(ui: this)
 		def summary = init.init()
 		
-		tv.getColumns().addAll(colFile, colCompared, colSkipped, colError, colResultFlag)
+		colFile.width = 200
+		colElapsedTest.width = 200
+		tv.getColumns().addAll(colFile, colCompared, colSkipped, colError, colResultFlag, colElapsed, colElapsedTest)
 
 		def rt = new ResultTester()
 		def ex = new Executor()
@@ -60,8 +66,12 @@ class FxPrinter extends Application implements Observer {
 			@Override
 			public void handle(ActionEvent event) {
 				
-				compare.setDisable(true)
-				rt.runAll(summary)
+				Thread.start {
+
+					btnUpdate(true)
+					rt.runAll(summary)
+					btnUpdate(false)
+				}
 			}
 		});
 	
@@ -70,33 +80,49 @@ class FxPrinter extends Application implements Observer {
 			@Override
 			public void handle(ActionEvent event) {
 				
-				exec.setDisable(true)
-				ex.runAll(summary)
+				Thread.start {
+
+					btnUpdate(true)
+					ex.runAll(summary)
+					btnUpdate(false)
+				}
+				
 			}
 		});
         
 		def hbox = new HBox()
 		hbox.getChildren().addAll(exec, compare)
         box.getChildren().addAll(tv, hbox);
-        primaryStage.setScene(new Scene(box,400,400));
+        primaryStage.setScene(new Scene(box,800,400));
 		primaryStage.setTitle("DW Test Toolkit")
         primaryStage.show();
+		
+	}
+	
+	def btnUpdate(bool) {
+		Platform.runLater(new Runnable() {
+			@Override public void run() {
+				exec.setDisable(bool)
+				compare.setDisable(bool)
+			}
+		});
 		
 	}
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		println arg0
-		if(arg0 instanceof Summary) {
+		if(arg0 instanceof Summary) {			
+			Platform.runLater(new Runnable() {
+				@Override public void run() {
+					tv?.getItems().removeAll(arg0.testCases)
+					tv?.setItems(FXCollections.observableArrayList(arg0.testCases))
+				}
+			});
 			
-				tv?.getItems().removeAll(arg0.testCases)
-				tv?.setItems(FXCollections.observableArrayList(arg0.testCases))
-				
 			
 		}
 
-		compare?.setDisable(false)
-		exec?.setDisable(false)
 
 	}
 

@@ -102,6 +102,8 @@ class ResultTester {
 		summary.testCases.each { testCase ->
 			
 			runOne(testCase)
+			Thread.sleep(500)
+			summary.ready()
 		}
 		
 		summary.ready()
