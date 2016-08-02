@@ -36,7 +36,8 @@ class FxPrinter extends Application implements Observer {
 	
 	def tv
 	def compare, exec
-	
+	def menu
+	def itemExec, itemComp
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
@@ -44,10 +45,7 @@ class FxPrinter extends Application implements Observer {
 		def box = new VBox()		
 				
         def colFile = new TableColumn("Name")
-		
 
-		
-		def colCompared = new TableColumn("Compared")
 		def colSkipped = new TableColumn("Skipped")
 		def colError = new TableColumn("Status")
 		def colResultFlag = new TableColumn("Result flag")
@@ -91,7 +89,6 @@ class FxPrinter extends Application implements Observer {
 		
 			
         colFile.setCellValueFactory(new PropertyValueFactory("name"))
- 	    colCompared.setCellValueFactory(new PropertyValueFactory("compared"))
 		colSkipped.setCellValueFactory(new PropertyValueFactory("skipped"))
 		colError.setCellValueFactory(new PropertyValueFactory("errors"))
 		colResultFlag.setCellValueFactory(new PropertyValueFactory("resultFlag"))
@@ -102,7 +99,7 @@ class FxPrinter extends Application implements Observer {
 		
 		colFile.width = 200
 		colElapsedTest.width = 150
-		tv.getColumns().addAll(colFile, colCompared, colSkipped, colError, colResultFlag, colElapsed, colElapsedTest)
+		tv.getColumns().addAll(colFile, colSkipped, colError, colResultFlag, colElapsed, colElapsedTest)
 
 		def rt = new ResultTester()
 		def ex = new Executor()
@@ -136,9 +133,9 @@ class FxPrinter extends Application implements Observer {
 		});
 	
 	
-		ContextMenu menu = new ContextMenu();
-		MenuItem itemExec = new MenuItem("Execute");
-		MenuItem itemComp = new MenuItem("Compare");
+		menu = new ContextMenu();
+		itemExec = new MenuItem("Execute");
+		itemComp = new MenuItem("Compare");
 		menu.getItems().add(itemExec);
 		menu.getItems().add(itemComp);
 		tv.setContextMenu(menu);
@@ -185,6 +182,8 @@ class FxPrinter extends Application implements Observer {
 	def btnUpdate(bool) {
 		Platform.runLater(new Runnable() {
 			@Override public void run() {
+				itemComp.setDisable(bool)
+				itemExec.setDisable(bool)
 				exec.setDisable(bool)
 				compare.setDisable(bool)
 			}
