@@ -15,7 +15,7 @@ class Executor {
 
 	def int run(file) {
 		def dir = new File("${Variables.path}Target")
-		def error = 0
+		def error = 3
 		def fileName = file.getName()
 		def sourceFileName = "${Variables.path}Source/"+ fileName
 		
@@ -105,7 +105,7 @@ class Executor {
 
 			
 		} else {
-			//
+			testCase.errors = 1//
 		}
 
 	}	
