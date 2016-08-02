@@ -17,7 +17,7 @@ class ResultTester {
 				
 		def skipped = 0
 		def compared = 0		
-		def errors = 0	
+		def errors = 4	
 		def linesNotInSource = 0
 		def linesNotInTarget = 0
 		def resultFlag = 0
@@ -62,10 +62,11 @@ class ResultTester {
 				
 				
 				if(resultFlag > 0)
-					errors++
+					errors = 2
 				compared++
 			} else { //skip
-				skipped++					
+				skipped++
+				errors = 2
 			}
 			
 		}
@@ -94,7 +95,7 @@ class ResultTester {
 			
 			
 		} else {
-			testCase.errors = 1
+			testCase.errors = 2
 			testCase.ready()
 		}
 
