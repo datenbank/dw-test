@@ -20,6 +20,8 @@ import javafx.scene.control.Control
 import javafx.scene.control.MenuItem
 import javafx.scene.control.Callback
 import javafx.scene.control.Alert
+import javafx.scene.control.Menu
+import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow
@@ -39,7 +41,7 @@ class FxPrinter extends Application implements Observer {
 	def tv
 	def compare, exec
 	def menu
-	def itemExec, itemComp, itemOpenTgt, itemOpenSrc
+	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult, itemSettings, itemSettingsLoad
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
@@ -137,12 +139,48 @@ class FxPrinter extends Application implements Observer {
 		menu = new ContextMenu();
 		itemExec = new MenuItem("Execute");
 		itemComp = new MenuItem("Compare");
-		itemOpenTgt = new MenuItem("Open target file");
-		itemOpenSrc = new MenuItem("Open source file");
+		itemOpenTgt = new MenuItem("Open/Create target SQL");
+		itemOpenSrc = new MenuItem("Open/Create source SQL");
 		menu.getItems().add(itemExec);
 		menu.getItems().add(itemComp);
-		menu.getItems().add(itemOpenTgt);
-		menu.getItems().add(itemOpenSrc);
+
+
+
+		Menu codeGrp = new Menu("Code");
+		Menu callbackGrp = new Menu("Callback");
+		Menu resultGrp = new Menu("Result");
+		Menu settingsGrp = new Menu("Settings");
+
+		itemOpenBefore = new MenuItem("Open/Create before (.bat)");
+		itemOpenAfter = new MenuItem("Open/Create after (.bat)");
+
+		callbackGrp.getItems().add(itemOpenBefore);
+		callbackGrp.getItems().add(itemOpenAfter);
+
+		codeGrp.getItems().add(itemOpenTgt);
+		codeGrp.getItems().add(itemOpenSrc);
+		codeGrp.getItems().add(callbackGrp);
+
+		menu.getItems().add(codeGrp);
+
+		itemResultTgt = new MenuItem("Open target data set");
+		itemResultSrc = new MenuItem("Open source data set");
+		itemResult = new MenuItem("Open difference..");
+		resultGrp.getItems().add(itemResultTgt);
+		resultGrp.getItems().add(itemResultSrc);
+		resultGrp.getItems().add(itemResult);
+
+		menu.getItems().add(resultGrp);
+		SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
+		menu.getItems().add(separatorMenuItem);
+
+		itemSettings = new MenuItem("Open file");
+		itemSettingsLoad = new MenuItem("Reload");
+
+		settingsGrp.getItems().add(itemSettings);
+		settingsGrp.getItems().add(itemSettingsLoad);
+		menu.getItems().add(settingsGrp);
+
 		tv.setContextMenu(menu);
 
 		itemExec.setOnAction(new EventHandler<ActionEvent>() {
@@ -209,7 +247,7 @@ class FxPrinter extends Application implements Observer {
 							try {
 								"notepad ${Variables.path}Source/${testCase.name}.sql".execute()
 							} catch(all) {
-								alert()
+								alert("Open file error", "Couldn't open file. Please check that it exists!")
 							}
 
 							btnUpdate(false)
@@ -217,6 +255,123 @@ class FxPrinter extends Application implements Observer {
 					}
 				});
 
+		itemOpenBefore.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+
+						btnUpdate(true)
+
+						Thread.start {
+
+							btnUpdate(true)
+							try {
+								"notepad ${Variables.path}Target/${testCase.name}_Before.bat".execute()
+							} catch(all) {
+								alert("Open file error", "Couldn't open file. Please check that it exists!")
+							}
+
+							btnUpdate(false)
+						}
+					}
+				});
+		itemOpenAfter.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+
+						btnUpdate(true)
+
+						Thread.start {
+
+							btnUpdate(true)
+							try {
+								"notepad ${Variables.path}Target/${testCase.name}_After.bat".execute()
+							} catch(all) {
+								alert("Open file error", "Couldn't open file. Please check that it exists!")
+							}
+
+							btnUpdate(false)
+						}
+					}
+				});
+
+		itemResultTgt.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+
+						Thread.start {
+							btnUpdate(true)
+							if(new File("${Variables.path}Target/Result/${testCase.name}.csv").exists()) {
+								"notepad ${Variables.path}Target/Result/${testCase.name}.csv".execute()
+							} else {
+								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Target/Result/${testCase.name}.csv")
+							}
+
+							btnUpdate(false)
+						}
+					}
+				});
+		itemResultSrc.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+
+						Thread.start {
+							btnUpdate(true)
+							if(new File("${Variables.path}Source/Result/${testCase.name}.csv").exists()) {
+								"notepad ${Variables.path}Source/Result/${testCase.name}.csv".execute()
+							} else {
+								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Source/Result/${testCase.name}.csv")
+							}
+
+							btnUpdate(false)
+						}
+					}
+				});
+
+
+		itemResult.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+
+						Thread.start {
+							btnUpdate(true)
+							if(new File("${Variables.path}Report/${testCase.name}.csv").exists()) {
+								"notepad ${Variables.path}Report/${testCase.name}.csv".execute()
+							} else {
+								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Report/${testCase.name}.csv")
+							}
+
+							btnUpdate(false)
+						}
+					}
+				});
+
+		itemSettings.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+
+						Thread.start {
+							if(new File("${Variables.path}conf.txt").exists()) {
+								"notepad ${Variables.path}conf.txt".execute()
+							} else {
+								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}conf.txt")
+							}
+
+						}
+					}
+				});
+
+		itemSettingsLoad.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						Variables.load()
+					}
+				});
 		def hbox = new HBox()
 		hbox.getChildren().addAll(exec, compare)
 		box.getChildren().addAll(tv, hbox);
@@ -233,6 +388,13 @@ class FxPrinter extends Application implements Observer {
 						itemExec.setDisable(bool)
 						itemOpenSrc.setDisable(bool)
 						itemOpenTgt.setDisable(bool)
+
+						itemOpenBefore.setDisable(bool)
+						itemOpenAfter.setDisable(bool)
+						itemResultTgt.setDisable(bool)
+						itemResultSrc.setDisable(bool)
+						itemResult.setDisable(bool)
+
 						exec.setDisable(bool)
 						compare.setDisable(bool)
 					}
