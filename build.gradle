@@ -33,3 +33,26 @@ run {
 		args System.getProperty("exec.args").split()
 	} catch(all) {}
 }
+
+
+distZip {
+	into('bin') {
+		from '.'
+		include 'Target/*'
+		include 'Source/*'
+		include 'Report/*'
+		include 'conf.txt'
+	}
+}
+
+
+installDist {
+	into('bin') {
+		from '.'
+		include 'Target/*'
+		include 'Source/*'
+		include 'Report/*'
+		include 'conf.txt'
+	}
+
+}

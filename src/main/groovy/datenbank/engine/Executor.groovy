@@ -100,10 +100,11 @@ class Executor {
 			testCase.begin()
 
 			testCase.errors = run(file)
+			testCase.resultFlag = null
 			testCase.type = 1
 			testCase.stop()
 			testCase.ready()
-
+			
 			
 		} else {
 			testCase.errors = 1

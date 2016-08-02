@@ -102,6 +102,7 @@ class FxPrinter extends Application implements Observer {
 						@Override
 						protected void updateItem(Integer item, boolean empty) {
 							super.updateItem(item, empty);
+							setText("")
 							if(item == -1) {
 								setTextFill(Color.BLACK);
 								setText("Couldn't compare results!")

@@ -95,6 +95,7 @@ class ResultTester {
 			
 			
 		} else {
+			testCase.resultFlag = -1
 			testCase.errors = 2
 			testCase.ready()
 		}
