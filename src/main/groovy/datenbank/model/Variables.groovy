@@ -8,34 +8,30 @@ class Variables {
 
 	static load()
 	{
-		def file = new File("./conf.txt")
-		file.text.split("\r\n").each {
-			if(it.startsWith("path=")) {
-				path = it.substring(5, it.length())
-			}
-				
-			if(it.startsWith("model=")) {
-				model = it.substring(6, it.length())
-			}
-				
-			
-			if(it.startsWith("source=")) {
-				sourceConnection = it.substring(7, it.length())
-			}
-				
-			if(it.startsWith("target=")) {
-				targetConnection = it.substring(7, it.length())
-			}
-			
-			
-			if(it.startsWith("targetDriver=")) {
-				targetDriver = it.substring(13, it.length())
-			}
-			
-			
-			if(it.startsWith("sourceDriver=")) {
-				sourceDriver = it.substring(13, it.length())
-			}
+		def config = new ConfigSlurper().parse(new File("./conf.txt").text)
+		
+		if(config.model) {
+			model = config.model			
+		}
+		
+		if(config.path) {
+			path = config.path
+		}
+		
+		if(config.sourceConnection) {
+			sourceConnection = config.sourceConnection
+		}
+		
+		if(config.targetConnection) {
+			targetConnection = config.targetConnection
+		}
+		
+		if(config.sourceDriver) {
+			sourceDriver = config.sourceDriver
+		}
+		
+		if(config.targetDriver) {
+			targetDriver = config.targetDriver
 		}
 		
 		
