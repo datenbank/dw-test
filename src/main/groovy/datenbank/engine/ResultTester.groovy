@@ -106,7 +106,6 @@ class ResultTester {
 		summary.testCases.each { testCase ->
 			
 			runOne(testCase)
-			summary.ready()
 		}
 		
 		summary.ready()
