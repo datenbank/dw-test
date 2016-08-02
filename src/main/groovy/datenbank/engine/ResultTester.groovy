@@ -93,7 +93,10 @@ class ResultTester {
 			testCase.ready()
 			
 			
-		} 
+		} else {
+			testCase.errors = 1
+			testCase.ready()
+		}
 
 	}
 	
