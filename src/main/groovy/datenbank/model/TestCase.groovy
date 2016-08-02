@@ -51,7 +51,10 @@ class TestCase extends Observable {
 	
 	def String toString() {
 		def str = ""
-			
+		
+		if(type == 0)
+			str += "${name}"
+				
 		if(type == 1)
 			str += "${name}\t${errors}\t${elapsed}"
 		
