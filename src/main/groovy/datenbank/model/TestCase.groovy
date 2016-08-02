@@ -14,7 +14,7 @@ class TestCase extends Observable {
 	
 	def compared = 0 //
 	def skipped = 0 //
-	def errors = 0 //Ex
+	def errors = -1 //Ex
 	def resultFlag = 0 //
 	def linesNotInSource = 0 //
 	def linesNotInTarget = 0 //
