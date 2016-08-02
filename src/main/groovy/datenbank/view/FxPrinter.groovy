@@ -6,24 +6,23 @@ import datenbank.engine.ResultTester
 import datenbank.model.Summary
 import datenbank.model.TestCase
 
-import java.util.Observer;
+import java.util.Observer
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
+import javafx.application.Application
+import javafx.application.Platform
+import javafx.collections.FXCollections
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
-import javafx.scene.Scene;
+import javafx.scene.Scene
 import javafx.scene.control.ContextMenu
-import javafx.scene.control.Control
 import javafx.scene.control.MenuItem
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn
+import javafx.scene.control.TableView
 import javafx.scene.control.Button;
-import javafx.stage.Stage;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage
+import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.layout.HBox
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.VBox
 
 class FxPrinter extends Application implements Observer {
 	
