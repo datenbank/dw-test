@@ -36,7 +36,7 @@ run {
 
 
 distZip {
-	into('bin') {
+	into(project.name+'/bin') {
 		from '.'
 		include 'Target/*'
 		include 'Source/*'
