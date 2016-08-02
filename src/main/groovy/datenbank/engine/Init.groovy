@@ -12,7 +12,7 @@ import org.apache.log4j.Logger
 class Init {
 	
 	def ui	
-	def summary
+	def summary 
 	
 	def init() {
 		

@@ -8,16 +8,16 @@ import org.apache.log4j.Logger
 @Log4j
 class TestCase extends Observable {
 	def name = "" //
-
-	def elapsed, start //Ex
-	def elapsedTest, startTest //
 	
-	def compared = 0 //
-	def skipped = 0 //
+	def elapsed, start //Ex
 	def errors = -1 //Ex
-	def resultFlag = 0 //
-	def linesNotInSource = 0 //
-	def linesNotInTarget = 0 //
+	
+	def elapsedTest, startTest //
+	def compared = 0 //
+	def skipped = 0 //	
+	def resultFlag  //
+	def linesNotInSource //
+	def linesNotInTarget //
 
 	def type = 0
 	

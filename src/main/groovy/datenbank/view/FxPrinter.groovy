@@ -19,7 +19,7 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.control.Control
 import javafx.scene.control.MenuItem
 import javafx.scene.control.Callback
-import javafx.scene.control.Alert
+//import javafx.scene.control.Alert
 import javafx.scene.control.Menu
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.control.TableCell
@@ -39,9 +39,14 @@ import javafx.scene.paint.Color;
 class FxPrinter extends Application implements Observer {
 
 	def tv
-	def compare, exec
+	def compare, exec, both
 	def menu
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult, itemSettings, itemSettingsLoad
+
+	def init
+	def summary
+
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
@@ -49,9 +54,8 @@ class FxPrinter extends Application implements Observer {
 		def box = new VBox()
 
 		def colFile = new TableColumn("Name")
-		def colSkipped = new TableColumn("Skipped")
 		def colError = new TableColumn("Status")
-		def colResultFlag = new TableColumn("Result flag")
+		def colResultFlag = new TableColumn("Description")
 		def colElapsed = new TableColumn("Elapsed")
 		def colElapsedTest = new TableColumn("Elapsed compare")
 
@@ -60,50 +64,78 @@ class FxPrinter extends Application implements Observer {
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
 						return new TableCell<TestCase, Integer>() {
 
-									@Override
-									protected void updateItem(Integer item, boolean empty) {
-										super.updateItem(item, empty);
-										if(item == -1) {
-											setTextFill(Color.BLACK);
-											setText("")
-										}
-										if(item == 1) {
-											setTextFill(Color.RED);
-											setText("FAILURE Execute")
-										}
-										if(item == 2) {
-											setTextFill(Color.RED);
-											setText("FAILURE Compare")
-										}
+							@Override
+							protected void updateItem(Integer item, boolean empty) {
+								super.updateItem(item, empty);
+								if(item == -1) {
+									setTextFill(Color.BLACK);
+									setText("")
+								}
+								if(item == 1) {
+									setTextFill(Color.RED);
+									setText("FAILURE Execute")
+								}
+								if(item == 2) {
+									setTextFill(Color.RED);
+									setText("FAILURE Compare")
+								}
 
-										if(item == 3) {
-											setTextFill(Color.GREEN);
-											setText("SUCCESS Execute")
-										}
+								if(item == 3) {
+									setTextFill(Color.GREEN);
+									setText("SUCCESS Execute")
+								}
 
-										if(item == 4) {
-											setTextFill(Color.GREEN);
-											setText("SUCCESS Compare")
-										}
-									}
-								};
+								if(item == 4) {
+									setTextFill(Color.GREEN);
+									setText("SUCCESS Compare")
+								}
+							}
+						};
 					}
 				});
 
+			colResultFlag.setCellFactory(new Callback<TableColumn<TestCase, Integer>, TableCell<TestCase, Integer>>() {
+				@Override
+				public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
+					return new TableCell<TestCase, Integer>() {
 
+						@Override
+						protected void updateItem(Integer item, boolean empty) {
+							super.updateItem(item, empty);
+							if(item == -1) {
+								setTextFill(Color.BLACK);
+								setText("Couldn't compare results!")
+							}
+							if(item == 1) {
+								setTextFill(Color.BLACK);
+								setText("Missing rows in source")
+							}
+							if(item == 2) {
+								setTextFill(Color.BLACK);
+								setText("Missing rows in target")
+							}
+							if(item == 3) {
+								setTextFill(Color.BLACK);
+								setText("Missing rows in both")
+							}
+						}
+					};
+				}
+			});
 		colFile.setCellValueFactory(new PropertyValueFactory("name"))
-		colSkipped.setCellValueFactory(new PropertyValueFactory("skipped"))
 		colError.setCellValueFactory(new PropertyValueFactory("errors"))
 		colResultFlag.setCellValueFactory(new PropertyValueFactory("resultFlag"))
 		colElapsed.setCellValueFactory(new PropertyValueFactory("elapsed"))
 		colElapsedTest.setCellValueFactory(new PropertyValueFactory("elapsedTest"))
-		def init = new Init(ui: this)
-		def summary = init.init()
+
+		init = new Init(ui: this)
+		summary = init.init()
 
 		colFile.width = 200
-		colError.width = 200
+		colError.width = 150
+		colResultFlag.width = 200
 		colElapsedTest.width = 150
-		tv.getColumns().addAll(colFile, colSkipped, colError, colResultFlag, colElapsed, colElapsedTest)
+		tv.getColumns().addAll(colFile, colError, colResultFlag, colElapsed, colElapsedTest)
 
 		def rt = new ResultTester()
 		def ex = new Executor()
@@ -130,6 +162,25 @@ class FxPrinter extends Application implements Observer {
 
 							btnUpdate(true)
 							ex.runAll(summary)
+							btnUpdate(false)
+						}
+					}
+				});
+		both = new Button("Execute and Compare All");
+		both.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+
+						Thread.start {
+
+							btnUpdate(true)
+							
+							summary.testCases.each { testCase ->
+								ex.runOne(testCase)
+								rt.runOne(testCase)								
+							}
+													
+							
 							btnUpdate(false)
 						}
 					}
@@ -187,11 +238,13 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-						Thread.start {
+						if(testCase) {
+							Thread.start {
 
-							btnUpdate(true)
-							ex.runOne(testCase)
-							btnUpdate(false)
+								btnUpdate(true)
+								ex.runOne(testCase)
+								btnUpdate(false)
+							}
 						}
 					}
 				});
@@ -200,11 +253,13 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-						Thread.start {
+						if(testCase) {
+							Thread.start {
 
-							btnUpdate(true)
-							rt.runOne(testCase)
-							btnUpdate(false)
+								btnUpdate(true)
+								rt.runOne(testCase)
+								btnUpdate(false)
+							}
 						}
 					}
 				});
@@ -216,19 +271,20 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-
-						btnUpdate(true)
-
-						Thread.start {
-
+						if(testCase) {
 							btnUpdate(true)
-							try {
-								"notepad ${Variables.path}Target/${testCase.name}.sql".execute()
-							} catch(all) {
-								alert("Open file error", "Couldn't open file. Please check that it exists!")
-							}
 
-							btnUpdate(false)
+							Thread.start {
+
+								btnUpdate(true)
+								try {
+									"notepad ${Variables.path}Target/${testCase.name}.sql".execute()
+								} catch(all) {
+									alert("Open file error", "Couldn't open file. Please check that it exists!")
+								}
+
+								btnUpdate(false)
+							}
 						}
 					}
 				});
@@ -238,19 +294,20 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-
-						btnUpdate(true)
-
-						Thread.start {
-
+						if(testCase) {
 							btnUpdate(true)
-							try {
-								"notepad ${Variables.path}Source/${testCase.name}.sql".execute()
-							} catch(all) {
-								alert("Open file error", "Couldn't open file. Please check that it exists!")
-							}
 
-							btnUpdate(false)
+							Thread.start {
+
+								btnUpdate(true)
+								try {
+									"notepad ${Variables.path}Source/${testCase.name}.sql".execute()
+								} catch(all) {
+									alert("Open file error", "Couldn't open file. Please check that it exists!")
+								}
+
+								btnUpdate(false)
+							}
 						}
 					}
 				});
@@ -259,19 +316,20 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-
-						btnUpdate(true)
-
-						Thread.start {
-
+						if(testCase) {
 							btnUpdate(true)
-							try {
-								"notepad ${Variables.path}Target/${testCase.name}_Before.bat".execute()
-							} catch(all) {
-								alert("Open file error", "Couldn't open file. Please check that it exists!")
-							}
 
-							btnUpdate(false)
+							Thread.start {
+
+								btnUpdate(true)
+								try {
+									"notepad ${Variables.path}Target/${testCase.name}_Before.bat".execute()
+								} catch(all) {
+									alert("Open file error", "Couldn't open file. Please check that it exists!")
+								}
+
+								btnUpdate(false)
+							}
 						}
 					}
 				});
@@ -279,19 +337,20 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-
-						btnUpdate(true)
-
-						Thread.start {
-
+						if(testCase) {
 							btnUpdate(true)
-							try {
-								"notepad ${Variables.path}Target/${testCase.name}_After.bat".execute()
-							} catch(all) {
-								alert("Open file error", "Couldn't open file. Please check that it exists!")
-							}
 
-							btnUpdate(false)
+							Thread.start {
+
+								btnUpdate(true)
+								try {
+									"notepad ${Variables.path}Target/${testCase.name}_After.bat".execute()
+								} catch(all) {
+									alert("Open file error", "Couldn't open file. Please check that it exists!")
+								}
+
+								btnUpdate(false)
+							}
 						}
 					}
 				});
@@ -300,16 +359,17 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+						if(testCase) {
+							Thread.start {
+								btnUpdate(true)
+								if(new File("${Variables.path}Target/Result/${testCase.name}.csv").exists()) {
+									"notepad ${Variables.path}Target/Result/${testCase.name}.csv".execute()
+								} else {
+									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Target/Result/${testCase.name}.csv")
+								}
 
-						Thread.start {
-							btnUpdate(true)
-							if(new File("${Variables.path}Target/Result/${testCase.name}.csv").exists()) {
-								"notepad ${Variables.path}Target/Result/${testCase.name}.csv".execute()
-							} else {
-								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Target/Result/${testCase.name}.csv")
+								btnUpdate(false)
 							}
-
-							btnUpdate(false)
 						}
 					}
 				});
@@ -317,16 +377,17 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+						if(testCase) {
+							Thread.start {
+								btnUpdate(true)
+								if(new File("${Variables.path}Source/Result/${testCase.name}.csv").exists()) {
+									"notepad ${Variables.path}Source/Result/${testCase.name}.csv".execute()
+								} else {
+									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Source/Result/${testCase.name}.csv")
+								}
 
-						Thread.start {
-							btnUpdate(true)
-							if(new File("${Variables.path}Source/Result/${testCase.name}.csv").exists()) {
-								"notepad ${Variables.path}Source/Result/${testCase.name}.csv".execute()
-							} else {
-								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Source/Result/${testCase.name}.csv")
+								btnUpdate(false)
 							}
-
-							btnUpdate(false)
 						}
 					}
 				});
@@ -336,16 +397,17 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+						if(testCase) {
+							Thread.start {
+								btnUpdate(true)
+								if(new File("${Variables.path}Report/${testCase.name}.csv").exists()) {
+									"notepad ${Variables.path}Report/${testCase.name}.csv".execute()
+								} else {
+									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Report/${testCase.name}.csv")
+								}
 
-						Thread.start {
-							btnUpdate(true)
-							if(new File("${Variables.path}Report/${testCase.name}.csv").exists()) {
-								"notepad ${Variables.path}Report/${testCase.name}.csv".execute()
-							} else {
-								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Report/${testCase.name}.csv")
+								btnUpdate(false)
 							}
-
-							btnUpdate(false)
 						}
 					}
 				});
@@ -370,10 +432,12 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						Variables.load()
+						summary = init.init()
+						
 					}
 				});
 		def hbox = new HBox()
-		hbox.getChildren().addAll(exec, compare)
+		hbox.getChildren().addAll(exec, compare, both)
 		box.getChildren().addAll(tv, hbox);
 		primaryStage.setScene(new Scene(box,800,400));
 		primaryStage.setResizable(false)
@@ -397,6 +461,7 @@ class FxPrinter extends Application implements Observer {
 
 						exec.setDisable(bool)
 						compare.setDisable(bool)
+						both.setDisable(bool)
 					}
 				});
 	}
@@ -405,11 +470,12 @@ class FxPrinter extends Application implements Observer {
 	def alert(header, msg) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
-						def alert = new Alert(Alert.AlertType.ERROR);
-						alert.setTitle("Error Dialog");
-						alert.setHeaderText(header);
-						alert.setContentText(msg);
-						alert.showAndWait();
+						println msg
+						/*def alert = new Alert(Alert.AlertType.ERROR);
+				 alert.setTitle("Error Dialog");
+				 alert.setHeaderText(header);
+				 alert.setContentText(msg);
+				 alert.showAndWait();*/
 					}
 				})
 	}

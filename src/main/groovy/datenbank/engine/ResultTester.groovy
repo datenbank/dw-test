@@ -20,11 +20,11 @@ class ResultTester {
 		def errors = 4	
 		def linesNotInSource = 0
 		def linesNotInTarget = 0
-		def resultFlag = 0
+		def resultFlag = -1
 		def runDate = Calendar.instance
 		def fileName = file.getName()
 		if(fileName.endsWith(".csv")) {	
-					
+			
 			def errorFlag = 0
 					
 			if(file.text == "Error...\r\n") {
@@ -35,7 +35,7 @@ class ResultTester {
 			def sourceFileName = "${Variables.path}Source/Result/"+ fileName			
 			def sourceFile = new File(sourceFileName)
 			if(sourceFile.exists()) {
-				
+				resultFlag = 0
 				if(sourceFile.text == "Error...\r\n") {
 					errorFlag += 1
 				}	

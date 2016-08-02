@@ -16,6 +16,7 @@ class Executor {
 	def int run(file) {
 		def dir = new File("${Variables.path}Target")
 		def error = 3
+		def description = ""
 		def fileName = file.getName()
 		def sourceFileName = "${Variables.path}Source/"+ fileName
 		
@@ -48,6 +49,7 @@ class Executor {
 				} 
 			} catch (Exception e) {
 				result << "Error...\r\n" 
+				description = "$e"
 				error = 1
 			}
 			
@@ -82,6 +84,7 @@ class Executor {
 			} catch (Exception e) { 
 				resultSource << "Error...\r\n"
 				error = 1
+				description += "$e"
 			}
 		}
 		return error
@@ -95,10 +98,8 @@ class Executor {
 		if(file.exists()) {
 			log.info("$testCase.name")
 			testCase.begin()
-			
-			def errors = 0 
-			errors = run(file)
-			testCase.errors = errors	
+
+			testCase.errors = run(file)
 			testCase.type = 1
 			testCase.stop()
 			testCase.ready()
