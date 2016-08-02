@@ -105,7 +105,8 @@ class Executor {
 
 			
 		} else {
-			testCase.errors = 1//
+			testCase.errors = 1
+			testCase.ready()
 		}
 
 	}	
