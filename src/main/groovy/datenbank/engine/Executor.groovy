@@ -114,15 +114,10 @@ class Executor {
 	def runAll(def summary) {
 
 		summary.testCases.each { testCase ->
-			
 			runOne(testCase)
-			summary.ready()
 		}
-		
-		
 		summary.ready()
-		
-			
+
 	}
 
 }
