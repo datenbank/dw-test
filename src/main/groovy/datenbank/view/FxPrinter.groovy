@@ -8,15 +8,15 @@ import datenbank.model.TestCase
 
 import java.util.Observer;
 
-
-
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu
+import javafx.scene.control.Control
+import javafx.scene.control.MenuItem
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Button;
@@ -56,12 +56,12 @@ class FxPrinter extends Application implements Observer {
 		def summary = init.init()
 		
 		colFile.width = 200
-		colElapsedTest.width = 200
+		colElapsedTest.width = 150
 		tv.getColumns().addAll(colFile, colCompared, colSkipped, colError, colResultFlag, colElapsed, colElapsedTest)
 
 		def rt = new ResultTester()
 		def ex = new Executor()
-        compare = new Button("Compare...");
+        compare = new Button("Compare All");
 		compare.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -75,7 +75,7 @@ class FxPrinter extends Application implements Observer {
 			}
 		});
 	
-		exec = new Button("Execute...");
+		exec = new Button("Execute All");
 		exec.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -89,7 +89,44 @@ class FxPrinter extends Application implements Observer {
 				
 			}
 		});
+	
+	
+		ContextMenu menu = new ContextMenu();
+		MenuItem itemExec = new MenuItem("Execute");
+		MenuItem itemComp = new MenuItem("Compare");
+		menu.getItems().add(itemExec);
+		menu.getItems().add(itemComp);
+		tv.setContextMenu(menu);
         
+		itemExec.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+				Thread.start {
+					
+					btnUpdate(true)
+					ex.runOne(testCase)
+					btnUpdate(false)
+				}
+				
+			}
+	   });
+
+	   itemComp.setOnAction(new EventHandler<ActionEvent>() {
+		   @Override
+		   public void handle(ActionEvent event) {
+			   def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+			   Thread.start {
+				   
+				   btnUpdate(true)
+				   rt.runOne(testCase)
+				   btnUpdate(false)
+			   }
+			   
+		   }
+	  });
+		
+		
 		def hbox = new HBox()
 		hbox.getChildren().addAll(exec, compare)
         box.getChildren().addAll(tv, hbox);
@@ -111,12 +148,30 @@ class FxPrinter extends Application implements Observer {
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		println arg0
+
 		if(arg0 instanceof Summary) {			
 			Platform.runLater(new Runnable() {
 				@Override public void run() {
 					tv?.getItems().removeAll(arg0.testCases)
 					tv?.setItems(FXCollections.observableArrayList(arg0.testCases))
+				}
+			});
+			
+			
+		}
+		
+		if(arg0 instanceof TestCase) {
+			Platform.runLater(new Runnable() {
+				@Override public void run() {					
+					
+					def items = []
+					tv?.getItems().each {testCase ->
+						
+						items << testCase
+					}
+					
+					tv?.getItems().removeAll(items)
+					tv?.setItems(FXCollections.observableArrayList(items))
 				}
 			});
 			
