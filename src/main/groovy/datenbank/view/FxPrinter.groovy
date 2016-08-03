@@ -3,6 +3,7 @@ package datenbank.view
 import datenbank.engine.Executor
 import datenbank.engine.Init
 import datenbank.engine.ResultTester
+import datenbank.model.Model
 import datenbank.model.Summary
 import datenbank.model.TestCase
 import datenbank.model.Variables
@@ -19,7 +20,7 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.control.Control
 import javafx.scene.control.MenuItem
 import javafx.scene.control.Callback
-//import javafx.scene.control.Alert
+import javafx.scene.control.Alert
 import javafx.scene.control.Menu
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.control.TableCell
@@ -42,6 +43,7 @@ class FxPrinter extends Application implements Observer {
 	def compare, exec, both
 	def menu
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult, itemSettings, itemSettingsLoad
+	
 
 	def init
 	def summary
@@ -202,6 +204,7 @@ class FxPrinter extends Application implements Observer {
 		Menu callbackGrp = new Menu("Callback");
 		Menu resultGrp = new Menu("Result");
 		Menu settingsGrp = new Menu("Settings");
+		Menu scriptsGrp = new Menu("Scripts");
 
 		itemOpenBefore = new MenuItem("Open/Create before (.bat)");
 		itemOpenAfter = new MenuItem("Open/Create after (.bat)");
@@ -209,10 +212,60 @@ class FxPrinter extends Application implements Observer {
 		callbackGrp.getItems().add(itemOpenBefore);
 		callbackGrp.getItems().add(itemOpenAfter);
 
+		def dir = new File("${Variables.path}Scripts")
+		dir.eachFile() { file ->
+			def script = new MenuItem("Open $file.name");
+			scriptsGrp.getItems().add(script);
+			
+			script.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					
+					try {
+						"notepad ${Variables.path}Scripts/${file.name}".execute()
+					} catch(all) {
+						alert("Open file error", "Couldn't open file. Please check that it exists!")
+					}						
+					
+				}
+			});
+		}
+		
+		SeparatorMenuItem separatorMenuItemScript = new SeparatorMenuItem();
+		scriptsGrp.getItems().add(separatorMenuItemScript);
+		dir.eachFile() { file ->
+			def script = new MenuItem("Run $file.name");
+			scriptsGrp.getItems().add(script);
+			
+			script.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					//TODO move to controller!
+					def m = new Model()
+					m.loadModelFromFile()
+					Binding binding = new Binding();
+					binding.setVariable("model", m);
+					binding.setVariable("path", Variables.path);
+					GroovyShell shell = new GroovyShell(binding);
+					try {
+						shell.evaluate(file.text);
+						Variables.load()
+						summary = init.init()
+					} catch(all) {
+						alert("Open file error", "Couldn't open file. Please check that it exists!")
+					}
+					
+				}
+			});
+		}	
+		
+		
+		
 		codeGrp.getItems().add(itemOpenTgt);
 		codeGrp.getItems().add(itemOpenSrc);
 		codeGrp.getItems().add(callbackGrp);
-
+		codeGrp.getItems().add(scriptsGrp);
+		
 		menu.getItems().add(codeGrp);
 
 		itemResultTgt = new MenuItem("Open target data set");
@@ -472,11 +525,11 @@ class FxPrinter extends Application implements Observer {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
 						println msg
-						/*def alert = new Alert(Alert.AlertType.ERROR);
-				 alert.setTitle("Error Dialog");
-				 alert.setHeaderText(header);
-				 alert.setContentText(msg);
-				 alert.showAndWait();*/
+						def alert = new Alert(Alert.AlertType.ERROR);
+						alert.setTitle("Error Dialog");
+						alert.setHeaderText(header);
+						alert.setContentText(msg);
+						alert.showAndWait();
 					}
 				})
 	}
