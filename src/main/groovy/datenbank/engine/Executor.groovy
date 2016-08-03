@@ -48,7 +48,8 @@ class Executor {
 					
 				} 
 			} catch (Exception e) {
-				result << "Error...\r\n" 
+				result << "Error...\r\n"
+				result << e
 				description = "$e"
 				error = 1
 			}
@@ -83,6 +84,7 @@ class Executor {
 				}
 			} catch (Exception e) { 
 				resultSource << "Error...\r\n"
+				resultSource << e
 				error = 1
 				description += "$e"
 			}
