@@ -43,7 +43,7 @@ class FxPrinter extends Application implements Observer {
 	def compare, exec, both
 	def menu
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult, itemSettings, itemSettingsLoad
-	
+
 
 	def init
 	def summary
@@ -66,65 +66,65 @@ class FxPrinter extends Application implements Observer {
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
 						return new TableCell<TestCase, Integer>() {
 
-							@Override
-							protected void updateItem(Integer item, boolean empty) {
-								super.updateItem(item, empty);
-								if(item == -1) {
-									setTextFill(Color.BLACK);
-									setText("")
-								}
-								if(item == 1) {
-									setTextFill(Color.RED);
-									setText("FAILURE Execute")
-								}
-								if(item == 2) {
-									setTextFill(Color.RED);
-									setText("FAILURE Compare")
-								}
+									@Override
+									protected void updateItem(Integer item, boolean empty) {
+										super.updateItem(item, empty);
+										if(item == -1) {
+											setTextFill(Color.BLACK);
+											setText("")
+										}
+										if(item == 1) {
+											setTextFill(Color.RED);
+											setText("FAILURE Execute")
+										}
+										if(item == 2) {
+											setTextFill(Color.RED);
+											setText("FAILURE Compare")
+										}
 
-								if(item == 3) {
-									setTextFill(Color.GREEN);
-									setText("SUCCESS Execute")
-								}
+										if(item == 3) {
+											setTextFill(Color.GREEN);
+											setText("SUCCESS Execute")
+										}
 
-								if(item == 4) {
-									setTextFill(Color.GREEN);
-									setText("SUCCESS Compare")
-								}
-							}
-						};
+										if(item == 4) {
+											setTextFill(Color.GREEN);
+											setText("SUCCESS Compare")
+										}
+									}
+								};
 					}
 				});
 
-			colResultFlag.setCellFactory(new Callback<TableColumn<TestCase, Integer>, TableCell<TestCase, Integer>>() {
-				@Override
-				public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
-					return new TableCell<TestCase, Integer>() {
+		colResultFlag.setCellFactory(new Callback<TableColumn<TestCase, Integer>, TableCell<TestCase, Integer>>() {
+					@Override
+					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
+						return new TableCell<TestCase, Integer>() {
 
-						@Override
-						protected void updateItem(Integer item, boolean empty) {
-							super.updateItem(item, empty);
-							setText("")
-							if(item == -1) {
-								setTextFill(Color.BLACK);
-								setText("Couldn't compare results!")
-							}
-							if(item == 1) {
-								setTextFill(Color.BLACK);
-								setText("Missing rows in source")
-							}
-							if(item == 2) {
-								setTextFill(Color.BLACK);
-								setText("Missing rows in target")
-							}
-							if(item == 3) {
-								setTextFill(Color.BLACK);
-								setText("Missing rows in both")
-							}
-						}
-					};
-				}
-			});
+									@Override
+									protected void updateItem(Integer item, boolean empty) {
+										super.updateItem(item, empty);
+										setText("")
+										if(item == -1) {
+											setTextFill(Color.BLACK);
+											setText("Couldn't compare results!")
+										}
+										if(item == 1) {
+											setTextFill(Color.BLACK);
+											setText("Missing rows in source")
+										}
+										if(item == 2) {
+											setTextFill(Color.BLACK);
+											setText("Missing rows in target")
+										}
+										if(item == 3) {
+											setTextFill(Color.BLACK);
+											setText("Missing rows in both")
+										}
+									}
+								};
+					}
+				});
 		colFile.setCellValueFactory(new PropertyValueFactory("name"))
 		colError.setCellValueFactory(new PropertyValueFactory("errors"))
 		colResultFlag.setCellValueFactory(new PropertyValueFactory("resultFlag"))
@@ -177,13 +177,13 @@ class FxPrinter extends Application implements Observer {
 						Thread.start {
 
 							btnUpdate(true)
-							
+
 							summary.testCases.each { testCase ->
 								ex.runOne(testCase)
-								rt.runOne(testCase)								
+								rt.runOne(testCase)
 							}
-													
-							
+
+
 							btnUpdate(false)
 						}
 					}
@@ -216,56 +216,50 @@ class FxPrinter extends Application implements Observer {
 		dir.eachFile() { file ->
 			def script = new MenuItem("Open $file.name");
 			scriptsGrp.getItems().add(script);
-			
+
 			script.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					
-					try {
-						"notepad ${Variables.path}Scripts/${file.name}".execute()
-					} catch(all) {
-						alert("Open file error", "Couldn't open file. Please check that it exists!")
-					}						
-					
-				}
-			});
+						@Override
+						public void handle(ActionEvent event) {
+							codeEditor(file, "Java")
+						}
+					});
 		}
-		
+
 		SeparatorMenuItem separatorMenuItemScript = new SeparatorMenuItem();
 		scriptsGrp.getItems().add(separatorMenuItemScript);
 		dir.eachFile() { file ->
 			def script = new MenuItem("Run $file.name");
 			scriptsGrp.getItems().add(script);
-			
+
 			script.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					//TODO move to controller!
-					def m = new Model()
-					m.loadModelFromFile()
-					Binding binding = new Binding();
-					binding.setVariable("model", m);
-					binding.setVariable("path", Variables.path);
-					GroovyShell shell = new GroovyShell(binding);
-					try {
-						shell.evaluate(file.text);
-						Variables.load()
-						summary = init.init()
-					} catch(all) {
-						alert("Open file error", "Couldn't open file. Please check that it exists!")
-					}
-					
-				}
-			});
-		}	
-		
-		
-		
+						@Override
+						public void handle(ActionEvent event) {
+							//TODO move to controller!
+							def m = new Model()
+							m.loadModelFromFile()
+							Binding binding = new Binding();
+							binding.setVariable("model", m);
+							binding.setVariable("path", Variables.path);
+							GroovyShell shell = new GroovyShell(binding);
+							try {
+								shell.evaluate(file.text);
+								Variables.load()
+								summary = init.init()
+							} catch(all) {
+								alert("Open file error", "Couldn't open file. Please check that it exists!")
+							}
+
+						}
+					});
+		}
+
+
+
 		codeGrp.getItems().add(itemOpenTgt);
 		codeGrp.getItems().add(itemOpenSrc);
 		codeGrp.getItems().add(callbackGrp);
 		codeGrp.getItems().add(scriptsGrp);
-		
+
 		menu.getItems().add(codeGrp);
 
 		itemResultTgt = new MenuItem("Open target data set");
@@ -326,19 +320,8 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							btnUpdate(true)
-
-							Thread.start {
-
-								btnUpdate(true)
-								try {
-									"notepad ${Variables.path}Target/${testCase.name}.sql".execute()
-								} catch(all) {
-									alert("Open file error", "Couldn't open file. Please check that it exists!")
-								}
-
-								btnUpdate(false)
-							}
+							def file = new File("${Variables.path}Target/${testCase.name}.sql")
+							codeEditor(file, "SQL")
 						}
 					}
 				});
@@ -349,19 +332,8 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							btnUpdate(true)
-
-							Thread.start {
-
-								btnUpdate(true)
-								try {
-									"notepad ${Variables.path}Source/${testCase.name}.sql".execute()
-								} catch(all) {
-									alert("Open file error", "Couldn't open file. Please check that it exists!")
-								}
-
-								btnUpdate(false)
-							}
+							def file = new File("${Variables.path}Source/${testCase.name}.sql")
+							codeEditor(file, "SQL")
 						}
 					}
 				});
@@ -371,19 +343,8 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							btnUpdate(true)
-
-							Thread.start {
-
-								btnUpdate(true)
-								try {
-									"notepad ${Variables.path}Target/${testCase.name}_Before.bat".execute()
-								} catch(all) {
-									alert("Open file error", "Couldn't open file. Please check that it exists!")
-								}
-
-								btnUpdate(false)
-							}
+							def file = new File("${Variables.path}Target/${testCase.name}_Before.bat")
+							codeEditor(file, "BAT")
 						}
 					}
 				});
@@ -392,19 +353,10 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							btnUpdate(true)
+							
+							def file = new File("${Variables.path}Target/${testCase.name}_After.bat")
+							codeEditor(file, "BAT")
 
-							Thread.start {
-
-								btnUpdate(true)
-								try {
-									"notepad ${Variables.path}Target/${testCase.name}_After.bat".execute()
-								} catch(all) {
-									alert("Open file error", "Couldn't open file. Please check that it exists!")
-								}
-
-								btnUpdate(false)
-							}
 						}
 					}
 				});
@@ -469,16 +421,9 @@ class FxPrinter extends Application implements Observer {
 		itemSettings.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
-						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+						def file = new File("${Variables.path}conf.txt")
+						codeEditor(file, "BAT")
 
-						Thread.start {
-							if(new File("${Variables.path}conf.txt").exists()) {
-								"notepad ${Variables.path}conf.txt".execute()
-							} else {
-								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}conf.txt")
-							}
-
-						}
 					}
 				});
 
@@ -487,9 +432,10 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						Variables.load()
 						summary = init.init()
-						
+
 					}
 				});
+			
 		def hbox = new HBox()
 		hbox.getChildren().addAll(exec, compare, both)
 		box.getChildren().addAll(tv, hbox);
@@ -497,6 +443,7 @@ class FxPrinter extends Application implements Observer {
 		primaryStage.setResizable(false)
 		primaryStage.setTitle("DW Test Toolkit")
 		primaryStage.show();
+
 	}
 
 	def btnUpdate(bool) {
@@ -532,6 +479,54 @@ class FxPrinter extends Application implements Observer {
 						alert.showAndWait();
 					}
 				})
+	}
+
+	def confirm(header, msg) {
+		Platform.runLater(new Runnable() {
+					@Override public void run() {
+						println msg
+						def alert = new Alert(Alert.AlertType.INFORMATION);
+						alert.setTitle("Confirm Dialog");
+						alert.setHeaderText(header);
+						alert.setContentText(msg);
+						alert.showAndWait();
+					}
+				})
+	}
+
+
+	def codeEditor(file, type) {
+		
+		if(!file.exists()) {
+			file << ""
+
+		}
+		
+
+		CodeEditor editor = new CodeEditor(file.text, type);
+		Button editorBtn = new Button("Save")
+		VBox editorBox = new VBox()
+		editorBox.getChildren().addAll(editor, editorBtn);
+
+		Stage stage = new Stage();
+		stage.setTitle(file.name);
+		stage.setScene(new Scene(editorBox, 800, 400));
+		stage.setResizable(false)
+		stage.show();
+
+		editorBtn.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent eventButton) {
+						editorBtn.setDisable(true)
+						file.newWriter().withWriter { w ->
+							w << editor.getCodeAndSnapshot()
+						}
+						confirm("Saved", "The file is saved.")
+						editorBtn.setDisable(false)
+
+					}
+				});
+
 	}
 
 	@Override
