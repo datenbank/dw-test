@@ -23,7 +23,7 @@ class Executor {
 		def sourceFile = new File(sourceFileName)
 		if(fileName.endsWith(".sql")) {			
 			def bat = new File("${Variables.path}Target/"+fileName.replace(".sql", "_Before.bat"))
-			if(bat.exists())	{
+			if(bat.exists() && bat.text.length() > 0)	{
 				println "$bat".execute().text
 			}
 			
@@ -54,7 +54,7 @@ class Executor {
 			}
 			
 			def batAfter = new File("${Variables.path}Target/"+fileName.replace(".sql", "_After.bat"))
-			if(batAfter.exists())	{
+			if(batAfter.exists() && batAfter.text.length() > 0)	{
 				println "$batAfter".execute().text
 
 			}
