@@ -57,6 +57,45 @@ Through the right click menu click Settings->Reload to load in the new settings.
 and download jTDS from <a href="https://sourceforge.net/projects/jtds/">https://sourceforge.net/projects/jtds/</a>
 extract the zip file and put the for example <code>C:\jtds-1.3.1-dist\x64\SSO</code> in PATH (environment variable)</p>
 
+<p>Testcase example
+Create your first test case select New testcase, and enter name. 
+
+This will create a file in <install_dir>/bin/Target/<testcase_name>.sql
+
+The table is updated with your test case. Right click (Code->Open create target SQL) to edit the query. 
+The query will use the target connection to execute.
+
+Create a source query by clicking Code->Open/create source SQL. The file is saved 
+at <install_dir>/bin/Source/<testcase_name>.sql
+
+The query will be executed using the source connection.
+
+
+Callbacks
+Before and After callback can be created to be executed before/after a target query is run.. 
+This can be used to start ETL programs etc. The callback file accepts any .bat script code
+
+
+To Execute the test case right click and select Execute on the test case. Both target and source queries are executed.
+
+Results
+Result of queries it put in subfolder /Result in Target and Source folder holding the .sql files.
+
+
+To view the results select Results->Open target data set for example.
+
+This will open the .csv file with your preferred .csv editor. 
+Modify the csvReader in the settings file (Setting->Open file).
+
+To use Excel for example:
+csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"
+
+
+To see differences between source and target results use menu Results->Open difference
+
+This will open a .csv file placed in /Report folder.
+
+</p>
 
 
         </section> 
