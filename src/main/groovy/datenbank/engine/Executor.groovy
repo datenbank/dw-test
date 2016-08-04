@@ -23,7 +23,10 @@ class Executor {
 		if(fileName.endsWith(".sql")) {			
 			def bat = new File("${Variables.path}Target/"+fileName.replace(".sql", "_Before.bat"))
 			if(bat.exists() && bat.text.length() > 0)	{
-				println "$bat".execute().text
+				def cmd = "$bat".execute()
+				cmd.waitFor()
+				println cmd.in.text
+				println cmd.err.text
 			}
 			
 			def result = new File("${Variables.path}Target/Result/"+fileName.replace(".sql", ".csv"))	
@@ -53,8 +56,10 @@ class Executor {
 			
 			def batAfter = new File("${Variables.path}Target/"+fileName.replace(".sql", "_After.bat"))
 			if(batAfter.exists() && batAfter.text.length() > 0)	{
-				println "$batAfter".execute().text
-
+				def cmd = "$bat".execute()
+				cmd.waitFor()
+				println cmd.in.text
+				println cmd.err.text
 			}
 			def resultSource = new File("${Variables.path}Source/Result/"+fileName.replace(".sql", ".csv"))	
 			try {
