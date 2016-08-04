@@ -45,9 +45,11 @@ systems and compare the results for you and report any differences.</p>
 to open the toolkit graphical user interface.</p>
 <p>To setup connections to source and target databases right click anywhere in the table view.
 select Settings->Open file. 
-<img src="./images/NewTestCase.JPG" />
+<img src="./images/Settings_OpenFile.JPG" />
 
 Edit the connection string to match your requirements. Save your settings by clicking Save button, and close the window.
+<img src="./images/Settings_OpenFilePopup.JPG" />
+
 Through the right click menu click Settings->Reload to load in the new settings. Settings are read on startup, and when Reload menu item is clicked.
 </p>
 
@@ -58,11 +60,15 @@ extract the zip file and put the for example <code>C:\jtds-1.3.1-dist\x64\SSO</c
 
 <p><h3>Testcase example</h3>
 Create your first test case select New testcase, and enter name. 
-
+<img src="./images/NewTestCase.JPG" />
+<img src="./images/NewTestCasePopup.JPG" />
 This will create a file in <install_dir>/bin/Target/<testcase_name>.sql
 
 The table is updated with your test case. Right click (Code->Open create target SQL) to edit the query. 
+<img src="./images/CodeOpenTargetSQL.JPG" />
 The query will use the target connection to execute.
+<img src="./images/CodeOpenTargetSQLPopup.JPG" />
+Type in a query, click the Save button and close the window.
 
 Create a source query by clicking Code->Open/create source SQL. The file is saved 
 at <install_dir>/bin/Source/<testcase_name>.sql
