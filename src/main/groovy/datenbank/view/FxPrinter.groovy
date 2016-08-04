@@ -28,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow
 import javafx.scene.control.TableView;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextInputDialog
 import javafx.stage.Stage;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox
@@ -42,8 +43,7 @@ class FxPrinter extends Application implements Observer {
 	def tv
 	def compare, exec, both
 	def menu
-	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult, itemSettings, itemSettingsLoad
-
+	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew
 
 	def init
 	def summary
@@ -61,6 +61,7 @@ class FxPrinter extends Application implements Observer {
 		def colElapsed = new TableColumn("Elapsed")
 		def colElapsedTest = new TableColumn("Elapsed compare")
 
+		
 		colError.setCellFactory(new Callback<TableColumn<TestCase, Integer>, TableCell<TestCase, Integer>>() {
 					@Override
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
@@ -68,6 +69,7 @@ class FxPrinter extends Application implements Observer {
 
 									@Override
 									protected void updateItem(Integer item, boolean empty) {
+										
 										super.updateItem(item, empty);
 										if(item == -1) {
 											setTextFill(Color.BLACK);
@@ -125,6 +127,7 @@ class FxPrinter extends Application implements Observer {
 								};
 					}
 				});
+			
 		colFile.setCellValueFactory(new PropertyValueFactory("name"))
 		colError.setCellValueFactory(new PropertyValueFactory("errors"))
 		colResultFlag.setCellValueFactory(new PropertyValueFactory("resultFlag"))
@@ -279,8 +282,36 @@ class FxPrinter extends Application implements Observer {
 		settingsGrp.getItems().add(itemSettings);
 		settingsGrp.getItems().add(itemSettingsLoad);
 		menu.getItems().add(settingsGrp);
-
+		
+		SeparatorMenuItem separatorMenuItem2 = new SeparatorMenuItem();
+		menu.getItems().add(separatorMenuItem2);
+		
+		itemNew = new MenuItem("New testcase");
+		menu.getItems().add(itemNew);
 		tv.setContextMenu(menu);
+		
+		
+		itemNew.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					def tcName = input("New test case", "Enter name")
+					
+					def file = new File("${Variables.path}Target/${tcName}.sql")
+					if(!file.exists()) {
+						file << ""
+						summary = init.init()
+			
+					} else {
+						alert("New test case", "A test case with that name already exists.")
+					}
+					
+				} catch(all) {
+					alert("New test case", "Was not created")
+				}
+			}
+		});
+		
 
 		itemExec.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
@@ -369,7 +400,7 @@ class FxPrinter extends Application implements Observer {
 							Thread.start {
 								btnUpdate(true)
 								if(new File("${Variables.path}Target/Result/${testCase.name}.csv").exists()) {
-									"notepad ${Variables.path}Target/Result/${testCase.name}.csv".execute()
+									"${Variables.csvReader} ${Variables.path}Target/Result/${testCase.name}.csv".execute()
 								} else {
 									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Target/Result/${testCase.name}.csv")
 								}
@@ -387,7 +418,7 @@ class FxPrinter extends Application implements Observer {
 							Thread.start {
 								btnUpdate(true)
 								if(new File("${Variables.path}Source/Result/${testCase.name}.csv").exists()) {
-									"notepad ${Variables.path}Source/Result/${testCase.name}.csv".execute()
+									"${Variables.csvReader} ${Variables.path}Source/Result/${testCase.name}.csv".execute()
 								} else {
 									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Source/Result/${testCase.name}.csv")
 								}
@@ -407,7 +438,7 @@ class FxPrinter extends Application implements Observer {
 							Thread.start {
 								btnUpdate(true)
 								if(new File("${Variables.path}Report/${testCase.name}.csv").exists()) {
-									"notepad ${Variables.path}Report/${testCase.name}.csv".execute()
+									"${Variables.csvReader} ${Variables.path}Report/${testCase.name}.csv".execute()
 								} else {
 									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Report/${testCase.name}.csv")
 								}
@@ -471,7 +502,7 @@ class FxPrinter extends Application implements Observer {
 	def alert(header, msg) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
-						println msg
+						
 						def alert = new Alert(Alert.AlertType.ERROR);
 						alert.setTitle("Error Dialog");
 						alert.setHeaderText(header);
@@ -484,7 +515,7 @@ class FxPrinter extends Application implements Observer {
 	def confirm(header, msg) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
-						println msg
+						
 						def alert = new Alert(Alert.AlertType.INFORMATION);
 						alert.setTitle("Confirm Dialog");
 						alert.setHeaderText(header);
@@ -494,6 +525,20 @@ class FxPrinter extends Application implements Observer {
 				})
 	}
 
+	def input(header, msg) {
+		TextInputDialog dialog = new TextInputDialog("");
+		dialog.setTitle("Text Input Dialog");
+		dialog.setHeaderText(header);
+		dialog.setContentText(msg);
+		
+		// Traditional way to get the response value.
+		Optional<String> result = dialog.showAndWait();
+		return result.get();
+	}
+
+	
+	
+	
 
 	def codeEditor(file, type) {
 		
