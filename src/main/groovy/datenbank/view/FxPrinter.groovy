@@ -325,6 +325,8 @@ class FxPrinter extends Application implements Observer {
 								ex.runOne(testCase)
 								btnUpdate(false)
 							}
+						} else {
+							alert("Couldn't execute", "No test case selected.")
 						}
 					}
 				});
@@ -340,6 +342,8 @@ class FxPrinter extends Application implements Observer {
 								rt.runOne(testCase)
 								btnUpdate(false)
 							}
+						} else {
+							alert("Couldn't compare", "No test case selected.")
 						}
 					}
 				});
