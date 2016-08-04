@@ -16,7 +16,6 @@ class Executor {
 	def int run(file) {
 		def dir = new File("${Variables.path}Target")
 		def error = 3
-		def description = ""
 		def fileName = file.getName()
 		def sourceFileName = "${Variables.path}Source/"+ fileName
 		
@@ -36,21 +35,19 @@ class Executor {
 					(0..row.getMetaData().columnCount-1).each {
 						def attr = row[it]
 						
-						if("${attr}".contains(";")) {
+						if("${attr}".contains("${Variables.csvSeperator}")) {
 							attr = "\"${attr}\""
 						}
 						
 						if(it == row.getMetaData().columnCount-1)
 							result << "${attr}\r\n"
 						else 
-							result << "${attr};"
+							result << "${attr}${Variables.csvSeperator}"
 					}
 					
 				} 
 			} catch (Exception e) {
-				result << "Error...\r\n"
 				result << e
-				description = "$e"
 				error = 1
 			}
 			
@@ -69,24 +66,23 @@ class Executor {
 						(0..row.getMetaData().columnCount-1).each {
 							def attrSource = row[it]
 						
-						if("${attrSource}".contains(";")) {
+						if("${attrSource}".contains("${Variables.csvSeperator}")) {
 							attrSource = "\"${attrSource}\""
 						}
 						
 						if(it == row.getMetaData().columnCount-1)
 							resultSource <<  "${attrSource}\r\n"
 						else 
-							resultSource << "${attrSource};"
+							resultSource << "${attrSource}${Variables.csvSeperator}"
 						}
 						
 					}
 					
 				}
 			} catch (Exception e) { 
-				resultSource << "Error...\r\n"
 				resultSource << e
 				error = 1
-				description += "$e"
+				
 			}
 		}
 		return error
@@ -100,8 +96,9 @@ class Executor {
 		if(file.exists()) {
 			log.info("$testCase.name")
 			testCase.begin()
-
+			
 			testCase.errors = run(file)
+			
 			testCase.resultFlag = null
 			testCase.type = 1
 			testCase.stop()
