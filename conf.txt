@@ -7,3 +7,6 @@ targetDriver = "net.sourceforge.jtds.jdbc.Driver"
 
 csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"
 csvSeperator = ";"
+
+
+sqlProgramTarget = "C:/Program Files (x86)/Microsoft SQL Server/120/Tools/Binn/ManagementStudio/Ssms.exe -S .\\MSSQL2014 -d dw-test -E -nosplash" 
