@@ -11,7 +11,8 @@ class Variables {
 	static targetConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
 	static sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
 	static targetDriver = "net.sourceforge.jtds.jdbc.Driver"
-	
+	static csvReader = "\"C:/Program Files (x86)/Microsoft Office/Office14/excel.exe\" /e /r"
+	static csvSeperator = ";"
 	def static void load()
 	{
 
@@ -40,7 +41,12 @@ class Variables {
 		if(config.targetDriver) {
 			targetDriver = config.targetDriver
 		}
-		
+		if(config.csvReader) {
+			csvReader = config.csvReader
+		}
+		if(config.csvSeperator) {
+			csvSeperator = config.csvSeperator
+		}
 		
 		
 	}
