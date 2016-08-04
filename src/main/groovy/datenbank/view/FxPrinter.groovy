@@ -53,7 +53,6 @@ class FxPrinter extends Application implements Observer {
 	public void start(Stage primaryStage) throws Exception {
 
 		tv = new TableView()
-		def box = new VBox()
 
 		def colFile = new TableColumn("Name")
 		def colError = new TableColumn("Status")
@@ -145,7 +144,7 @@ class FxPrinter extends Application implements Observer {
 
 		def rt = new ResultTester()
 		def ex = new Executor()
-		compare = new Button("Compare All");
+		compare = new MenuItem("Compare all");
 		compare.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -159,7 +158,7 @@ class FxPrinter extends Application implements Observer {
 					}
 				});
 
-		exec = new Button("Execute All");
+		exec = new MenuItem("Execute all");
 		exec.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -172,7 +171,7 @@ class FxPrinter extends Application implements Observer {
 						}
 					}
 				});
-		both = new Button("Execute and Compare All");
+		both = new MenuItem("Execute/Compare all");
 		both.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -199,9 +198,10 @@ class FxPrinter extends Application implements Observer {
 		itemOpenTgt = new MenuItem("Open/Create target SQL");
 		itemOpenSrc = new MenuItem("Open/Create source SQL");
 		menu.getItems().add(itemExec);
-		menu.getItems().add(itemComp);
-
-
+		menu.getItems().add(itemComp);		
+		menu.getItems().add(exec);
+		menu.getItems().add(compare);
+		menu.getItems().add(both);
 
 		Menu codeGrp = new Menu("Code");
 		Menu callbackGrp = new Menu("Callback");
@@ -482,10 +482,8 @@ class FxPrinter extends Application implements Observer {
 					}
 				});
 			
-		def hbox = new HBox()
-		hbox.getChildren().addAll(exec, compare, both)
-		box.getChildren().addAll(tv, hbox);
-		primaryStage.setScene(new Scene(box,800,400));
+
+		primaryStage.setScene(new Scene(tv,800,400));
 		primaryStage.setResizable(false)
 		primaryStage.setTitle("DW Test Toolkit")
 		primaryStage.show();
