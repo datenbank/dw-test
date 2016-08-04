@@ -13,6 +13,9 @@ class Variables {
 	static targetDriver = "net.sourceforge.jtds.jdbc.Driver"
 	static csvReader = "\"C:/Program Files (x86)/Microsoft Office/Office14/excel.exe\" /e /r"
 	static csvSeperator = ";"
+	
+	static sqlProgramTarget = ""
+	static sqlProgramSource = ""
 	def static void load()
 	{
 
@@ -47,8 +50,12 @@ class Variables {
 		if(config.csvSeperator) {
 			csvSeperator = config.csvSeperator
 		}
-		
-		
+		if(config.sqlProgramTarget) {
+			sqlProgramTarget = config.sqlProgramTarget
+		}
+		if(config.sqlProgramSource) {
+			sqlProgramSource = config.sqlProgramSource
+		}
 	}
 	
 
