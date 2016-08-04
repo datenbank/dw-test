@@ -350,9 +350,17 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+												
 						if(testCase) {
-							def file = new File("${Variables.path}Target/${testCase.name}.sql")
-							codeEditor(file, "SQL")
+							
+							if(Variables.sqlProgramTarget != "") {
+								"${Variables.sqlProgramTarget} ${Variables.path}Target/${testCase.name}.sql".execute()
+							} else {
+								def file = new File("${Variables.path}Target/${testCase.name}.sql")
+								codeEditor(file, "SQL")
+							}
+							
+							
 						}
 					}
 				});
@@ -363,8 +371,15 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							def file = new File("${Variables.path}Source/${testCase.name}.sql")
-							codeEditor(file, "SQL")
+							
+							if(Variables.sqlProgramSource != "") {
+								"${Variables.sqlProgramSource} ${Variables.path}Source/${testCase.name}.sql".execute()
+							} else {
+								def file = new File("${Variables.path}Source/${testCase.name}.sql")
+								codeEditor(file, "SQL")
+							}
+							
+							
 						}
 					}
 				});
