@@ -43,6 +43,8 @@ distZip {
 		include 'Report/*'
 		include 'Scripts/*'
 		include 'conf.txt'
+		include 'model.csv'
+		include 'model.sql'
 	}
 }
 
@@ -55,6 +57,8 @@ installDist {
 		include 'Report/*'
 		include 'Scripts/*'
 		include 'conf.txt'
+		include 'model.csv'
+		include 'model.sql'
 	}
 
 }
