@@ -18,7 +18,18 @@ class Variables {
 	static sqlProgramSource = ""
 	def static void load()
 	{
-
+		path = "./"
+		model = "model.csv"
+		sourceConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
+		targetConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
+		sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
+		targetDriver = "net.sourceforge.jtds.jdbc.Driver"
+		csvReader = "\"C:/Program Files (x86)/Microsoft Office/Office14/excel.exe\" /e /r"
+		csvSeperator = ";"
+		
+		sqlProgramTarget = ""
+		sqlProgramSource = ""
+		
 		def config = new ConfigSlurper().parse(new File("./conf.txt").text)
 		
 		if(config.model) {
