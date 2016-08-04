@@ -31,6 +31,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog
 import javafx.stage.Stage;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox;
 import javafx.util.Callback
@@ -486,6 +487,9 @@ class FxPrinter extends Application implements Observer {
 		primaryStage.setScene(new Scene(tv,800,400));
 		primaryStage.setResizable(false)
 		primaryStage.setTitle("DW Test Toolkit")
+		
+		def file = new File("${Variables.path}icon.png")
+		primaryStage.getIcons().add(new Image(file.toURI().toString()));
 		primaryStage.show();
 
 	}
@@ -568,6 +572,9 @@ class FxPrinter extends Application implements Observer {
 
 		Stage stage = new Stage();
 		stage.setTitle(file.name);
+		def img = new File("${Variables.path}icon.png")
+		stage.getIcons().add(new Image(img.toURI().toString()));
+		
 		stage.setScene(new Scene(editorBox, 800, 400));
 		stage.setResizable(false)
 		stage.show();

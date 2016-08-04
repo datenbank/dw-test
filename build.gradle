@@ -45,6 +45,7 @@ distZip {
 		include 'conf.txt'
 		include 'model.csv'
 		include 'model.sql'
+		include 'icon.png'
 	}
 }
 
@@ -59,6 +60,7 @@ installDist {
 		include 'conf.txt'
 		include 'model.csv'
 		include 'model.sql'
+		include 'icon.png'
 	}
 
 }
