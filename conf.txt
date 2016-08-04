@@ -1,5 +1,9 @@
-model="model.csv"
-source="jdbc:jtds:sqlserver://localhost:1433/dw-test;user=test;password=testtest"
-target="jdbc:jtds:sqlserver://localhost:1433/dw-test;user=test;password=testtest"
-sourceDriver="net.sourceforge.jtds.jdbc.Driver"
-targetDriver="net.sourceforge.jtds.jdbc.Driver"
+model = "model.csv"
+
+source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
+target = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
+sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
+targetDriver = "net.sourceforge.jtds.jdbc.Driver"
+
+csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"
+csvSeperator = ";"
