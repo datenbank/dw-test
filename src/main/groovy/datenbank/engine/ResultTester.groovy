@@ -45,13 +45,13 @@ class ResultTester {
 				
 				def notInSource = (result - sourceResult)
 				notInSource.each {
-					outputFile << "Not in Source;${runDate.format('YYYY-MM-dd')};${runDate.format('HH')};${runDate.format('mm')};"+it+"\n"
+					outputFile << "Not in Source${Variables.csvSeperator}${runDate.format('YYYY-MM-dd')}${Variables.csvSeperator}${runDate.format('HH')}:${runDate.format('mm')}${Variables.csvSeperator}"+it+"\n"
 					linesNotInSource += 1 
 				}
 				def notInTarget = (sourceResult - result)
 				
 				notInTarget.each {
-					outputFile << "Not in Target;${runDate.format('YYYY-MM-dd')};${runDate.format('HH')};${runDate.format('mm')};"+it+"\n"
+					outputFile << "Not in Target${Variables.csvSeperator}${runDate.format('YYYY-MM-dd')}${Variables.csvSeperator}${runDate.format('HH')}:${runDate.format('mm')}${Variables.csvSeperator}"+it+"\n"
 					linesNotInTarget += 1 
 				}	
 				if(linesNotInSource > 0) 
