@@ -30,8 +30,7 @@
         <section id="main-content">
           <h3>Welcome to DW Test Toolkit.</h3>
 
-<p>The Data Warehouse Test Toolkit is made to assists you when testing a Data Warehouse
-, and ensuring the quality. The toolkit lets you write queries for source and target
+<p>The Data Warehouse Test Toolkit is made to assists you when testing a Data Warehouse to ensure the quality. The toolkit lets you write queries for source and target
 systems and compare the results for you and report any differences.</p>
 
 <h3>Download/install</h3>
@@ -57,7 +56,7 @@ Through the right click menu click Settings->Reload to load in the new settings.
 <h2>Windows Authentication</h2>
 <p>To use Windows Authentication with MS SQL Server leave out user and password from connection string
 and download jTDS from <a href="https://sourceforge.net/projects/jtds/">https://sourceforge.net/projects/jtds/</a>
-extract the zip file and put the for example <code>C:\jtds-1.3.1-dist\x64\SSO</code> in PATH (environment variable)</p>
+extract the zip file and put the directory in PATH (environment variable). For example <code>C:\jtds-1.3.1-dist\x64\SSO</code></p>
 
 <p><h3>Testcase example</h3>
 Create your first test case select New testcase, and enter name. 
@@ -78,8 +77,9 @@ The query will be executed using the source connection.
 
 
 <h2>Callbacks</h2>
+<p>
 Before and After callback can be created to be executed before/after a target query is run.. 
-This can be used to start ETL programs etc. The callback file accepts any .bat script code
+This can be used to start ETL programs etc. The callback file accepts any .bat script code.</p>
 
 
 To Execute the test case right click and select Execute on the test case. Both target and source queries are executed.
@@ -93,8 +93,8 @@ To view the results select Results->Open target data set for example.
 This will open the .csv file with your preferred .csv editor. 
 Modify the csvReader in the settings file (Setting->Open file).
 
-To use Excel for example:
-csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"
+To use Excel for example:<code>
+csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"</code>
 
 
 To see differences between source and target results use menu Results->Open difference
