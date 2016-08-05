@@ -107,7 +107,13 @@ This will open a .csv file placed in /Report folder. Only if there are differenc
 <p>
 Before and After callback can be created to be executed before/after a target query is run.. 
 This can be used to start ETL programs etc. The callback file accepts any .bat script code.</p>
-
+<h3>Scripts</h3>
+<p>To automate the creation of test cases scripts can be used. In the directory bin/Scripts of the install directory
+groovy scripts can be placed. A model object is passed to the script at execution time. The model contains information of mapping between source and target databases provided by model.csv file.
+Here is a illustration of the model.
+<img src="./images/uml.jpg" />
+To execute a script go to Code->Scripts->Run <script name>
+</p>
         </section> 
 
 
