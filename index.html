@@ -78,12 +78,7 @@ at <install_dir>/bin/Source/<testcase_name>.sql
 Write a similar query to match the target query. The query will be executed using the source connection.
 
 
-<h2>Callbacks</h2>
-<p>
-Before and After callback can be created to be executed before/after a target query is run.. 
-This can be used to start ETL programs etc. The callback file accepts any .bat script code.</p>
-
-
+<h2>Execute Queries</h2>
 To Execute the test case right click and select Execute on the test case. 
 <img src="./images/Execute.JPG" />
 Both target and source queries are executed.
@@ -108,7 +103,10 @@ To see differences between source and target results use menu Results->Open diff
 This will open a .csv file placed in /Report folder. Only if there are differences the difference is created.
 
 </p>
-
+<h3>Callbacks</h3>
+<p>
+Before and After callback can be created to be executed before/after a target query is run.. 
+This can be used to start ETL programs etc. The callback file accepts any .bat script code.</p>
 
         </section> 
 
