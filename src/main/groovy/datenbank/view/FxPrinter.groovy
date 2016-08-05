@@ -36,7 +36,7 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox;
 import javafx.util.Callback
 import javafx.scene.paint.Color;
-
+import javafx.scene.Cursor
 
 
 class FxPrinter extends Application implements Observer {
@@ -48,11 +48,11 @@ class FxPrinter extends Application implements Observer {
 
 	def init
 	def summary
-
+	def stage
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
+		stage = primaryStage
 		tv = new TableView()
 
 		def colFile = new TableColumn("Name")
@@ -509,6 +509,13 @@ class FxPrinter extends Application implements Observer {
 	def btnUpdate(bool) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
+						
+						if(bool == true) {
+							stage.getScene().setCursor(Cursor.WAIT);							
+						} else {
+							stage.getScene().setCursor(Cursor.DEFAULT);
+						}
+						
 						itemComp.setDisable(bool)
 						itemExec.setDisable(bool)
 						itemOpenSrc.setDisable(bool)
@@ -615,6 +622,10 @@ class FxPrinter extends Application implements Observer {
 				});
 
 	}
+	
+
+	
+
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
