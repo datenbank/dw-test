@@ -42,7 +42,7 @@ systems and compare the results for you and report any differences.</p>
 <p>Navigate to the bin folder, and type 
 <p>
 <code>dw-test.bat --gui</code></p>
-to open the toolkit graphical user interface.</p>
+to open the toolkit graphical user interface. Or just double click the dw-test.bat file. </p>
 <p>To setup connections to source and target databases right click anywhere in the table view.
 select Settings->Open file. 
 <img src="./images/Settings_OpenFile.JPG" />
@@ -51,6 +51,7 @@ Edit the connection string to match your requirements. Save your settings by cli
 <img src="./images/Settings_OpenFilePopup.JPG" />
 
 Through the right click menu click Settings->Reload to load in the new settings. Settings are read on startup, and when Reload menu item is clicked.
+<img src="./images/Settings_Reload.JPG" />
 </p>
 
 <h2>Windows Authentication</h2>
@@ -69,11 +70,12 @@ The table is updated with your test case. Right click (Code->Open create target 
 The query will use the target connection to execute.
 <img src="./images/CodeOpenTargetSQLPopup.JPG" />
 Type in a query, click the Save button and close the window.
+<img src="./images/CodeOpenTargetSQLPopupSave.JPG" />
 
 Create a source query by clicking Code->Open/create source SQL. The file is saved 
 at <install_dir>/bin/Source/<testcase_name>.sql
-
-The query will be executed using the source connection.
+<img src="./images/CodeOpenSourceSQL.JPG" />
+Write a similar query to match the target query. The query will be executed using the source connection.
 
 
 <h2>Callbacks</h2>
@@ -82,24 +84,28 @@ Before and After callback can be created to be executed before/after a target qu
 This can be used to start ETL programs etc. The callback file accepts any .bat script code.</p>
 
 
-To Execute the test case right click and select Execute on the test case. Both target and source queries are executed.
+To Execute the test case right click and select Execute on the test case. 
+<img src="./images/Execute.JPG" />
+Both target and source queries are executed.
+<img src="./images/Executed.JPG" />
 
 <h2>Results</h2>
 Result of queries it put in subfolder /Result in Target and Source folder holding the .sql files.
-
-
 To view the results select Results->Open target data set for example.
-
+<img src="./images/ResultOpenTargetDataSet.JPG" />
 This will open the .csv file with your preferred .csv editor. 
+<img src="./images/ResultOpenTargetDataSetPopp.JPG" />
 Modify the csvReader in the settings file (Setting->Open file).
-
-To use Excel for example:<code>
-csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"</code>
-
-
-To see differences between source and target results use menu Results->Open difference
-
-This will open a .csv file placed in /Report folder.
+<p>
+To use Excel for example:<p><code>
+csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"</code>/<p>
+</p>
+Compare the results of the Test case by clicking Compare.
+<img src="./images/Compare.JPG" />
+The Status is updated, and the Test case completed with success.
+<img src="./images/Compared.JPG" />
+To see differences between source and target results use menu Results->Open difference. 
+This will open a .csv file placed in /Report folder. Only if there are differences the difference is created.
 
 </p>
 
