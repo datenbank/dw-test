@@ -4,6 +4,7 @@ apply plugin: 'eclipse'
 
 mainClassName = "datenbank.Test"
 
+version = '1.0.0'
 
 repositories {
    mavenCentral()
@@ -36,7 +37,7 @@ run {
 
 
 distZip {
-	into(project.name+'/bin') {
+	into(project.name+'-'+project.version+'/bin') {
 		from '.'
 		include 'Target/*'
 		include 'Source/*'
