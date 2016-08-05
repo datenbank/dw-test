@@ -33,7 +33,7 @@ class Executor {
 			result.write("")
 			try {
 				def sql = Sql.newInstance( Variables.targetConnection, Variables.targetDriver )
-							
+				sql.withStatement{ stmt -> stmt.fetchSize = Variables.sqlFetchSize }			
 				sql.eachRow(file.text){ row ->
 					(0..row.getMetaData().columnCount-1).each {
 						def attr = row[it]
@@ -66,7 +66,7 @@ class Executor {
 				if(sourceFile.exists()){
 					resultSource.write("")	
 					def sqlSource = Sql.newInstance( Variables.sourceConnection, Variables.sourceDriver )
-										
+					sqlSource.withStatement{ stmt -> stmt.fetchSize = Variables.sqlFetchSize }
 					sqlSource.eachRow(sourceFile.text){ row ->
 						(0..row.getMetaData().columnCount-1).each {
 							def attrSource = row[it]
