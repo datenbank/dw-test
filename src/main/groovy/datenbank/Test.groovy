@@ -50,7 +50,7 @@ class Test {
 			i++
 		}
 		
-		if(opt.u) {
+		if(opt.u || args.size()==0) {
 			FxPrinter fx = new FxPrinter()			
 			fx.launch(FxPrinter.class, args)
 			System.exit(0)
