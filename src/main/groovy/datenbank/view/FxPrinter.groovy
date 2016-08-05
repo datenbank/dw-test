@@ -366,6 +366,8 @@ class FxPrinter extends Application implements Observer {
 							}
 							
 							
+						} else {
+							alert("Couldn't open", "No test case selected.")
 						}
 					}
 				});
@@ -385,6 +387,8 @@ class FxPrinter extends Application implements Observer {
 							}
 							
 							
+						} else {
+							alert("Couldn't open", "No test case selected.")
 						}
 					}
 				});
@@ -396,6 +400,8 @@ class FxPrinter extends Application implements Observer {
 						if(testCase) {
 							def file = new File("${Variables.path}Target/${testCase.name}_Before.bat")
 							codeEditor(file, "BAT")
+						} else {
+							alert("Couldn't open", "No test case selected.")
 						}
 					}
 				});
@@ -408,6 +414,8 @@ class FxPrinter extends Application implements Observer {
 							def file = new File("${Variables.path}Target/${testCase.name}_After.bat")
 							codeEditor(file, "BAT")
 
+						} else {
+							alert("Couldn't open", "No test case selected.")
 						}
 					}
 				});
@@ -525,6 +533,10 @@ class FxPrinter extends Application implements Observer {
 					@Override public void run() {
 						
 						def alert = new Alert(Alert.AlertType.ERROR);
+						def file = new File("${Variables.path}icon.png")
+						Stage stageAlert = (Stage) alert.getDialogPane().getScene().getWindow();
+						stageAlert.getIcons().add(new Image(file.toURI().toString()));
+						
 						alert.setTitle("Error Dialog");
 						alert.setHeaderText(header);
 						alert.setContentText(msg);
@@ -538,6 +550,9 @@ class FxPrinter extends Application implements Observer {
 					@Override public void run() {
 						
 						def alert = new Alert(Alert.AlertType.INFORMATION);
+						def file = new File("${Variables.path}icon.png")
+						Stage stageAlert = (Stage) alert.getDialogPane().getScene().getWindow();
+						stageAlert.getIcons().add(new Image(file.toURI().toString()));
 						alert.setTitle("Confirm Dialog");
 						alert.setHeaderText(header);
 						alert.setContentText(msg);
@@ -548,6 +563,9 @@ class FxPrinter extends Application implements Observer {
 
 	def input(header, msg) {
 		TextInputDialog dialog = new TextInputDialog("");
+		def file = new File("${Variables.path}icon.png")
+		Stage stageAlert = (Stage) dialog.getDialogPane().getScene().getWindow();
+		stageAlert.getIcons().add(new Image(file.toURI().toString()));
 		dialog.setTitle("Text Input Dialog");
 		dialog.setHeaderText(header);
 		dialog.setContentText(msg);
