@@ -16,6 +16,10 @@ class Variables {
 	
 	static sqlProgramTarget = ""
 	static sqlProgramSource = ""
+	static sqlFetchSize = 10
+	
+	
+	
 	def static void load()
 	{
 		path = "./"
@@ -29,6 +33,8 @@ class Variables {
 		
 		sqlProgramTarget = ""
 		sqlProgramSource = ""
+		
+		sqlFetchSize = 10
 		
 		def config = new ConfigSlurper().parse(new File("./conf.txt").text)
 		
@@ -66,6 +72,9 @@ class Variables {
 		}
 		if(config.sqlProgramSource) {
 			sqlProgramSource = config.sqlProgramSource
+		}
+		if(config.sqlFetchSize) {
+			sqlFetchSize = config.sqlFetchSize
 		}
 	}
 	
