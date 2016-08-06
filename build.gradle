@@ -35,6 +35,7 @@ run {
 	} catch(all) {}
 }
 
+sourceSets.main.resources { srcDirs = ["src/main/resources"]; exclude "**/*.groovy" }
 
 distZip {
 
@@ -52,7 +53,7 @@ distZip {
 		include 'conf.txt'
 		include 'model.csv'
 		include 'model.sql'
-		include 'icon.png'
+		
 	}
 }
 
@@ -73,7 +74,7 @@ installDist {
 		include 'conf.txt'
 		include 'model.csv'
 		include 'model.sql'
-		include 'icon.png'
+		
 	}
 
 }

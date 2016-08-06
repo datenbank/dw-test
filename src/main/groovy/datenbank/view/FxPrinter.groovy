@@ -49,9 +49,12 @@ class FxPrinter extends Application implements Observer {
 	def init
 	def summary
 	def stage
+	
+	def icon
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		icon = new Image(getClass().getResourceAsStream("icon.png"))
 		stage = primaryStage
 		tv = new TableView()
 
@@ -499,9 +502,8 @@ class FxPrinter extends Application implements Observer {
 		primaryStage.setScene(new Scene(tv,800,400));
 		primaryStage.setResizable(false)
 		primaryStage.setTitle("DW Test Toolkit")
-		
-		def file = new File("${Variables.path}icon.png")
-		primaryStage.getIcons().add(new Image(file.toURI().toString()));
+
+		primaryStage.getIcons().add(icon);
 		primaryStage.show();
 
 	}
@@ -540,9 +542,8 @@ class FxPrinter extends Application implements Observer {
 					@Override public void run() {
 						
 						def alert = new Alert(Alert.AlertType.ERROR);
-						def file = new File("${Variables.path}icon.png")
 						Stage stageAlert = (Stage) alert.getDialogPane().getScene().getWindow();
-						stageAlert.getIcons().add(new Image(file.toURI().toString()));
+						stageAlert.getIcons().add(icon);
 						
 						alert.setTitle("Error Dialog");
 						alert.setHeaderText(header);
@@ -557,9 +558,8 @@ class FxPrinter extends Application implements Observer {
 					@Override public void run() {
 						
 						def alert = new Alert(Alert.AlertType.INFORMATION);
-						def file = new File("${Variables.path}icon.png")
 						Stage stageAlert = (Stage) alert.getDialogPane().getScene().getWindow();
-						stageAlert.getIcons().add(new Image(file.toURI().toString()));
+						stageAlert.getIcons().add(icon);
 						alert.setTitle("Confirm Dialog");
 						alert.setHeaderText(header);
 						alert.setContentText(msg);
@@ -572,7 +572,7 @@ class FxPrinter extends Application implements Observer {
 		TextInputDialog dialog = new TextInputDialog("");
 		def file = new File("${Variables.path}icon.png")
 		Stage stageAlert = (Stage) dialog.getDialogPane().getScene().getWindow();
-		stageAlert.getIcons().add(new Image(file.toURI().toString()));
+		stageAlert.getIcons().add(icon);
 		dialog.setTitle("Text Input Dialog");
 		dialog.setHeaderText(header);
 		dialog.setContentText(msg);
@@ -601,8 +601,7 @@ class FxPrinter extends Application implements Observer {
 
 		Stage stage = new Stage();
 		stage.setTitle(file.name);
-		def img = new File("${Variables.path}icon.png")
-		stage.getIcons().add(new Image(img.toURI().toString()));
+		stage.getIcons().add(icon);
 		
 		stage.setScene(new Scene(editorBox, 800, 400));
 		stage.setResizable(false)
