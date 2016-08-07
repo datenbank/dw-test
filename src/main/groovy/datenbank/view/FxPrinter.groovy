@@ -615,6 +615,8 @@ class FxPrinter extends Application implements Observer {
 							w << editor.getCodeAndSnapshot()
 						}
 						confirm("Saved", "The file is saved.")
+						Variables.load()
+						summary = init.init()
 						editorBtn.setDisable(false)
 
 					}
