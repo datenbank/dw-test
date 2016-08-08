@@ -290,7 +290,7 @@ class FxPrinter extends Application implements Observer {
 		SeparatorMenuItem separatorMenuItem2 = new SeparatorMenuItem();
 		menu.getItems().add(separatorMenuItem2);
 		
-		itemNew = new MenuItem("New testcase");
+		itemNew = new MenuItem("New test case");
 		menu.getItems().add(itemNew);
 		tv.setContextMenu(menu);
 		
