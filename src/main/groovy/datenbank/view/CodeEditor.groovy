@@ -38,6 +38,7 @@ public class CodeEditor extends VBox {
     "    matchBrackets: true," +
     "    mode: \"text/x-mssql\"" +
     "  });" +
+	"editor.setSize(790, 730);" +
     "</script>" +
     "</body>" +
     "</html>";
@@ -51,7 +52,7 @@ private String editingTemplateJava =
 	"  <script src=\""+getClass().getResource("codemirror/mode/clike/clike.js")+"\"></script>" +
 	"</head>" +
 	"<body>" +
-	"<form><textarea id=\"code\" name=\"code\">\n" +
+	"<form><textarea id=\"code\" name=\"code\" >\n" +
 	"[code]" +
 	"</textarea></form>" +
 	"<script>" +
@@ -60,6 +61,7 @@ private String editingTemplateJava =
 	"    matchBrackets: true," +
 	"    mode: \"text/x-java\"" +
 	"  });" +
+	"editor.setSize(790, 730);" +	
 	"</script>" +
 	"</body>" +
 	"</html>";
@@ -90,8 +92,8 @@ private String editingTemplateJava =
  
     this.editingCode = editingCode;
 
-    webview.setPrefSize(650, 325);
-    webview.setMinSize(650, 325);
+    webview.setPrefSize(800, 750);
+    webview.setMinSize(800, 750);
 	if(type == "SQL")
    		webview.getEngine().loadContent(applyEditingTemplateSQL());
 	else

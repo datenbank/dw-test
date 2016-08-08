@@ -599,7 +599,7 @@ class FxPrinter extends Application implements Observer {
 		stage.setTitle(file.name);
 		stage.getIcons().add(icon);
 		
-		stage.setScene(new Scene(editorBox, 800, 400));
+		stage.setScene(new Scene(editorBox, 800, 770));
 		stage.setResizable(false)
 		stage.show();
 
