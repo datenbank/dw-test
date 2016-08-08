@@ -140,10 +140,7 @@ class FxPrinter extends Application implements Observer {
 		init = new Init(ui: this)
 		summary = init.init()
 
-		colFile.width = 200
-		colError.width = 150
-		colResultFlag.width = 200
-		colElapsedTest.width = 150
+		tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY)
 		tv.getColumns().addAll(colFile, colError, colResultFlag, colElapsed, colElapsedTest)
 
 		def rt = new ResultTester()
@@ -500,7 +497,6 @@ class FxPrinter extends Application implements Observer {
 			
 
 		primaryStage.setScene(new Scene(tv,800,400));
-		primaryStage.setResizable(false)
 		primaryStage.setTitle("DW Test Toolkit")
 
 		primaryStage.getIcons().add(icon);
