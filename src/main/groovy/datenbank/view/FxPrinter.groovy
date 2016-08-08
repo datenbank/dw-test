@@ -435,6 +435,8 @@ class FxPrinter extends Application implements Observer {
 
 								btnUpdate(false)
 							}
+						} else {
+							alert("Couldn't open", "No test case selected.")
 						}
 					}
 				});
@@ -453,6 +455,8 @@ class FxPrinter extends Application implements Observer {
 
 								btnUpdate(false)
 							}
+						} else {
+							alert("Couldn't open", "No test case selected.")
 						}
 					}
 				});
@@ -461,6 +465,7 @@ class FxPrinter extends Application implements Observer {
 		itemResult.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
+						
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
 							Thread.start {
@@ -473,6 +478,9 @@ class FxPrinter extends Application implements Observer {
 
 								btnUpdate(false)
 							}
+						}
+						else {
+							alert("Couldn't open", "No test case selected.")
 						}
 					}
 				});
