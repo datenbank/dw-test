@@ -428,7 +428,7 @@ class FxPrinter extends Application implements Observer {
 							Thread.start {
 								btnUpdate(true)
 								if(new File("${Variables.path}Target/Result/${testCase.name}.csv").exists()) {
-									"${Variables.csvReader} ${Variables.path}Target/Result/${testCase.name}.csv".execute()
+									"${Variables.csvReader} \"${Variables.path}Target/Result/${testCase.name}.csv\"".execute()
 								} else {
 									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Target/Result/${testCase.name}.csv")
 								}
@@ -448,7 +448,7 @@ class FxPrinter extends Application implements Observer {
 							Thread.start {
 								btnUpdate(true)
 								if(new File("${Variables.path}Source/Result/${testCase.name}.csv").exists()) {
-									"${Variables.csvReader} ${Variables.path}Source/Result/${testCase.name}.csv".execute()
+									"${Variables.csvReader} \"${Variables.path}Source/Result/${testCase.name}.csv\"".execute()
 								} else {
 									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Source/Result/${testCase.name}.csv")
 								}
@@ -471,7 +471,7 @@ class FxPrinter extends Application implements Observer {
 							Thread.start {
 								btnUpdate(true)
 								if(new File("${Variables.path}Report/${testCase.name}.csv").exists()) {
-									"${Variables.csvReader} ${Variables.path}Report/${testCase.name}.csv".execute()
+									"${Variables.csvReader} \"${Variables.path}Report/${testCase.name}.csv\"".execute()
 								} else {
 									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Report/${testCase.name}.csv")
 								}
@@ -618,9 +618,10 @@ class FxPrinter extends Application implements Observer {
 						file.newWriter().withWriter { w ->
 							w << editor.getCodeAndSnapshot()
 						}
+						if(file.name == "conf.txt")
+							Variables.load()
 						confirm("Saved", "The file is saved.")
-						Variables.load()
-						summary = init.init()
+						
 						editorBtn.setDisable(false)
 
 					}
