@@ -18,6 +18,7 @@ class Variables {
 	static sqlProgramSource = ""
 	static sqlFetchSize = 10
 	
+	static saveCompareHistory = false
 	
 	
 	def static void load()
@@ -35,6 +36,8 @@ class Variables {
 		sqlProgramSource = ""
 		
 		sqlFetchSize = 10
+		
+		saveCompareHistory = false
 		
 		def config = new ConfigSlurper().parse(new File("./conf.txt").text)
 		
@@ -75,6 +78,9 @@ class Variables {
 		}
 		if(config.sqlFetchSize) {
 			sqlFetchSize = config.sqlFetchSize
+		}
+		if(config.saveCompareHistory) {
+			saveCompareHistory = config.saveCompareHistory
 		}
 	}
 	
