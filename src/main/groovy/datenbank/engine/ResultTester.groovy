@@ -24,21 +24,12 @@ class ResultTester {
 		def runDate = Calendar.instance
 		def fileName = file.getName()
 		if(fileName.endsWith(".csv")) {	
-			
-			def errorFlag = 0
-					
-			if(file.text == "Error...\r\n") {
-				errorFlag += 2
-			}
-							
 			def result = file.text.split("\n")
 			def sourceFileName = "${Variables.path}Source/Result/"+ fileName			
 			def sourceFile = new File(sourceFileName)
 			if(sourceFile.exists()) {
 				resultFlag = 0
-				if(sourceFile.text == "Error...\r\n") {
-					errorFlag += 1
-				}	
+
 				def sourceResult = sourceFile.text.split("\n")
 				
 				def outputFile = new File("${Variables.path}Report/"+fileName) 
