@@ -33,7 +33,7 @@ class ResultTester {
 				def sourceResult = sourceFile.text.split("\n")
 				
 				def outputFile = new File("${Variables.path}Report/"+fileName) 
-				if(!saveCompareHistory)
+				if(!Variables.saveCompareHistory)
 					outputFile.write("")
 				def notInSource = (result - sourceResult)
 				notInSource.each {
