@@ -52,3 +52,11 @@
 */
 
 	sqlFetchSize = 10
+
+
+//	********************************************
+/*
+	Report History
+*/
+
+	saveCompareHistory = false
