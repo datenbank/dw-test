@@ -22,6 +22,7 @@ import javafx.scene.control.Control
 import javafx.scene.control.MenuItem
 import javafx.scene.control.Callback
 import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import javafx.scene.control.Menu
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.control.TableCell
@@ -33,6 +34,7 @@ import javafx.scene.control.TextInputDialog
 import javafx.stage.Stage;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox;
 import javafx.util.Callback
@@ -45,7 +47,8 @@ class FxPrinter extends Application implements Observer {
 	def tv
 	def comp, exec, both
 	def menu
-	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew
+	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult,
+	itemSettings, itemSettingsLoad, itemNew, itemDel
 
 	def init
 	def summary
@@ -55,7 +58,7 @@ class FxPrinter extends Application implements Observer {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		
+
 		primaryStage.setTitle("DW Test Toolkit")
 		icon = new Image(getClass().getResourceAsStream("icon.png"))
 		primaryStage.getIcons().add(icon);
@@ -63,54 +66,55 @@ class FxPrinter extends Application implements Observer {
 		init = new Init(ui: this)
 		summary = init.init()
 
-				/**
+		/**
 		 * 
 		 * Set up table
 		 *
 		 */
 		tv = new TableView()
-		primaryStage.setScene(new Scene(tv,800,400));
-		
+		def scene =new Scene(tv,800,400)
+		primaryStage.setScene(scene);
+
 		def colFile = new TableColumn("Name")
 		def colError = new TableColumn("Status")
 		def colResultFlag = new TableColumn("Description")
 		def colElapsed = new TableColumn("Elapsed")
 		def colElapsedTest = new TableColumn("Elapsed compare")
 
-		
+
 		colError.setCellFactory(new Callback<TableColumn<TestCase, Integer>, TableCell<TestCase, Integer>>() {
 					@Override
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
 						return new TableCell<TestCase, Integer>() {
 
-									@Override
-									protected void updateItem(Integer item, boolean empty) {
+							@Override
+							protected void updateItem(Integer item, boolean empty) {
 
-										super.updateItem(item, empty);
-										if(item == -1) {
-											setTextFill(Color.BLACK);
-											setText("")
-										}
-										if(item == 1) {
-											setTextFill(Color.RED);
-											setText("FAILURE Execute")
-										}
-										if(item == 2) {
-											setTextFill(Color.RED);
-											setText("FAILURE Compare")
-										}
+								super.updateItem(item, empty);
+								if(item == -1 || item == null) {
+									setTextFill(Color.BLACK);
+									setText("")
+								}
+								if(item == 1) {
+									setTextFill(Color.RED);
+									setText("FAILURE Execute")
+								}
+								if(item == 2) {
+									setTextFill(Color.RED);
+									setText("FAILURE Compare")
+								}
 
-										if(item == 3) {
-											setTextFill(Color.GREEN);
-											setText("SUCCESS Execute")
-										}
+								if(item == 3) {
+									setTextFill(Color.GREEN);
+									setText("SUCCESS Execute")
+								}
 
-										if(item == 4) {
-											setTextFill(Color.GREEN);
-											setText("SUCCESS Compare")
-										}
-									}
-								};
+								if(item == 4) {
+									setTextFill(Color.GREEN);
+									setText("SUCCESS Compare")
+								}
+							}
+						};
 					}
 				});
 
@@ -119,28 +123,28 @@ class FxPrinter extends Application implements Observer {
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
 						return new TableCell<TestCase, Integer>() {
 
-									@Override
-									protected void updateItem(Integer item, boolean empty) {
-										super.updateItem(item, empty);
-										setText("")
-										if(item == -1) {
-											setTextFill(Color.BLACK);
-											setText("Couldn't compare results!")
-										}
-										if(item == 1) {
-											setTextFill(Color.BLACK);
-											setText("Missing rows in source")
-										}
-										if(item == 2) {
-											setTextFill(Color.BLACK);
-											setText("Missing rows in target")
-										}
-										if(item == 3) {
-											setTextFill(Color.BLACK);
-											setText("Missing rows in both")
-										}
-									}
-								};
+							@Override
+							protected void updateItem(Integer item, boolean empty) {
+								super.updateItem(item, empty);
+								setText("")
+								if(item == -1) {
+									setTextFill(Color.BLACK);
+									setText("Couldn't compare results!")
+								}
+								if(item == 1) {
+									setTextFill(Color.BLACK);
+									setText("Missing rows in source")
+								}
+								if(item == 2) {
+									setTextFill(Color.BLACK);
+									setText("Missing rows in target")
+								}
+								if(item == 3) {
+									setTextFill(Color.BLACK);
+									setText("Missing rows in both")
+								}
+							}
+						};
 					}
 				});
 
@@ -152,7 +156,7 @@ class FxPrinter extends Application implements Observer {
 
 		tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY)
 		tv.getColumns().addAll(colFile, colError, colResultFlag, colElapsed, colElapsedTest)
-		
+
 		/**
 		 *
 		 * Right click menu
@@ -217,8 +221,12 @@ class FxPrinter extends Application implements Observer {
 
 		itemNew = new MenuItem("New test case");
 		menu.getItems().add(itemNew);
+
+
+		itemDel = new MenuItem("Delete test case");
+		menu.getItems().add(itemDel);
 		tv.setContextMenu(menu);
-		
+
 		/**
 		 *
 		 * Set up actions/events
@@ -230,14 +238,18 @@ class FxPrinter extends Application implements Observer {
 		def executeAll = new ExecuteAll(init: init)
 		def executeCompareAll = new ExecuteCompareAll(init: init)
 		def newTestCase = new NewTestCase(init: init)
+		def deleteTestCase = new DeleteTestCase(init: init)
+
 
 		itemNew.setOnAction(newTestCase);
+		itemDel.setOnAction(deleteTestCase);
+
 		itemExec.setOnAction(execute);
 		itemComp.setOnAction(compare);
 		comp.setOnAction(compareAll)
 		exec.setOnAction(executeAll);
 		both.setOnAction(executeCompareAll);
-		
+
 
 		def dir = new File("${Variables.path}Scripts")
 		dir.eachFile() { file ->
@@ -252,7 +264,7 @@ class FxPrinter extends Application implements Observer {
 					});
 		}
 
-		
+
 		dir.eachFile() { file ->
 			def script = new MenuItem("Run $file.name");
 			scriptsGrp.getItems().add(script);
@@ -409,10 +421,11 @@ class FxPrinter extends Application implements Observer {
 					}
 				});
 
+
 		primaryStage.show();
 
 	}
-	
+
 	/**
 	 *
 	 * Disable/enable different menu items and buttons
@@ -449,8 +462,8 @@ class FxPrinter extends Application implements Observer {
 					}
 				});
 	}
-	
-	
+
+
 	/**
 	 *
 	 * Alert the user
@@ -476,22 +489,47 @@ class FxPrinter extends Application implements Observer {
 	}
 
 	def confirm(header, msg) {
+
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
 						def alert = new Alert(Alert.AlertType.INFORMATION);
 						Stage stageAlert = (Stage) alert.getDialogPane().getScene().getWindow();
 						stageAlert.getIcons().add(icon);
-						alert.setTitle("Confirm Dialog");
+						alert.setTitle("Information Dialog");
 						alert.setHeaderText(header);
 						alert.setContentText(msg);
 						alert.showAndWait();
+
+						Optional<ButtonType> result = alert.showAndWait();
+						if (result.get() == ButtonType.OK)
+							go = true
 					}
 				})
+
+	}
+
+	def accept(header, msg) {
+		def go = false
+
+		def alert = new Alert(Alert.AlertType.CONFIRMATION);
+		Stage stageAlert = (Stage) alert.getDialogPane().getScene().getWindow();
+		stageAlert.getIcons().add(icon);
+		alert.setTitle("Confirm Dialog");
+		alert.setHeaderText(header);
+		alert.setContentText(msg);
+
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			go = true
+			println "go is $go"
+		}
+
+		return go
 	}
 
 	def input(header, msg) {
 		TextInputDialog dialog = new TextInputDialog("");
-		def file = new File("${Variables.path}icon.png")
 		Stage stageAlert = (Stage) dialog.getDialogPane().getScene().getWindow();
 		stageAlert.getIcons().add(icon);
 		dialog.setTitle("Text Input Dialog");
@@ -501,12 +539,12 @@ class FxPrinter extends Application implements Observer {
 		return result.get();
 	}
 
-	
-	
-	
+
+
+
 
 	def codeEditor(file, type) {
-		
+
 
 		if(!file.exists()) {
 			file << ""
@@ -528,13 +566,13 @@ class FxPrinter extends Application implements Observer {
 		editorBtn.setOnAction(new CodeEditorSave(init: init, file: file, editor: editor))
 
 	}
-	
+
 	/**
 	 *
 	 * Update the table view, when notified by model objects
 	 *
 	 */	
-	
+
 	@Override
 	public void update(Observable arg0, Object arg1) {
 
