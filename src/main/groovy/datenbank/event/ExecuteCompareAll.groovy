@@ -14,7 +14,7 @@ class ExecuteCompareAll implements EventHandler<ActionEvent> {
 			if(init.summary.testCases.size() > 0) {
 				init.ui.btnUpdate(true)
 				
-				summary.testCases.each { testCase ->
+				init.summary.testCases.each { testCase ->
 					init.ex.runOne(testCase)
 					init.rt.runOne(testCase)
 				}
