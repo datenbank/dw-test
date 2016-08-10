@@ -33,8 +33,9 @@ class ResultTester {
 				def sourceResult = sourceFile.text.split("\n")
 				
 				def outputFile = new File("${Variables.path}Report/"+fileName) 
-				if(!Variables.saveCompareHistory)
+				if(!Variables.saveCompareHistory && outputFile.exists())
 					outputFile.write("")
+					
 				def notInSource = (result - sourceResult)
 				notInSource.each {
 					outputFile << "Not in Source${Variables.csvSeperator}${runDate.format('YYYY-MM-dd')}${Variables.csvSeperator}${runDate.format('HH')}:${runDate.format('mm')}${Variables.csvSeperator}"+it+"\n"
