@@ -14,6 +14,9 @@ class Init {
 	def ui	
 	def summary 
 	
+	def rt = new ResultTester()
+	def ex = new Executor()
+	
 	def init() {
 		
 		summary = new Summary()
