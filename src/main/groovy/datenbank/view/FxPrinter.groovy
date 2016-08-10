@@ -3,6 +3,7 @@ package datenbank.view
 import datenbank.engine.Executor
 import datenbank.engine.Init
 import datenbank.engine.ResultTester
+import datenbank.event.*
 import datenbank.model.Model
 import datenbank.model.Summary
 import datenbank.model.TestCase
@@ -42,29 +43,41 @@ import javafx.scene.Cursor
 class FxPrinter extends Application implements Observer {
 
 	def tv
-	def compare, exec, both
+	def comp, exec, both
 	def menu
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew
 
 	def init
 	def summary
 	def stage
-	
+
 	def icon
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
+		primaryStage.setTitle("DW Test Toolkit")
 		icon = new Image(getClass().getResourceAsStream("icon.png"))
-		stage = primaryStage
-		tv = new TableView()
+		primaryStage.getIcons().add(icon);
+		stage = primaryStage //use show hour glass on long running tasks from btnUpdate
+		init = new Init(ui: this)
+		summary = init.init()
 
+				/**
+		 * 
+		 * Set up table
+		 *
+		 */
+		tv = new TableView()
+		primaryStage.setScene(new Scene(tv,800,400));
+		
 		def colFile = new TableColumn("Name")
 		def colError = new TableColumn("Status")
 		def colResultFlag = new TableColumn("Description")
 		def colElapsed = new TableColumn("Elapsed")
 		def colElapsedTest = new TableColumn("Elapsed compare")
 
-		
+
 		colError.setCellFactory(new Callback<TableColumn<TestCase, Integer>, TableCell<TestCase, Integer>>() {
 					@Override
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
@@ -72,7 +85,7 @@ class FxPrinter extends Application implements Observer {
 
 									@Override
 									protected void updateItem(Integer item, boolean empty) {
-										
+
 										super.updateItem(item, empty);
 										if(item == -1) {
 											setTextFill(Color.BLACK);
@@ -130,134 +143,50 @@ class FxPrinter extends Application implements Observer {
 								};
 					}
 				});
-			
+
 		colFile.setCellValueFactory(new PropertyValueFactory("name"))
 		colError.setCellValueFactory(new PropertyValueFactory("errors"))
 		colResultFlag.setCellValueFactory(new PropertyValueFactory("resultFlag"))
 		colElapsed.setCellValueFactory(new PropertyValueFactory("elapsed"))
 		colElapsedTest.setCellValueFactory(new PropertyValueFactory("elapsedTest"))
 
-		init = new Init(ui: this)
-		summary = init.init()
 
 		tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY)
 		tv.getColumns().addAll(colFile, colError, colResultFlag, colElapsed, colElapsedTest)
-
-		def rt = new ResultTester()
-		def ex = new Executor()
-		compare = new MenuItem("Compare all");
-		compare.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-
-						Thread.start {
-
-							btnUpdate(true)
-							rt.runAll(summary)
-							btnUpdate(false)
-						}
-					}
-				});
-
-		exec = new MenuItem("Execute all");
-		exec.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-
-						Thread.start {
-
-							btnUpdate(true)
-							ex.runAll(summary)
-							btnUpdate(false)
-						}
-					}
-				});
-		both = new MenuItem("Execute/Compare all");
-		both.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-
-						Thread.start {
-
-							btnUpdate(true)
-
-							summary.testCases.each { testCase ->
-								ex.runOne(testCase)
-								rt.runOne(testCase)
-							}
-
-
-							btnUpdate(false)
-						}
-					}
-				});
-
-
+		
+		/**
+		 *
+		 * Right click menu
+		 *
+		 */
 		menu = new ContextMenu();
 		itemExec = new MenuItem("Execute");
 		itemComp = new MenuItem("Compare");
-		itemOpenTgt = new MenuItem("Open/Create target SQL");
-		itemOpenSrc = new MenuItem("Open/Create source SQL");
+		comp = new MenuItem("Compare all");
+		exec = new MenuItem("Execute all");
+		both = new MenuItem("Execute/Compare all");
+
 		menu.getItems().add(itemExec);
-		menu.getItems().add(itemComp);		
+		menu.getItems().add(itemComp);
 		menu.getItems().add(exec);
-		menu.getItems().add(compare);
+		menu.getItems().add(comp);
 		menu.getItems().add(both);
 
 		Menu codeGrp = new Menu("Code");
-		Menu callbackGrp = new Menu("Callback");
-		Menu resultGrp = new Menu("Result");
-		Menu settingsGrp = new Menu("Settings");
-		Menu scriptsGrp = new Menu("Scripts");
+		itemOpenTgt = new MenuItem("Open/Create target SQL");
+		itemOpenSrc = new MenuItem("Open/Create source SQL");
 
+		Menu callbackGrp = new Menu("Callback");
 		itemOpenBefore = new MenuItem("Open/Create before (.bat)");
 		itemOpenAfter = new MenuItem("Open/Create after (.bat)");
-
 		callbackGrp.getItems().add(itemOpenBefore);
 		callbackGrp.getItems().add(itemOpenAfter);
 
-		def dir = new File("${Variables.path}Scripts")
-		dir.eachFile() { file ->
-			def script = new MenuItem("Open $file.name");
-			scriptsGrp.getItems().add(script);
-
-			script.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							codeEditor(file, "Java")
-						}
-					});
-		}
-
 		SeparatorMenuItem separatorMenuItemScript = new SeparatorMenuItem();
+		Menu scriptsGrp = new Menu("Scripts");
 		scriptsGrp.getItems().add(separatorMenuItemScript);
-		dir.eachFile() { file ->
-			def script = new MenuItem("Run $file.name");
-			scriptsGrp.getItems().add(script);
-
-			script.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							//TODO move to controller!
-							def m = new Model()
-							m.loadModelFromFile()
-							Binding binding = new Binding();
-							binding.setVariable("model", m);
-							binding.setVariable("path", Variables.path);
-							GroovyShell shell = new GroovyShell(binding);
-							try {
-								shell.evaluate(file.text);
-								Variables.load()
-								summary = init.init()
-							} catch(all) {
-								alert("Open file error", "Couldn't open file. Please check that it exists!")
-							}
-
-						}
-					});
-		}
-
-
+		Menu resultGrp = new Menu("Result");
+		Menu settingsGrp = new Menu("Settings");
 
 		codeGrp.getItems().add(itemOpenTgt);
 		codeGrp.getItems().add(itemOpenSrc);
@@ -274,8 +203,8 @@ class FxPrinter extends Application implements Observer {
 		resultGrp.getItems().add(itemResult);
 
 		menu.getItems().add(resultGrp);
-		SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
-		menu.getItems().add(separatorMenuItem);
+		SeparatorMenuItem separatorMenuItemBeforeSettings = new SeparatorMenuItem();
+		menu.getItems().add(separatorMenuItemBeforeSettings);
 
 		itemSettings = new MenuItem("Open file");
 		itemSettingsLoad = new MenuItem("Reload");
@@ -283,89 +212,70 @@ class FxPrinter extends Application implements Observer {
 		settingsGrp.getItems().add(itemSettings);
 		settingsGrp.getItems().add(itemSettingsLoad);
 		menu.getItems().add(settingsGrp);
-		
-		SeparatorMenuItem separatorMenuItem2 = new SeparatorMenuItem();
-		menu.getItems().add(separatorMenuItem2);
-		
+
+		SeparatorMenuItem separatorMenuAfterSettings = new SeparatorMenuItem();
+		menu.getItems().add(separatorMenuAfterSettings);
+
 		itemNew = new MenuItem("New test case");
 		menu.getItems().add(itemNew);
 		tv.setContextMenu(menu);
 		
-		
-		itemNew.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				try {
-					def tcName = input("New test case", "Enter name")
-					
-					def file = new File("${Variables.path}Target/${tcName}.sql")
-					if(!file.exists()) {
-						file << ""
-						summary = init.init()
-			
-					} else {
-						alert("New test case", "A test case with that name already exists.")
-					}
-					
-				} catch(all) {
-					alert("New test case", "Was not created")
-				}
-			}
-		});
+		/**
+		 *
+		 * Set up actions/events
+		 *
+		 */
+		def execute = new Execute(init: init)
+		def compare = new Compare(init: init)
+		def compareAll = new CompareAll(init: init)
+		def executeAll = new ExecuteAll(init: init)
+		def executeCompareAll = new ExecuteCompareAll(init: init)
+		def newTestCase = new NewTestCase(init: init)
+
+		itemNew.setOnAction(newTestCase);
+		itemExec.setOnAction(execute);
+		itemComp.setOnAction(compare);
+		comp.setOnAction(compareAll)
+		exec.setOnAction(executeAll);
+		both.setOnAction(executeCompareAll);
 		
 
-		itemExec.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-						if(testCase) {
-							Thread.start {
+		def dir = new File("${Variables.path}Scripts")
+		dir.eachFile() { file ->
+			def script = new MenuItem("Open $file.name");
+			scriptsGrp.getItems().add(script);
 
-								btnUpdate(true)
-								ex.runOne(testCase)
-								btnUpdate(false)
-							}
-						} else {
-							alert("Couldn't execute", "No test case selected.")
+			script.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							codeEditor(file, "Java")
 						}
-					}
-				});
+					});
+		}
 
-		itemComp.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-						if(testCase) {
-							Thread.start {
-
-								btnUpdate(true)
-								rt.runOne(testCase)
-								btnUpdate(false)
-							}
-						} else {
-							alert("Couldn't compare", "No test case selected.")
-						}
-					}
-				});
-
-
-
+		
+		dir.eachFile() { file ->
+			def script = new MenuItem("Run $file.name");
+			scriptsGrp.getItems().add(script);
+			def runScript = new RunScript(init: init, file: file)
+			script.setOnAction(runScript);
+		}
 
 		itemOpenTgt.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-												
+
 						if(testCase) {
-							
+
 							if(Variables.sqlProgramTarget != "") {
 								"${Variables.sqlProgramTarget} ${Variables.path}Target/${testCase.name}.sql".execute()
 							} else {
 								def file = new File("${Variables.path}Target/${testCase.name}.sql")
 								codeEditor(file, "SQL")
 							}
-							
-							
+
+
 						} else {
 							alert("Couldn't open", "No test case selected.")
 						}
@@ -378,15 +288,15 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							
+
 							if(Variables.sqlProgramSource != "") {
 								"${Variables.sqlProgramSource} ${Variables.path}Source/${testCase.name}.sql".execute()
 							} else {
 								def file = new File("${Variables.path}Source/${testCase.name}.sql")
 								codeEditor(file, "SQL")
 							}
-							
-							
+
+
 						} else {
 							alert("Couldn't open", "No test case selected.")
 						}
@@ -405,12 +315,13 @@ class FxPrinter extends Application implements Observer {
 						}
 					}
 				});
+			
 		itemOpenAfter.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							
+
 							def file = new File("${Variables.path}Target/${testCase.name}_After.bat")
 							codeEditor(file, "BAT")
 
@@ -440,6 +351,7 @@ class FxPrinter extends Application implements Observer {
 						}
 					}
 				});
+			
 		itemResultSrc.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -465,7 +377,7 @@ class FxPrinter extends Application implements Observer {
 		itemResult.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
-						
+
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
 							Thread.start {
@@ -502,26 +414,29 @@ class FxPrinter extends Application implements Observer {
 
 					}
 				});
-			
 
-		primaryStage.setScene(new Scene(tv,800,400));
-		primaryStage.setTitle("DW Test Toolkit")
 
-		primaryStage.getIcons().add(icon);
+
 		primaryStage.show();
 
 	}
+	
+	/**
+	 *
+	 * Disable/enable different menu items and buttons
+	 *
+	 */
 
 	def btnUpdate(bool) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
-						
+
 						if(bool == true) {
-							stage.getScene().setCursor(Cursor.WAIT);							
+							stage.getScene().setCursor(Cursor.WAIT);
 						} else {
 							stage.getScene().setCursor(Cursor.DEFAULT);
 						}
-						
+
 						itemComp.setDisable(bool)
 						itemExec.setDisable(bool)
 						itemOpenSrc.setDisable(bool)
@@ -534,21 +449,27 @@ class FxPrinter extends Application implements Observer {
 						itemResult.setDisable(bool)
 
 						exec.setDisable(bool)
-						compare.setDisable(bool)
+						comp.setDisable(bool)
 						both.setDisable(bool)
 					}
 				});
 	}
-
+	
+	
+	/**
+	 *
+	 * Alert the user
+	 *
+	 */
 
 	def alert(header, msg) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
-						
+
 						def alert = new Alert(Alert.AlertType.ERROR);
 						Stage stageAlert = (Stage) alert.getDialogPane().getScene().getWindow();
 						stageAlert.getIcons().add(icon);
-						
+
 						alert.setTitle("Error Dialog");
 						alert.setHeaderText(header);
 						alert.setContentText(msg);
@@ -560,7 +481,7 @@ class FxPrinter extends Application implements Observer {
 	def confirm(header, msg) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
-						
+
 						def alert = new Alert(Alert.AlertType.INFORMATION);
 						Stage stageAlert = (Stage) alert.getDialogPane().getScene().getWindow();
 						stageAlert.getIcons().add(icon);
@@ -580,23 +501,23 @@ class FxPrinter extends Application implements Observer {
 		dialog.setTitle("Text Input Dialog");
 		dialog.setHeaderText(header);
 		dialog.setContentText(msg);
-		
-		// Traditional way to get the response value.
 		Optional<String> result = dialog.showAndWait();
 		return result.get();
 	}
-
 	
 	
-	
+	/**
+	 *
+	 * Open code editor
+	 *
+	 */
 
 	def codeEditor(file, type) {
-		
+
 		if(!file.exists()) {
 			file << ""
 
 		}
-		
 
 		CodeEditor editor = new CodeEditor(file.text, type);
 		Button editorBtn = new Button("Save")
@@ -606,33 +527,21 @@ class FxPrinter extends Application implements Observer {
 		Stage stage = new Stage();
 		stage.setTitle(file.name);
 		stage.getIcons().add(icon);
-		
+
 		stage.setScene(new Scene(editorBox, 800, 770));
 		stage.setResizable(false)
 		stage.show();
 
-		editorBtn.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent eventButton) {
-						editorBtn.setDisable(true)
-						file.newWriter().withWriter { w ->
-							w << editor.getCodeAndSnapshot()
-						}
-						if(file.name == "conf.txt")
-							Variables.load()
-						confirm("Saved", "The file is saved.")
-						
-						editorBtn.setDisable(false)
-
-					}
-				});
+		editorBtn.setOnAction(new CodeEditorSave(init: init, file: file, editor: editor))
 
 	}
 	
-
+	/**
+	 *
+	 * Update the table view, when notified by model objects
+	 *
+	 */	
 	
-
-
 	@Override
 	public void update(Observable arg0, Object arg1) {
 
