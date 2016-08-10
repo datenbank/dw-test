@@ -65,7 +65,15 @@ class Executor {
 			try {
 				if(sourceFile.exists()){
 					resultSource.write("")	
-					def sqlSource = Sql.newInstance( Variables.sourceConnection, Variables.sourceDriver )
+					def src = fileName.split('#')
+					def sqlSource 
+					
+					if(src[0] != fileName )
+						sqlSource = Sql.newInstance( Variables.config.sources."${src[0]}".connection, Variables.config.sources."${src[0]}".driver )
+					else 
+						sqlSource = Sql.newInstance( Variables.sourceConnection, Variables.sourceDriver )
+					
+					
 					sqlSource.withStatement{ stmt -> stmt.fetchSize = Variables.sqlFetchSize }
 					sqlSource.eachRow(sourceFile.text){ row ->
 						(0..row.getMetaData().columnCount-1).each {

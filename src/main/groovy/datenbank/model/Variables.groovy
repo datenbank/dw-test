@@ -20,6 +20,7 @@ class Variables {
 	
 	static saveCompareHistory = false
 	
+	static config
 	
 	def static void load()
 	{
@@ -39,7 +40,7 @@ class Variables {
 		
 		saveCompareHistory = false
 		
-		def config = new ConfigSlurper().parse(new File("./conf.txt").text)
+		config = new ConfigSlurper().parse(new File("./conf.txt").text)
 		
 		if(config.model) {
 			model = config.model			

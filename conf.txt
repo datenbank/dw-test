@@ -2,10 +2,23 @@
 	MS SQL Server
 */
 	
-	source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
 	target = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
-	sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
 	targetDriver = "net.sourceforge.jtds.jdbc.Driver"
+	source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
+	sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
+	
+	sources {
+		demo1 {
+			connection = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest1"
+			driver = "net.sourceforge.jtds.jdbc.Driver"
+		}
+		
+		demo2 {
+			connection = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest1"
+			driver = "net.sourceforge.jtds.jdbc.Driver"
+		}
+	}
+
 
 //	********************************************
 
