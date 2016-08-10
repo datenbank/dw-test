@@ -522,7 +522,6 @@ class FxPrinter extends Application implements Observer {
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK) {
 			go = true
-			println "go is $go"
 		}
 
 		return go
