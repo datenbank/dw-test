@@ -48,7 +48,7 @@ class FxPrinter extends Application implements Observer {
 	def comp, exec, both
 	def menu
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult,
-	itemSettings, itemSettingsLoad, itemNew, itemDel
+	itemSettings, itemSettingsLoad, itemNew, itemDel, itemRename
 
 	def init
 	def summary
@@ -225,6 +225,10 @@ class FxPrinter extends Application implements Observer {
 
 		itemDel = new MenuItem("Delete test case");
 		menu.getItems().add(itemDel);
+		
+		itemRename = new MenuItem("Rename test case");
+		menu.getItems().add(itemRename);
+		
 		tv.setContextMenu(menu);
 
 		/**
@@ -239,10 +243,12 @@ class FxPrinter extends Application implements Observer {
 		def executeCompareAll = new ExecuteCompareAll(init: init)
 		def newTestCase = new NewTestCase(init: init)
 		def deleteTestCase = new DeleteTestCase(init: init)
-
+		def renameTestCase = new RenameTestCase(init: init)
 
 		itemNew.setOnAction(newTestCase);
 		itemDel.setOnAction(deleteTestCase);
+		itemRename.setOnAction(renameTestCase);
+		
 
 		itemExec.setOnAction(execute);
 		itemComp.setOnAction(compare);
