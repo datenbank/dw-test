@@ -643,10 +643,7 @@ class FxPrinter extends Application implements Observer {
 						alert.setHeaderText(header);
 						alert.setContentText(msg);
 						alert.showAndWait();
-
-						Optional<ButtonType> result = alert.showAndWait();
-						if (result.get() == ButtonType.OK)
-							go = true
+						
 					}
 				})
 
