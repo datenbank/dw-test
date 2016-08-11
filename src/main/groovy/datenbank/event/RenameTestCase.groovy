@@ -36,6 +36,8 @@ class RenameTestCase implements EventHandler<ActionEvent> {
 				testCase.name = tcName
 				
 				init.summary.ready()
+			} else {
+					init.ui.alert("Rename test case", "No test case selected.")
 			}
 		} catch(all) {
 			init.ui.alert("Rename test case", "Couldn't rename: $all")

@@ -32,7 +32,15 @@ class Executor {
 			def result = new File("${Variables.path}Target/Result/"+fileName.replace(".sql", ".csv"))	
 			result.write("")
 			try {
-				def sql = Sql.newInstance( Variables.targetConnection, Variables.targetDriver )
+				
+				def grp = fileName.split('#')
+				def sql
+				
+				if(grp[0] != fileName )
+					sql = Sql.newInstance( Variables.config.groups."${grp[0]}".target, Variables.config.groups."${grp[0]}".targetDriver )
+				else
+					sql = Sql.newInstance( Variables.targetConnection, Variables.targetDriver )
+				
 				sql.withStatement{ stmt -> stmt.fetchSize = Variables.sqlFetchSize }			
 				sql.eachRow(file.text){ row ->
 					(0..row.getMetaData().columnCount-1).each {
@@ -69,7 +77,7 @@ class Executor {
 					def sqlSource 
 					
 					if(src[0] != fileName )
-						sqlSource = Sql.newInstance( Variables.config.sources."${src[0]}".connection, Variables.config.sources."${src[0]}".driver )
+						sqlSource = Sql.newInstance( Variables.config.groups."${src[0]}".source, Variables.config.groups."${src[0]}".sourceDriver )
 					else 
 						sqlSource = Sql.newInstance( Variables.sourceConnection, Variables.sourceDriver )
 					

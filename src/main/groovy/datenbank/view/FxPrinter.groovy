@@ -49,6 +49,7 @@ class FxPrinter extends Application implements Observer {
 	def menu
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult,
 	itemSettings, itemSettingsLoad, itemNew, itemDel, itemRename
+	def groupMenu
 
 	def init
 	def summary
@@ -75,46 +76,100 @@ class FxPrinter extends Application implements Observer {
 		def scene =new Scene(tv,800,400)
 		primaryStage.setScene(scene);
 
+		def colGrp = new TableColumn("Group")
 		def colFile = new TableColumn("Name")
 		def colError = new TableColumn("Status")
 		def colResultFlag = new TableColumn("Description")
 		def colElapsed = new TableColumn("Elapsed")
 		def colElapsedTest = new TableColumn("Elapsed compare")
 
+		colGrp.setCellFactory(new Callback<TableColumn<TestCase, String>, TableCell<TestCase, String>>() {
+					@Override
+					public TableCell<TestCase, String> call(TableColumn<TestCase, String> param) {
+						return new TableCell<TestCase, String>() {
+
+									@Override
+									protected void updateItem(String item, boolean empty) {
+										super.updateItem(item, empty);
+										if(item) {
+
+											def fileSplit = item.split("#")
+											if(fileSplit.size()>1)
+												setText(fileSplit[0])
+											else
+												setText("Default")
+										}
+
+									}
+								};
+					}
+				});
+
+		colFile.setCellFactory(new Callback<TableColumn<TestCase, String>, TableCell<TestCase, String>>() {
+					@Override
+					public TableCell<TestCase, String> call(TableColumn<TestCase, String> param) {
+						return new TableCell<TestCase, String>() {
+
+									@Override
+									protected void updateItem(String item, boolean empty) {
+										super.updateItem(item, empty);
+										if(item) {
+
+											def fileSplit = item.split("#")
+											if(fileSplit.size()>1) {
+
+												def display = []
+												def i = 1
+												fileSplit.each {
+													if(i>1)
+														display << it
+													i++
+												}
+
+												setText(display.join("#"))
+											}
+											else
+												setText(item)
+										}
+
+									}
+								};
+					}
+				});
 
 		colError.setCellFactory(new Callback<TableColumn<TestCase, Integer>, TableCell<TestCase, Integer>>() {
 					@Override
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
 						return new TableCell<TestCase, Integer>() {
 
-							@Override
-							protected void updateItem(Integer item, boolean empty) {
+									@Override
+									protected void updateItem(Integer item, boolean empty) {
 
-								super.updateItem(item, empty);
-								if(item == -1 || item == null) {
-									setTextFill(Color.BLACK);
-									setText("")
-								}
-								if(item == 1) {
-									setTextFill(Color.RED);
-									setText("FAILURE Execute")
-								}
-								if(item == 2) {
-									setTextFill(Color.RED);
-									setText("FAILURE Compare")
-								}
+										super.updateItem(item, empty);
+										if(item == -1 || item == null) {
+											setTextFill(Color.BLACK);
+											setText("")
+										}
+										if(item == 1) {
+											setTextFill(Color.RED);
+											setText("FAILURE Execute")
+										}
+										if(item == 2) {
+											setTextFill(Color.RED);
+											setText("FAILURE Compare")
+										}
 
-								if(item == 3) {
-									setTextFill(Color.GREEN);
-									setText("SUCCESS Execute")
-								}
+										if(item == 3) {
+											setTextFill(Color.GREEN);
+											setText("SUCCESS Execute")
+										}
 
-								if(item == 4) {
-									setTextFill(Color.GREEN);
-									setText("SUCCESS Compare")
-								}
-							}
-						};
+										if(item == 4) {
+											setTextFill(Color.GREEN);
+											setText("SUCCESS Compare")
+										}
+									}
+								};
 					}
 				});
 
@@ -123,31 +178,31 @@ class FxPrinter extends Application implements Observer {
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
 						return new TableCell<TestCase, Integer>() {
 
-							@Override
-							protected void updateItem(Integer item, boolean empty) {
-								super.updateItem(item, empty);
-								setText("")
-								if(item == -1) {
-									setTextFill(Color.BLACK);
-									setText("Couldn't compare results!")
-								}
-								if(item == 1) {
-									setTextFill(Color.BLACK);
-									setText("Missing rows in source")
-								}
-								if(item == 2) {
-									setTextFill(Color.BLACK);
-									setText("Missing rows in target")
-								}
-								if(item == 3) {
-									setTextFill(Color.BLACK);
-									setText("Missing rows in both")
-								}
-							}
-						};
+									@Override
+									protected void updateItem(Integer item, boolean empty) {
+										super.updateItem(item, empty);
+										setText("")
+										if(item == -1) {
+											setTextFill(Color.BLACK);
+											setText("Couldn't compare results!")
+										}
+										if(item == 1) {
+											setTextFill(Color.BLACK);
+											setText("Missing rows in source")
+										}
+										if(item == 2) {
+											setTextFill(Color.BLACK);
+											setText("Missing rows in target")
+										}
+										if(item == 3) {
+											setTextFill(Color.BLACK);
+											setText("Missing rows in both")
+										}
+									}
+								};
 					}
 				});
-
+		colGrp.setCellValueFactory(new PropertyValueFactory("name"))
 		colFile.setCellValueFactory(new PropertyValueFactory("name"))
 		colError.setCellValueFactory(new PropertyValueFactory("errors"))
 		colResultFlag.setCellValueFactory(new PropertyValueFactory("resultFlag"))
@@ -155,7 +210,7 @@ class FxPrinter extends Application implements Observer {
 		colElapsedTest.setCellValueFactory(new PropertyValueFactory("elapsedTest"))
 
 		tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY)
-		tv.getColumns().addAll(colFile, colError, colResultFlag, colElapsed, colElapsedTest)
+		tv.getColumns().addAll(colGrp, colFile, colError, colResultFlag, colElapsed, colElapsedTest)
 
 		/**
 		 *
@@ -225,10 +280,10 @@ class FxPrinter extends Application implements Observer {
 
 		itemDel = new MenuItem("Delete test case");
 		menu.getItems().add(itemDel);
-		
+
 		itemRename = new MenuItem("Rename test case");
 		menu.getItems().add(itemRename);
-		
+
 		tv.setContextMenu(menu);
 
 		/**
@@ -244,17 +299,99 @@ class FxPrinter extends Application implements Observer {
 		def newTestCase = new NewTestCase(init: init)
 		def deleteTestCase = new DeleteTestCase(init: init)
 		def renameTestCase = new RenameTestCase(init: init)
-
+		
 		itemNew.setOnAction(newTestCase);
 		itemDel.setOnAction(deleteTestCase);
 		itemRename.setOnAction(renameTestCase);
-		
+
 
 		itemExec.setOnAction(execute);
 		itemComp.setOnAction(compare);
 		comp.setOnAction(compareAll)
 		exec.setOnAction(executeAll);
 		both.setOnAction(executeCompareAll);
+
+
+		SeparatorMenuItem separatorMenuBeforeGroup = new SeparatorMenuItem();
+		menu.getItems().add(separatorMenuBeforeGroup);
+		
+		groupMenu = new Menu("Groups");
+		
+		summary.getGroups().each {
+
+			Menu group = new Menu("$it");
+			
+			def menuItemForGroupExec = new MenuItem("Execute $it");
+			group.getItems().add(menuItemForGroupExec);
+			
+			def groupName = it
+			
+			menuItemForGroupExec.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							Thread.start {
+								
+								btnUpdate(true)
+								
+								init.summary.testCases.each { testCase ->
+
+									if(testCase.group == groupName) {
+										init.ex.runOne(testCase)
+									}
+								}
+
+								btnUpdate(false)
+								
+							}
+						}
+					});
+
+			def menuItemForGroupComp = new MenuItem("Compare $it");
+			group.getItems().add(menuItemForGroupComp);
+			menuItemForGroupComp.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							Thread.start {
+								
+								btnUpdate(true)
+
+								init.summary.testCases.each { testCase ->
+
+									if(testCase.group == groupName) {
+										init.rt.runOne(testCase)
+									}
+								}
+
+								btnUpdate(false)
+								
+							}
+						}
+					});
+			def menuItemForGroupExecComp = new MenuItem("Execute/Compare $it");
+			group.getItems().add(menuItemForGroupExecComp);
+			menuItemForGroupExecComp.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							Thread.start {
+																
+								btnUpdate(true)
+
+								init.summary.testCases.each { testCase ->
+
+									if(testCase.group == groupName) {
+										init.ex.runOne(testCase)
+										init.rt.runOne(testCase)
+									}
+								}
+
+								btnUpdate(false)
+								
+							}
+						}
+					});
+			groupMenu.getItems().add(group);
+		}
+		menu.getItems().add(groupMenu)
 
 
 		def dir = new File("${Variables.path}Scripts")
@@ -438,7 +575,6 @@ class FxPrinter extends Application implements Observer {
 	 *
 	 */
 
-
 	def btnUpdate(bool) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
@@ -465,6 +601,8 @@ class FxPrinter extends Application implements Observer {
 						exec.setDisable(bool)
 						comp.setDisable(bool)
 						both.setDisable(bool)
+						
+						groupMenu.setDisable(bool)
 					}
 				});
 	}

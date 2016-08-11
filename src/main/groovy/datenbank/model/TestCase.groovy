@@ -21,6 +21,17 @@ class TestCase extends Observable {
 
 	def type = 0
 	
+	def getGroup() {
+		def fileSplit = name.split("#")
+		def grp = ""
+		if(fileSplit.size()>1)
+			grp = fileSplit[0]
+		else
+			grp = "Default"		
+			
+		return grp
+	}
+	
 	
 	def runDate = new Date(System.currentTimeMillis())
 	

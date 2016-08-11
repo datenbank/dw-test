@@ -28,7 +28,7 @@ model.tables.each {
 			sql += "WHERE ${it.where}\r\n"	
 		sql += "GROUP BY $groupBy"
 		
-		def file = new File("${path}Target/${it.table}_SUMBY.sql")
+		def file = new File("${path}Target/${it.tableRef.database}#${it.table}_SUMBY.sql")
 		if(!file.exists()) {
 			file << sql
 		}
@@ -65,7 +65,7 @@ model.tables.each {
 		if(it.tableRef.where != "-")	
 			sql += "WHERE ${it.tableRef.where}\r\n "	
 		sql += "GROUP BY $groupBy"
-		def file = new File("${path}Source/${it.table}_SUMBY.sql")
+		def file = new File("${path}Source/${it.tableRef.database}#${it.table}_SUMBY.sql")
 		if(!file.exists()) {
 			file << sql
 		}

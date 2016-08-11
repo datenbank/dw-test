@@ -15,6 +15,19 @@ class Summary extends Observable {
 		notifyObservers()
 	}
 	
+	def getGroups() {
+		def groups = []
+		
+		testCases.each {
+			
+			def group = it.group
+			
+			if(!groups.contains(group))
+				groups << group
+		}
+		return groups
+	}
+	
 	def String toString() {
 		def i = 0 
 		def errors = 0

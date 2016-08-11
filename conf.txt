@@ -7,15 +7,19 @@
 	source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
 	sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
 	
-	sources {
+	groups {
 		demo1 {
-			connection = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest1"
-			driver = "net.sourceforge.jtds.jdbc.Driver"
+				target = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
+				targetDriver = "net.sourceforge.jtds.jdbc.Driver"
+				source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
+				sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
 		}
 		
 		demo2 {
-			connection = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest1"
-			driver = "net.sourceforge.jtds.jdbc.Driver"
+				target = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
+				targetDriver = "net.sourceforge.jtds.jdbc.Driver"
+				source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
+				sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
 		}
 	}
 
