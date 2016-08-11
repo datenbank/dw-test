@@ -30,13 +30,13 @@
         <section id="main-content">
           <h1>Welcome to DW Test Toolkit.</h1>
 
-<p>The Data Warehouse Test Toolkit is made to assists you when testing a Data Warehouse to ensure the quality. The toolkit lets you write queries for source and target
-systems and compare the results for you and report any differences.</p>
+<p>The Data Warehouse Test Toolkit is made to assists you, when testing a Data Warehouse, to ensure the quality. The toolkit lets you write queries for source and target
+systems and compare the results for you, and report any differences.</p>
 
 <h2>Download/install</h2>
 
 <p>Download the latest version, and extract the zip file to your prefered destination.</p>
-<p>Java (Oracle) version 8 update 40, or higher is required to run the toolkit. jTds (MS SQL Server) and Oracle JDBC driver are provided in the distribution.</p>
+<p>Java (Oracle) version 8 update 40, or higher is required to run the toolkit. jTds (MS SQL Server) and Oracle JDBC drivers are provided in the distribution.</p>
           <h3>Run</h3>
 
 <p>Navigate to the bin folder, and type 
@@ -56,13 +56,13 @@ Settings are read on startup, when you click the Save button, and when Reload me
 <h4>Windows Authentication</h4>
 <p>To use Windows Authentication with MS SQL Server leave out user and password from connection string
 and download jTDS from <a href="https://sourceforge.net/projects/jtds/">https://sourceforge.net/projects/jtds/</a>
-extract the zip file and put the directory in PATH (environment variable). For example <code>C:\jtds-1.3.1-dist\x64\SSO</code> for 64-bit environments, or <code>C:\jtds-1.3.1-dist\x86\SSO</code> for 32-bit.</p>
+extract the zip file and put the SSO directory in PATH (environment variable). For example <code>C:\jtds-1.3.1-dist\x64\SSO</code> for 64-bit environments, or <code>C:\jtds-1.3.1-dist\x86\SSO</code> for 32-bit.</p>
 
 <p><h1>Test case example</h1>
-Create your first test case select New testcase, and enter name. 
+Create your first test case select New test case, and enter name. 
 <img src="./images/NewTestCase.JPG" />
 <img src="./images/NewTestCasePopup.JPG" />
-This will create a file in <install_dir>/bin/Target/<testcase_name>.sql
+This will create a file in [install_dir]/bin/Target/[testcase_name].sql
 
 The table is updated with your test case. Right click (Code->Open create target SQL) to edit the query. 
 <img src="./images/CodeOpenTargetSQL.JPG" />
@@ -72,7 +72,7 @@ Type in a query, click the Save button and close the window.
 <img src="./images/CodeOpenTargetSQLPopupSave.JPG" />
 
 Create a source query by clicking Code->Open/create source SQL. The file is saved 
-at <install_dir>/bin/Source/<testcase_name>.sql
+at [install_dir]/bin/Source/[testcase_name].sql
 <img src="./images/CodeOpenSourceSQL.JPG" />
 Write a similar query to match the target query. The query will be executed using the source connection.
 
@@ -84,8 +84,8 @@ Both target and source queries are executed.
 <img src="./images/Executed.JPG" />
 
 <h2>Results</h2>
-Result of queries it put in subfolder /Result in Target and Source folder holding the .sql files.
-To view the results select Results->Open target data set for example.
+Result of queries are put in the subfolders /Result in Target and Source directory holding the .sql files.
+To view the results, select Results->Open target data set, for example.
 <img src="./images/ResultOpenTargetDataSet.JPG" />
 This will open the .csv file with your preferred .csv editor. 
 <img src="./images/ResultOpenTargetDataSetPopup.JPG" />
@@ -94,9 +94,9 @@ Modify the csvReader in the settings file (Setting->Open file).
 To use Excel for example:<p><code>
 csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"</code>
 </p>
-Compare the results of the Test case by clicking Compare.
+Compare the results of the test case by clicking Compare. It will compare the two data sets.
 <img src="./images/Compare.JPG" />
-The Status is updated, and the Test case completed with success.
+The Status is updated, and the test case completed with success (same result of queries).
 <img src="./images/Compared.JPG" />
 To see differences between source and target results use menu Results->Open difference. 
 This will open a .csv file placed in /Report folder. Only if there are differences the difference file is created.
@@ -104,11 +104,11 @@ This will open a .csv file placed in /Report folder. Only if there are differenc
 </p>
 <h2>Callbacks</h2>
 <p>
-Before and After callback can be created to be executed before/after a target query is run.. 
+Before and After callback can be created to be executed before/after a target query is executed. 
 This can be used to start ETL programs etc. The callback file accepts any .bat script code.</p>
 <h2>Scripts</h2>
 <p>To automate the creation of test cases scripts can be used. In the directory bin/Scripts of the install directory
-groovy scripts can be placed. A model object is passed to the script at execution time. The model contains information of mapping between source and target databases provided by model.csv file.
+groovy scripts can be placed. A model object is passed to the script at execution time. The model contains information of mapping between source and target databases provided by the model.csv file.
 Here is an illustration of the model.
 <img src="./images/uml.jpg" />
 To execute a script go to Code->Scripts->Run [script name].groovy
@@ -116,7 +116,7 @@ To execute a script go to Code->Scripts->Run [script name].groovy
 </p>
 <h1>Multiple Connections Sets</h1>
 <p>
-If you name our test cases [group]#[test case] it will match your queries to group connection set. If no group is put in the name the default connections will be used.   
+If you name our test cases [group]#[test case] it will match your queries to a group connection set. If no group is put in the test case name, the default connections will be used.   
 <img src="./images/GroupConnections.JPG" />
 Here is an example of naming a test case to put in specific group.
 <img src="./images/CreateGroup.JPG" />
