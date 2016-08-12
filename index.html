@@ -43,8 +43,7 @@ systems and compare the results for you, and report any differences.</p>
 <p>
 <code>dw-test.bat --gui</code></p>
 to open the toolkit graphical user interface. Or just double click the dw-test.bat file. </p>
-<p>To setup connections to source and target databases right click anywhere in the table view.
-select Settings->Open file. 
+<p>To setup connections to source and target databases select Settings->Open file. 
 <img src="./images/Settings_OpenFile.JPG" />
 
 Edit the connection string to match your requirements. Save your settings by clicking Save button, and close the window.
@@ -68,7 +67,7 @@ The table is updated with your test case. Right click (Code->Open create target 
 <img src="./images/CodeOpenTargetSQL.JPG" />
 The query will use the target connection to execute.
 <img src="./images/CodeOpenTargetSQLPopup.JPG" />
-Type in a query, click the Save button and close the window.
+Type in a query, click the Save button. Click OK to the notification, and close the window.
 <img src="./images/CodeOpenTargetSQLPopupSave.JPG" />
 
 Create a source query by clicking Code->Open/create source SQL. The file is saved 
@@ -78,7 +77,7 @@ Write a similar query to match the target query. The query will be executed usin
 
 
 <h2>Execute Queries</h2>
-To Execute the test case right click and select Execute on the test case. 
+To Execute the test case right click and select Execute on the test case. Use the toolbar to Execute all test cases, or the Group menu to execute a group of test cases.
 <img src="./images/Execute.JPG" />
 Both target and source queries are executed.
 <img src="./images/Executed.JPG" />
@@ -94,7 +93,7 @@ Modify the csvReader in the settings file (Setting->Open file).
 To use Excel for example:<p><code>
 csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"</code>
 </p>
-Compare the results of the test case by clicking Compare. It will compare the two data sets.
+Compare the results of the test case by clicking Compare (right click menu). It will compare the two data sets.
 <img src="./images/Compare.JPG" />
 The Status is updated, and the test case completed with success (same result of queries).
 <img src="./images/Compared.JPG" />
@@ -111,7 +110,7 @@ This can be used to start ETL programs etc. The callback file accepts any .bat s
 groovy scripts can be placed. A model object is passed to the script at execution time. The model contains information of mapping between source and target databases provided by the model.csv file.
 Here is an illustration of the model.
 <img src="./images/uml.jpg" />
-To execute a script go to Code->Scripts->Run [script name].groovy
+To execute a script go to Scripts->Run [script name].groovy
 <p>See the scripts in the distribution for examples.</p>
 </p>
 <h1>Multiple Connections Sets</h1>
