@@ -20,6 +20,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.Control
 import javafx.scene.control.MenuItem
+import javafx.scene.control.MenuBar
+import javafx.scene.control.ToolBar
 import javafx.scene.control.Callback
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
@@ -29,28 +31,31 @@ import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip
 import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog
 import javafx.stage.Stage;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox;
 import javafx.util.Callback
 import javafx.scene.paint.Color;
 import javafx.scene.Cursor
+import javafx.scene.layout.Priority;
 
 
 class FxPrinter extends Application implements Observer {
-
-	def tv
-	def comp, exec, both
-	def menu
-	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult,
-	itemSettings, itemSettingsLoad, itemNew, itemDel, itemRename
+	def vbox
+	def menuBar
 	def groupMenu
-
+	def tv
+	def menu
+	def compButton, newButton, execButton, bothButton
+	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt, itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemDel, itemRename
+	
 	def init
 	def summary
 	def stage
@@ -66,14 +71,40 @@ class FxPrinter extends Application implements Observer {
 		stage = primaryStage //use show hour glass on long running tasks from btnUpdate
 		init = new Init(ui: this)
 		summary = init.init()
+		vbox = new VBox()
 
+		menu()
+
+
+		newButton = new Button()
+		newButton.setTooltip(new Tooltip("New test case"))
+		newButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("plus-16.png"))))
+
+		execButton = new Button()
+		execButton.setTooltip(new Tooltip("Execute all"))
+		execButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("video-play-16.png"))))
+
+		compButton = new Button()
+		compButton.setTooltip(new Tooltip("Compare all"))
+		compButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("search-3-16.png"))))
+
+		bothButton = new Button()
+		bothButton.setTooltip(new Tooltip("Execute/Compare all"))
+		bothButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("arrow-46-16.png"))))
+
+
+		ToolBar toolBar = new ToolBar(newButton, execButton, compButton, bothButton);
+
+		
 		/**
 		 * 
 		 * Set up table
 		 *
 		 */
 		tv = new TableView()
-		def scene =new Scene(tv,800,400)
+		vbox.setVgrow(tv, Priority.ALWAYS);
+		vbox.getChildren().addAll(toolBar, tv)
+		def scene =new Scene(vbox,800,400)
 		primaryStage.setScene(scene);
 
 		def colGrp = new TableColumn("Group")
@@ -91,6 +122,7 @@ class FxPrinter extends Application implements Observer {
 									@Override
 									protected void updateItem(String item, boolean empty) {
 										super.updateItem(item, empty);
+										setText("")
 										if(item) {
 
 											def fileSplit = item.split("#")
@@ -113,6 +145,7 @@ class FxPrinter extends Application implements Observer {
 									@Override
 									protected void updateItem(String item, boolean empty) {
 										super.updateItem(item, empty);
+										setText("")
 										if(item) {
 
 											def fileSplit = item.split("#")
@@ -144,7 +177,7 @@ class FxPrinter extends Application implements Observer {
 
 									@Override
 									protected void updateItem(Integer item, boolean empty) {
-
+										setText("")
 										super.updateItem(item, empty);
 										if(item == -1 || item == null) {
 											setTextFill(Color.BLACK);
@@ -220,15 +253,9 @@ class FxPrinter extends Application implements Observer {
 		menu = new ContextMenu();
 		itemExec = new MenuItem("Execute");
 		itemComp = new MenuItem("Compare");
-		comp = new MenuItem("Compare all");
-		exec = new MenuItem("Execute all");
-		both = new MenuItem("Execute/Compare all");
 
 		menu.getItems().add(itemExec);
 		menu.getItems().add(itemComp);
-		menu.getItems().add(exec);
-		menu.getItems().add(comp);
-		menu.getItems().add(both);
 
 		Menu codeGrp = new Menu("Code");
 		itemOpenTgt = new MenuItem("Open/Create target SQL");
@@ -240,16 +267,11 @@ class FxPrinter extends Application implements Observer {
 		callbackGrp.getItems().add(itemOpenBefore);
 		callbackGrp.getItems().add(itemOpenAfter);
 
-		SeparatorMenuItem separatorMenuItemScript = new SeparatorMenuItem();
-		Menu scriptsGrp = new Menu("Scripts");
-		scriptsGrp.getItems().add(separatorMenuItemScript);
 		Menu resultGrp = new Menu("Result");
-		Menu settingsGrp = new Menu("Settings");
 
 		codeGrp.getItems().add(itemOpenTgt);
 		codeGrp.getItems().add(itemOpenSrc);
 		codeGrp.getItems().add(callbackGrp);
-		codeGrp.getItems().add(scriptsGrp);
 
 		menu.getItems().add(codeGrp);
 
@@ -261,30 +283,21 @@ class FxPrinter extends Application implements Observer {
 		resultGrp.getItems().add(itemResult);
 
 		menu.getItems().add(resultGrp);
-		SeparatorMenuItem separatorMenuItemBeforeSettings = new SeparatorMenuItem();
-		menu.getItems().add(separatorMenuItemBeforeSettings);
 
-		itemSettings = new MenuItem("Open file");
-		itemSettingsLoad = new MenuItem("Reload");
-
-		settingsGrp.getItems().add(itemSettings);
-		settingsGrp.getItems().add(itemSettingsLoad);
-		menu.getItems().add(settingsGrp);
-
-		SeparatorMenuItem separatorMenuAfterSettings = new SeparatorMenuItem();
-		menu.getItems().add(separatorMenuAfterSettings);
-
-		itemNew = new MenuItem("New test case");
-		menu.getItems().add(itemNew);
-
+		SeparatorMenuItem separator = new SeparatorMenuItem();
+		menu.getItems().add(separator);
 
 		itemDel = new MenuItem("Delete test case");
+		itemDel.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("minus-16.png"))))
 		menu.getItems().add(itemDel);
 
 		itemRename = new MenuItem("Rename test case");
+		itemRename.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("edit-6-16.png"))))
 		menu.getItems().add(itemRename);
 
 		tv.setContextMenu(menu);
+
+
 
 		/**
 		 *
@@ -299,121 +312,20 @@ class FxPrinter extends Application implements Observer {
 		def newTestCase = new NewTestCase(init: init)
 		def deleteTestCase = new DeleteTestCase(init: init)
 		def renameTestCase = new RenameTestCase(init: init)
-		
-		itemNew.setOnAction(newTestCase);
-		itemDel.setOnAction(deleteTestCase);
-		itemRename.setOnAction(renameTestCase);
-
 
 		itemExec.setOnAction(execute);
 		itemComp.setOnAction(compare);
-		comp.setOnAction(compareAll)
-		exec.setOnAction(executeAll);
-		both.setOnAction(executeCompareAll);
+		itemDel.setOnAction(deleteTestCase);
+		itemRename.setOnAction(renameTestCase);
+
+		newButton.setOnAction(newTestCase);
+		compButton.setOnAction(compareAll)
+		execButton.setOnAction(executeAll);
+		bothButton.setOnAction(executeCompareAll);
 
 
-		SeparatorMenuItem separatorMenuBeforeGroup = new SeparatorMenuItem();
-		menu.getItems().add(separatorMenuBeforeGroup);
+
 		
-		groupMenu = new Menu("Groups");
-		
-		summary.getGroups().each {
-
-			Menu group = new Menu("$it");
-			
-			def menuItemForGroupExec = new MenuItem("Execute $it");
-			group.getItems().add(menuItemForGroupExec);
-			
-			def groupName = it
-			
-			menuItemForGroupExec.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							Thread.start {
-								
-								btnUpdate(true)
-								
-								init.summary.testCases.each { testCase ->
-
-									if(testCase.group == groupName) {
-										init.ex.runOne(testCase)
-									}
-								}
-
-								btnUpdate(false)
-								
-							}
-						}
-					});
-
-			def menuItemForGroupComp = new MenuItem("Compare $it");
-			group.getItems().add(menuItemForGroupComp);
-			menuItemForGroupComp.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							Thread.start {
-								
-								btnUpdate(true)
-
-								init.summary.testCases.each { testCase ->
-
-									if(testCase.group == groupName) {
-										init.rt.runOne(testCase)
-									}
-								}
-
-								btnUpdate(false)
-								
-							}
-						}
-					});
-			def menuItemForGroupExecComp = new MenuItem("Execute/Compare $it");
-			group.getItems().add(menuItemForGroupExecComp);
-			menuItemForGroupExecComp.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							Thread.start {
-																
-								btnUpdate(true)
-
-								init.summary.testCases.each { testCase ->
-
-									if(testCase.group == groupName) {
-										init.ex.runOne(testCase)
-										init.rt.runOne(testCase)
-									}
-								}
-
-								btnUpdate(false)
-								
-							}
-						}
-					});
-			groupMenu.getItems().add(group);
-		}
-		menu.getItems().add(groupMenu)
-
-
-		def dir = new File("${Variables.path}Scripts")
-		dir.eachFile() { file ->
-			def script = new MenuItem("Open $file.name");
-			scriptsGrp.getItems().add(script);
-
-			script.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							codeEditor(file, "Java")
-						}
-					});
-		}
-
-
-		dir.eachFile() { file ->
-			def script = new MenuItem("Run $file.name");
-			scriptsGrp.getItems().add(script);
-			def runScript = new RunScript(init: init, file: file)
-			script.setOnAction(runScript);
-		}
 
 
 		itemOpenTgt.setOnAction(new EventHandler<ActionEvent>() {
@@ -546,6 +458,27 @@ class FxPrinter extends Application implements Observer {
 					}
 				});
 
+
+
+
+		primaryStage.show();
+
+	}
+	
+	def menu() {
+		if(vbox.getChildren().size() > 0)
+			vbox.getChildren().remove(0)
+		menuBar = new MenuBar();
+		vbox.getChildren().add(0, menuBar)
+		Menu settingsGrp = new Menu("Settings");
+		Menu scriptsGrp = new Menu("Scripts");
+
+
+		itemSettings = new MenuItem("Open file");
+		itemSettingsLoad = new MenuItem("Reload");
+		settingsGrp.getItems().add(itemSettings);
+		settingsGrp.getItems().add(itemSettingsLoad);
+
 		itemSettings.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -560,12 +493,120 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						Variables.load()
 						summary = init.init()
+						menu();
+
 
 					}
 				});
 
 
-		primaryStage.show();
+		menuBar.getMenus().add(settingsGrp)
+		menuBar.getMenus().add(scriptsGrp)
+		
+		
+		def dir = new File("${Variables.path}Scripts")
+		dir.eachFile() { file ->
+			def script = new MenuItem("Open $file.name");
+			scriptsGrp.getItems().add(script);
+
+			script.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							codeEditor(file, "Java")
+						}
+					});
+		}
+
+
+		dir.eachFile() { file ->
+			def script = new MenuItem("Run $file.name");
+			scriptsGrp.getItems().add(script);
+			def runScript = new RunScript(init: init, file: file)
+			script.setOnAction(runScript);
+		}
+
+		groupMenu = new Menu("Groups");
+
+		menuBar.getMenus().add(groupMenu)
+
+		groupMenu.setDisable(true)
+		summary.getGroups().each {
+
+			groupMenu.setDisable(false)
+			Menu group = new Menu("$it");
+
+			def menuItemForGroupExec = new MenuItem("Execute $it");
+			group.getItems().add(menuItemForGroupExec);
+
+			def groupName = it
+
+			menuItemForGroupExec.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							Thread.start {
+
+								btnUpdate(true)
+
+								init.summary.testCases.each { testCase ->
+
+									if(testCase.group == groupName) {
+										init.ex.runOne(testCase)
+									}
+								}
+
+								btnUpdate(false)
+
+							}
+						}
+					});
+
+			def menuItemForGroupComp = new MenuItem("Compare $it");
+			group.getItems().add(menuItemForGroupComp);
+			menuItemForGroupComp.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							Thread.start {
+
+								btnUpdate(true)
+
+								init.summary.testCases.each { testCase ->
+
+									if(testCase.group == groupName) {
+										init.rt.runOne(testCase)
+									}
+								}
+
+								btnUpdate(false)
+
+							}
+						}
+					});
+			def menuItemForGroupExecComp = new MenuItem("Execute/Compare $it");
+			group.getItems().add(menuItemForGroupExecComp);
+			menuItemForGroupExecComp.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							Thread.start {
+
+								btnUpdate(true)
+
+								init.summary.testCases.each { testCase ->
+
+									if(testCase.group == groupName) {
+										init.ex.runOne(testCase)
+										init.rt.runOne(testCase)
+									}
+								}
+
+								btnUpdate(false)
+
+							}
+						}
+					});
+			groupMenu.getItems().add(group);
+			
+		}
+
 
 	}
 
@@ -598,10 +639,10 @@ class FxPrinter extends Application implements Observer {
 						itemResultSrc.setDisable(bool)
 						itemResult.setDisable(bool)
 
-						exec.setDisable(bool)
-						comp.setDisable(bool)
-						both.setDisable(bool)
-						
+						execButton.setDisable(bool)
+						compButton.setDisable(bool)
+						bothButton.setDisable(bool)
+
 						groupMenu.setDisable(bool)
 					}
 				});
@@ -643,7 +684,7 @@ class FxPrinter extends Application implements Observer {
 						alert.setHeaderText(header);
 						alert.setContentText(msg);
 						alert.showAndWait();
-						
+
 					}
 				})
 
@@ -685,7 +726,6 @@ class FxPrinter extends Application implements Observer {
 
 	def codeEditor(file, type) {
 
-
 		if(!file.exists()) {
 			file << ""
 
@@ -715,7 +755,7 @@ class FxPrinter extends Application implements Observer {
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-
+		
 		if(arg0 instanceof Summary) {
 			Platform.runLater(new Runnable() {
 						@Override public void run() {
@@ -724,6 +764,7 @@ class FxPrinter extends Application implements Observer {
 						}
 					});
 		}
+		
 
 		if(arg0 instanceof TestCase) {
 			Platform.runLater(new Runnable() {

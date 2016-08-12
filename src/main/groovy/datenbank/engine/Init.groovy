@@ -19,6 +19,10 @@ class Init {
 	
 	def init() {
 		
+		if(summary) {
+			summary.deleteObserver(ui)
+		}
+		
 		summary = new Summary()
 		summary.addObserver(ui)
 		

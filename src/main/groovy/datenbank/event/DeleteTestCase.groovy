@@ -36,6 +36,7 @@ class DeleteTestCase implements EventHandler<ActionEvent> {
 						
 					init.summary.testCases.remove(testCase)
 					init.summary.ready()
+					init.ui.menu()
 					
 				} else {
 					init.ui.alert("Delete test case", "No test case selected.")
