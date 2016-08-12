@@ -8,7 +8,7 @@
 	sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
 	
 	groups {
-		demo1 {
+		'dw-test' {
 				target = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
 				targetDriver = "net.sourceforge.jtds.jdbc.Driver"
 				source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
