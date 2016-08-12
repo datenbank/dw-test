@@ -34,7 +34,8 @@ class RenameTestCase implements EventHandler<ActionEvent> {
 					tgtCSV.renameTo("${Variables.path}Target/Result/${tcName}.csv")
 
 				testCase.name = tcName
-				init.summary = init.init()
+				testCase.ready()
+				//init.summary = init.init()
 				init.ui.menu()
 				
 			} else {

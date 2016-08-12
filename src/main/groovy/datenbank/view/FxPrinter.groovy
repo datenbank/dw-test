@@ -50,7 +50,7 @@ import javafx.scene.layout.Priority;
 class FxPrinter extends Application implements Observer {
 	def vbox
 	def menuBar
-	def groupMenu
+	def groupMenu, scriptsGrp, codeGrp, resultGrp, settingsGrp
 	def tv
 	def menu
 	def compButton, newButton, execButton, bothButton
@@ -86,7 +86,7 @@ class FxPrinter extends Application implements Observer {
 
 		compButton = new Button()
 		compButton.setTooltip(new Tooltip("Compare all"))
-		compButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("search-3-16.png"))))
+		compButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("scales.png"))))
 
 		bothButton = new Button()
 		bothButton.setTooltip(new Tooltip("Execute/Compare all"))
@@ -257,7 +257,7 @@ class FxPrinter extends Application implements Observer {
 		menu.getItems().add(itemExec);
 		menu.getItems().add(itemComp);
 
-		Menu codeGrp = new Menu("Code");
+		codeGrp = new Menu("Code");
 		itemOpenTgt = new MenuItem("Open/Create target SQL");
 		itemOpenSrc = new MenuItem("Open/Create source SQL");
 
@@ -267,7 +267,7 @@ class FxPrinter extends Application implements Observer {
 		callbackGrp.getItems().add(itemOpenBefore);
 		callbackGrp.getItems().add(itemOpenAfter);
 
-		Menu resultGrp = new Menu("Result");
+		resultGrp = new Menu("Result");
 
 		codeGrp.getItems().add(itemOpenTgt);
 		codeGrp.getItems().add(itemOpenSrc);
@@ -470,8 +470,8 @@ class FxPrinter extends Application implements Observer {
 			vbox.getChildren().remove(0)
 		menuBar = new MenuBar();
 		vbox.getChildren().add(0, menuBar)
-		Menu settingsGrp = new Menu("Settings");
-		Menu scriptsGrp = new Menu("Scripts");
+		settingsGrp = new Menu("Settings");
+		scriptsGrp = new Menu("Scripts");
 
 
 		itemSettings = new MenuItem("Open file");
@@ -516,7 +516,8 @@ class FxPrinter extends Application implements Observer {
 						}
 					});
 		}
-
+		SeparatorMenuItem separator = new SeparatorMenuItem();
+		scriptsGrp.getItems().add(separator);
 
 		dir.eachFile() { file ->
 			def script = new MenuItem("Run $file.name");
@@ -632,6 +633,9 @@ class FxPrinter extends Application implements Observer {
 						itemExec.setDisable(bool)
 						itemOpenSrc.setDisable(bool)
 						itemOpenTgt.setDisable(bool)
+						
+						itemDel.setDisable(bool)
+						itemRename.setDisable(bool)
 
 						itemOpenBefore.setDisable(bool)
 						itemOpenAfter.setDisable(bool)
@@ -639,11 +643,18 @@ class FxPrinter extends Application implements Observer {
 						itemResultSrc.setDisable(bool)
 						itemResult.setDisable(bool)
 
+						newButton.setDisable(bool)
 						execButton.setDisable(bool)
 						compButton.setDisable(bool)
 						bothButton.setDisable(bool)
 
 						groupMenu.setDisable(bool)
+						scriptsGrp.setDisable(bool)
+						
+						codeGrp.setDisable(bool)
+						resultGrp.setDisable(bool) 
+						settingsGrp.setDisable(bool)
+						
 					}
 				});
 	}
