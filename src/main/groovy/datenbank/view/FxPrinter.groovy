@@ -791,6 +791,10 @@ class FxPrinter extends Application implements Observer {
 						codeGrp.setDisable(bool)
 						resultGrp.setDisable(bool)
 						settingsGrp.setDisable(bool)
+						
+						itemCopy.setDisable(bool)
+						itemPaste.setDisable(bool)
+						itemNew.setDisable(bool)
 
 					}
 				});
