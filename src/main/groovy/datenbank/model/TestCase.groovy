@@ -21,6 +21,10 @@ class TestCase extends Observable {
 
 	def type = 0
 	
+	def isDefaultGroup() {
+		getGroup() == "Default"
+	}
+	
 	def getGroup() {
 		def fileSplit = name.split("#")
 		def grp = ""
