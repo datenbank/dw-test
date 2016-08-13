@@ -22,6 +22,10 @@ class DeleteTestCase implements EventHandler<ActionEvent> {
 					def srcCSV = new File("${Variables.path}Source/Result/${testCase.name}.csv")
 					def compCSV = new File("${Variables.path}Report/${testCase.name}.csv")
 					
+					def after = new File("${Variables.path}Target/${testCase.name}_After.bat")
+					def before = new File("${Variables.path}Target/${testCase.name}_Before.bat")
+					
+					
 					if(tgtSQL.exists())
 						tgtSQL.delete()
 					if(srcSQL.exists())
@@ -33,7 +37,11 @@ class DeleteTestCase implements EventHandler<ActionEvent> {
 					if(tgtCSV.exists())
 						tgtCSV.delete()					
 					
-						
+					if(after.exists())
+						after.delete()
+					if(before.exists())
+						before.delete()
+					
 					init.summary.testCases.remove(testCase)
 					init.summary.ready()
 					init.ui.menu()

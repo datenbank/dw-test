@@ -13,7 +13,7 @@ public class CodeEditor extends VBox {
   /** a webview used to encapsulate the CodeMirror JavaScript. */
   final WebView webview = new WebView();
   /** a snapshot of the code to be edited kept for easy initilization and reversion of editable code. */
-  private String editingCode;
+  String editingCode;
 
   /**
    * a template for editing code - this can be changed to any template derived from the
@@ -75,7 +75,10 @@ private String editingTemplateJava =
 	  editingTemplateJava.replace("[code]", editingCode)
   }	
 
-
+  public String getCode() {
+	  return webview.getEngine().executeScript("editor.getValue();");
+	 
+	}
 
   /** returns the current code in the editor and updates an editing snapshot of the code which can be reverted to. */
   public String getCodeAndSnapshot() {

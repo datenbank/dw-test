@@ -11,7 +11,7 @@ class NewTestCase implements EventHandler<ActionEvent> {
 	@Override
 	public void handle(ActionEvent arg0) {
 		try {
-			def tcName = init.ui.input("New test case", "Enter name")
+			def tcName = init.ui.input("New test case", "Enter name", "")
 
 			def file = new File("${Variables.path}Target/${tcName}.sql")
 			if(!file.exists()) {
