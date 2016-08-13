@@ -30,8 +30,7 @@
         <section id="main-content">
           <h1>Welcome to DW Test Toolkit.</h1>
 
-<p>The Data Warehouse Test Toolkit is made to assists you, when testing a Data Warehouse, to ensure the quality. The toolkit lets you write queries for source and target
-systems and compare the results for you, and report any differences.</p>
+<p>Data Warehouse Test Toolkit is made to assist you when testing Data Warehouse and ensure quality. This toolkit allows you to write queries for source and target systems as well as to compare the results and report any differences.</p>
 
 <h2>Download/install</h2>
 
@@ -42,18 +41,16 @@ systems and compare the results for you, and report any differences.</p>
 <p>Navigate to the bin folder, and type 
 <p>
 <code>dw-test.bat --gui</code></p>
-to open the toolkit graphical user interface. Or just double click the dw-test.bat file. </p>
-<p>To setup connections to source and target databases select Settings->Open file. 
+to open the toolkit graphical user interface or just double click the dw-test.bat file. </p>
+<p>To set up connections to source and target databases select Settings->Open file. 
 <img src="./images/Settings_OpenFile.JPG" />
 
 Edit the connection string to match your requirements. Save your settings by clicking Save button, and close the window.
 <img src="./images/Settings_OpenFilePopup.JPG" />
-
-Settings are read on startup, when you click the Save button, and when Reload menu item is clicked.
 </p>
 
 <h4>Windows Authentication</h4>
-<p>To use Windows Authentication with MS SQL Server leave out user and password from connection string
+<p>To use Windows Authentication with MS SQL Server leave out a user name and password from connection string
 and download jTDS from <a href="https://sourceforge.net/projects/jtds/">https://sourceforge.net/projects/jtds/</a>
 extract the zip file and put the SSO directory in PATH (environment variable). For example <code>C:\jtds-1.3.1-dist\x64\SSO</code> for 64-bit environments, or <code>C:\jtds-1.3.1-dist\x86\SSO</code> for 32-bit.</p>
 
@@ -77,13 +74,13 @@ Write a similar query to match the target query. The query will be executed usin
 
 
 <h2>Execute Queries</h2>
-To Execute the test case right click and select Execute on the test case. Use the toolbar to Execute all test cases, or the Group menu to execute a group of test cases.
+To execute the test case right click and select Execute on the test case. Use the toolbar to execute all test cases, or the Group menu to execute a group of test cases.
 <img src="./images/Execute.JPG" />
 Both target and source queries are executed.
 <img src="./images/Executed.JPG" />
 
 <h2>Results</h2>
-Result of queries are put in the subfolders /Result in Target and Source directory holding the .sql files.
+The query results are put in the subfolders /Result in Target and Source directory holding the .sql files.
 To view the results, select Results->Open target data set, for example.
 <img src="./images/ResultOpenTargetDataSet.JPG" />
 This will open the .csv file with your preferred .csv editor. 
@@ -95,20 +92,18 @@ csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"</cod
 </p>
 Compare the results of the test case by clicking Compare (right click menu). It will compare the two data sets.
 <img src="./images/Compare.JPG" />
-The Status is updated, and the test case completed with success (same result of queries).
+The Status is updated, and the test case is completed with success (same result of queries).
 <img src="./images/Compared.JPG" />
-To see differences between source and target results use menu Results->Open difference. 
-This will open a .csv file placed in /Report folder. Only if there are differences the difference file is created.
+To see any differences between the source and target results use menu Results->Open difference. 
+This will open a .csv file placed in /Report folder. Only if there are differences, a difference file is created.
 
 </p>
 <h2>Callbacks</h2>
 <p>
-Before and After callback can be created to be executed before/after a target query is executed. 
-This can be used to start ETL programs etc. The callback file accepts any .bat script code.</p>
+Before and After callbacks can be created, before/after a target query is executed. They can be used to start ETL programs etc. The callback file accepts any .bat script code.</p>
 <h2>Scripts</h2>
-<p>To automate the creation of test cases scripts can be used. In the directory bin/Scripts of the install directory
-groovy scripts can be placed. A model object is passed to the script at execution time. The model contains information of mapping between source and target databases provided by the model.csv file.
-Here is an illustration of the model.
+<p>To automate creating test cases, scripts can be used. Groovy scripts can be placed into the directory bin/Scripts of the install directory. 
+A model object is passed to the script at execution time. The model contains the information on mapping source and target databases provided by the model.csv file. Here is a model illustration.
 <img src="./images/uml.jpg" />
 To execute a script go to Scripts->Run [script name].groovy
 <p>See the scripts in the distribution for examples.</p>
@@ -117,7 +112,7 @@ To execute a script go to Scripts->Run [script name].groovy
 <p>
 If you name our test cases [group]#[test case] it will match your queries to a group connection set. If no group is put in the test case name, the default connections will be used.   
 <img src="./images/GroupConnections.JPG" />
-Here is an example of naming a test case to put in specific group.
+Here is an example of naming a test case to be put into a specific group.
 <img src="./images/CreateGroup.JPG" />
 </p>
 <h1>Help</h1>
