@@ -41,6 +41,9 @@ import javafx.stage.Stage;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.input.KeyCodeCombination
+import javafx.scene.input.KeyCombination
+import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox;
@@ -119,7 +122,7 @@ class FxPrinter extends Application implements Observer {
 		newButton = new Button()
 		newButton.setTooltip(new Tooltip("New test case"))
 		newButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("plus-16.png"))))
-
+				
 		execButton = new Button()
 		execButton.setTooltip(new Tooltip("Execute all"))
 		execButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("video-play-16.png"))))
@@ -297,19 +300,31 @@ class FxPrinter extends Application implements Observer {
 		menu = new ContextMenu();
 		itemExec = new MenuItem("Execute");
 		itemComp = new MenuItem("Compare");
-
+		
+		
+		itemExec.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN));
+		itemComp.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
+		
+		
 		menu.getItems().add(itemExec);
 		menu.getItems().add(itemComp);
 
 		codeGrp = new Menu("Code");
 		itemOpenTgt = new MenuItem("Open/Create target SQL");
+		itemOpenTgt.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.SHIFT_DOWN));
+		
 		itemOpenSrc = new MenuItem("Open/Create source SQL");
-
+		itemOpenSrc.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN));
+		
 		Menu callbackGrp = new Menu("Callback");
 		itemOpenBefore = new MenuItem("Open/Create before (.bat)");
 		itemOpenAfter = new MenuItem("Open/Create after (.bat)");
 		callbackGrp.getItems().add(itemOpenBefore);
 		callbackGrp.getItems().add(itemOpenAfter);
+		
+		
+		itemOpenAfter.setAccelerator(new KeyCodeCombination(KeyCode.A, KeyCombination.SHIFT_DOWN));
+		itemOpenBefore.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.SHIFT_DOWN));
 
 		resultGrp = new Menu("Result");
 
@@ -325,7 +340,13 @@ class FxPrinter extends Application implements Observer {
 		resultGrp.getItems().add(itemResultTgt);
 		resultGrp.getItems().add(itemResultSrc);
 		resultGrp.getItems().add(itemResult);
-
+		
+		itemResultTgt.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.ALT_DOWN));
+		itemResultSrc.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN));
+		itemResult.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.ALT_DOWN));
+		
+		
+		
 		menu.getItems().add(resultGrp);
 
 		SeparatorMenuItem separator = new SeparatorMenuItem();
@@ -333,10 +354,13 @@ class FxPrinter extends Application implements Observer {
 
 		itemDel = new MenuItem("Delete test case");
 		itemDel.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("minus-16.png"))))
+		itemDel.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN));
+		
 		menu.getItems().add(itemDel);
 
 		itemRename = new MenuItem("Rename test case");
 		itemRename.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("edit-6-16.png"))))
+		itemRename.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
 		menu.getItems().add(itemRename);
 
 		tv.setContextMenu(menu);
@@ -545,6 +569,10 @@ class FxPrinter extends Application implements Observer {
 
 		itemSettings = new MenuItem("Open file");
 		itemSettingsLoad = new MenuItem("Reload");
+		
+		itemSettings.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
+		itemSettingsLoad.setAccelerator(new KeyCodeCombination(KeyCode.F5, KeyCombination.CONTROL_DOWN));
+		
 		settingsGrp.getItems().add(itemSettings);
 		settingsGrp.getItems().add(itemSettingsLoad);
 
@@ -814,11 +842,19 @@ class FxPrinter extends Application implements Observer {
 			file << ""
 
 		}
-
+		MenuBar menu = new MenuBar()
+		def fileMenu = new Menu("File")
+		menu.getMenus().add(fileMenu)
+		
+		def itemSave = new MenuItem("Save");
+	
+		itemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+		fileMenu.getItems().add(itemSave);
+		
 		CodeEditor editor = new CodeEditor(file.text, type);
-		Button editorBtn = new Button("Save")
+		//Button editorBtn = new Button("Save")
 		VBox editorBox = new VBox()
-		editorBox.getChildren().addAll(editor, editorBtn);
+		editorBox.getChildren().addAll(menu, editor);
 
 		Stage stage = new Stage();
 		stage.setTitle(file.name);
@@ -827,7 +863,7 @@ class FxPrinter extends Application implements Observer {
 		stage.setResizable(false)
 		stage.show();
 
-		editorBtn.setOnAction(new CodeEditorSave(init: init, file: file, editor: editor))
+		itemSave.setOnAction(new CodeEditorSave(init: init, file: file, editor: editor))
 
 	}
 
@@ -843,7 +879,7 @@ class FxPrinter extends Application implements Observer {
 		if(arg0 instanceof Summary) {
 			Platform.runLater(new Runnable() {
 						@Override public void run() {
-							tv?.getItems().removeAll(arg0.testCases)
+							tv?.getItems()?.removeAll(arg0.testCases)
 							tv?.setItems(FXCollections.observableArrayList(arg0.testCases))
 						}
 					});
