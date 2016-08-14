@@ -785,6 +785,7 @@ class FxPrinter extends Application implements Observer {
 						compButton.setDisable(bool)
 						bothButton.setDisable(bool)
 
+						fileGrp.setDisable(bool)
 						groupMenu.setDisable(bool)
 						scriptsGrp.setDisable(bool)
 
