@@ -62,7 +62,7 @@ class FxPrinter extends Application implements Observer {
 	def menu
 	def compButton, newButton, execButton, bothButton
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt,
-	 itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew, itemDel, itemRename, itemCopy, itemPaste
+	 itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew, itemNewScript, itemDel, itemRename, itemCopy, itemPaste
 
 	def init
 	def summary
@@ -409,7 +409,6 @@ class FxPrinter extends Application implements Observer {
 		def newTestCase = new NewTestCase(init: init)
 		def deleteTestCase = new DeleteTestCase(init: init)
 		def renameTestCase = new RenameTestCase(init: init)
-
 		itemExec.setOnAction(execute);
 		itemComp.setOnAction(compare);
 		itemDel.setOnAction(deleteTestCase);
@@ -601,6 +600,13 @@ class FxPrinter extends Application implements Observer {
 		def newTestCase = new NewTestCase(init: init)
 		
 		itemNew.setOnAction(newTestCase)
+		
+		
+		itemNewScript = new MenuItem("New script");
+		itemNewScript.setAccelerator(new KeyCodeCombination(KeyCode.G, KeyCombination.CONTROL_DOWN));
+		def newScript = new NewScript(init: init)
+		
+		itemNewScript.setOnAction(newScript)
 
 		itemSettings = new MenuItem("Open file");
 		itemSettingsLoad = new MenuItem("Reload");
@@ -608,6 +614,7 @@ class FxPrinter extends Application implements Observer {
 		itemSettings.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 		itemSettingsLoad.setAccelerator(new KeyCodeCombination(KeyCode.F5, KeyCombination.CONTROL_DOWN));
 		fileGrp.getItems().add(itemNew);
+		fileGrp.getItems().add(itemNewScript)
 		settingsGrp.getItems().add(itemSettings);
 		settingsGrp.getItems().add(itemSettingsLoad);
 
@@ -796,7 +803,7 @@ class FxPrinter extends Application implements Observer {
 						itemCopy.setDisable(bool)
 						itemPaste.setDisable(bool)
 						itemNew.setDisable(bool)
-
+						itemNewScript.setDisable(bool)
 					}
 				});
 	}

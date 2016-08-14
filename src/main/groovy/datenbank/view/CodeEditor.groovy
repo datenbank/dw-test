@@ -76,13 +76,15 @@ private String editingTemplateJava =
   }	
 
   public String getCode() {
-	  return webview.getEngine().executeScript("editor.getValue();");
+	  def code = webview.getEngine().executeScript("editor.getValue();");
+	  
+	  return code.replaceAll('\n', '\r\n')
 	 
 	}
 
   /** returns the current code in the editor and updates an editing snapshot of the code which can be reverted to. */
   public String getCodeAndSnapshot() {
-    this.editingCode = (String ) webview.getEngine().executeScript("editor.getValue();");
+    this.editingCode = getCode()
     return editingCode;
   }
 
