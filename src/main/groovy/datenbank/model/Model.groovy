@@ -37,7 +37,7 @@ class Model {
 					return
 				
 				try {
-					def row = line.split(';')
+					def row = line.split("${Variables.csvSeperator}")
 					def st = new Table(table: row[10], schema: row[9], database: row[8], where: row[18])		
 					def t = new Table(table: row[2], schema: row[1], database: row[0], tableRef: st, testType: row[16], where: row[17])				
 					add t					

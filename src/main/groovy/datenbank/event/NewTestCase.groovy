@@ -27,6 +27,8 @@ class NewTestCase implements EventHandler<ActionEvent> {
 			} else {
 				init.ui.alert("New test case", "A test case with that name already exists.")
 			}
+		} catch(java.util.NoSuchElementException ne) {
+			//just cancelled
 		} catch(e) {
 			init.ui.alert("New test case", "Was not created $e")
 		}

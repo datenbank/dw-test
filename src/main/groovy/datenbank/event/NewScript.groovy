@@ -11,7 +11,7 @@ class NewScript implements EventHandler<ActionEvent> {
 	public void handle(ActionEvent arg0) {
 		try {
 			def tcName = init.ui.input("New script", "Enter name", "")
-
+			
 			def file = new File("${Variables.path}Scripts/${tcName}.groovy")
 			if(!file.exists()) {
 				file.withWriter('UTF-8') {
@@ -24,7 +24,10 @@ class NewScript implements EventHandler<ActionEvent> {
 			} else {
 				init.ui.alert("New script", "A script with that name already exists.")
 			}
-		} catch(e) {
+		} catch(java.util.NoSuchElementException ne) {
+			//just cancelled
+		} 
+		catch(e) {
 			init.ui.alert("New script", "Was not created $e")
 		}
 		

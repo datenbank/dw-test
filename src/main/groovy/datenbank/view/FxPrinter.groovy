@@ -62,7 +62,7 @@ class FxPrinter extends Application implements Observer {
 	def menu
 	def compButton, newButton, execButton, bothButton
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt,
-	 itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew, itemNewScript, itemDel, itemRename, itemCopy, itemPaste
+	itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew, itemNewScript, itemDel, itemRename, itemCopy, itemPaste
 
 	def init
 	def summary
@@ -75,7 +75,7 @@ class FxPrinter extends Application implements Observer {
 	def progressLabel
 
 	def testCaseCopy
-	
+
 	def progressStart(i) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
@@ -126,7 +126,7 @@ class FxPrinter extends Application implements Observer {
 		newButton = new Button()
 		newButton.setTooltip(new Tooltip("New test case"))
 		newButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("plus-16.png"))))
-				
+
 		execButton = new Button()
 		execButton.setTooltip(new Tooltip("Execute all"))
 		execButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("video-play-16.png"))))
@@ -304,29 +304,29 @@ class FxPrinter extends Application implements Observer {
 		menu = new ContextMenu();
 		itemExec = new MenuItem("Execute");
 		itemComp = new MenuItem("Compare");
-		
-		
+
+
 		itemExec.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.SHIFT_DOWN));
 		itemComp.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHIFT_DOWN));
-		
-		
+
+
 		menu.getItems().add(itemExec);
 		menu.getItems().add(itemComp);
 
 		codeGrp = new Menu("Code");
 		itemOpenTgt = new MenuItem("Open/Create target SQL");
 		itemOpenTgt.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.SHIFT_DOWN));
-		
+
 		itemOpenSrc = new MenuItem("Open/Create source SQL");
 		itemOpenSrc.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN));
-		
+
 		Menu callbackGrp = new Menu("Callback");
 		itemOpenBefore = new MenuItem("Open/Create before (.bat)");
 		itemOpenAfter = new MenuItem("Open/Create after (.bat)");
 		callbackGrp.getItems().add(itemOpenBefore);
 		callbackGrp.getItems().add(itemOpenAfter);
-		
-		
+
+
 		itemOpenAfter.setAccelerator(new KeyCodeCombination(KeyCode.A, KeyCombination.SHIFT_DOWN));
 		itemOpenBefore.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.SHIFT_DOWN));
 
@@ -344,13 +344,13 @@ class FxPrinter extends Application implements Observer {
 		resultGrp.getItems().add(itemResultTgt);
 		resultGrp.getItems().add(itemResultSrc);
 		resultGrp.getItems().add(itemResult);
-		
+
 		itemResultTgt.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.ALT_DOWN));
 		itemResultSrc.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN));
 		itemResult.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.ALT_DOWN));
-		
-		
-		
+
+
+
 		menu.getItems().add(resultGrp);
 
 		SeparatorMenuItem separator = new SeparatorMenuItem();
@@ -359,7 +359,7 @@ class FxPrinter extends Application implements Observer {
 		itemDel = new MenuItem("Delete test case");
 		itemDel.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("minus-16.png"))))
 		itemDel.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN));
-		
+
 		menu.getItems().add(itemDel);
 
 		itemRename = new MenuItem("Rename test case");
@@ -367,31 +367,31 @@ class FxPrinter extends Application implements Observer {
 		itemRename.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
 		menu.getItems().add(itemRename);
 
-		
+
 		itemCopy = new MenuItem("Copy test case");
 		itemCopy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
-		
+
 		itemPaste = new MenuItem("Paste test case");
 		itemPaste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN));
-		
-		
+
+
 		itemPaste.setOnAction(new CopyTestCase(init: init))
-		
+
 		itemCopy.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-				
-				if(testCase) {
-					testCaseCopy = testCase
-				}	
-			}
-		});
-		
+					@Override
+					public void handle(ActionEvent event) {
+						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
+
+						if(testCase) {
+							testCaseCopy = testCase
+						}
+					}
+				});
+
 		menu.getItems().add(itemCopy);
 		menu.getItems().add(itemPaste);
-		
-		
+
+
 		tv.setContextMenu(menu);
 
 
@@ -428,16 +428,16 @@ class FxPrinter extends Application implements Observer {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-						
+
 						if(testCase) {
 							def prog = ""
 							try {
 								prog = Variables.config.groups."${testCase.getGroup()}".sqlProgramTarget
 								prog += " ${Variables.path}Target/${testCase.name}.sql"
 							} catch(e) {
-								
+
 							}
-							
+
 							if(!testCase.isDefaultGroup() && prog.toString() != "[:]") {
 								prog.execute()
 							} else {
@@ -456,20 +456,20 @@ class FxPrinter extends Application implements Observer {
 				});
 
 
-			itemOpenSrc.setOnAction(new EventHandler<ActionEvent>() {
+		itemOpenSrc.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
-						
+
 						if(testCase) {
 							def prog = ""
 							try {
 								prog = Variables.config.groups."${testCase.getGroup()}".sqlProgramSource
 								prog += " ${Variables.path}Source/${testCase.name}.sql"
 							} catch(e) {
-								
+
 							}
-							
+
 							if(!testCase.isDefaultGroup() && prog.toString() != "[:]") {
 								prog.execute()
 							} else {
@@ -594,23 +594,23 @@ class FxPrinter extends Application implements Observer {
 		fileGrp = new Menu("File");
 		settingsGrp = new Menu("Settings");
 		scriptsGrp = new Menu("Scripts");
-		
+
 		itemNew = new MenuItem("New test case");
 		itemNew.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN));
 		def newTestCase = new NewTestCase(init: init)
-		
+
 		itemNew.setOnAction(newTestCase)
-		
-		
+
+
 		itemNewScript = new MenuItem("New script");
 		itemNewScript.setAccelerator(new KeyCodeCombination(KeyCode.G, KeyCombination.CONTROL_DOWN));
 		def newScript = new NewScript(init: init)
-		
+
 		itemNewScript.setOnAction(newScript)
 
 		itemSettings = new MenuItem("Open file");
 		itemSettingsLoad = new MenuItem("Reload");
-		
+
 		itemSettings.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 		itemSettingsLoad.setAccelerator(new KeyCodeCombination(KeyCode.F5, KeyCombination.CONTROL_DOWN));
 		fileGrp.getItems().add(itemNew);
@@ -618,7 +618,7 @@ class FxPrinter extends Application implements Observer {
 		settingsGrp.getItems().add(itemSettings);
 		settingsGrp.getItems().add(itemSettingsLoad);
 
-		
+
 		itemSettings.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
@@ -646,25 +646,47 @@ class FxPrinter extends Application implements Observer {
 
 		def dir = new File("${Variables.path}Scripts")
 		dir.eachFile() { file ->
-			def script = new MenuItem("Open $file.name");
-			scriptsGrp.getItems().add(script);
+			def scriptName = new Menu("$file.name");
+			scriptsGrp.getItems().add(scriptName);
 
-			script.setOnAction(new EventHandler<ActionEvent>() {
+			def scriptRun = new MenuItem("Run $file.name");
+			def scriptOpen = new MenuItem("Open $file.name");
+			def scriptDel = new MenuItem("Delete $file.name");
+
+			scriptName.getItems().addAll(scriptRun, scriptOpen, scriptDel);
+
+			def runScriptEvent = new RunScript(init: init, file: file)
+			scriptRun.setOnAction(runScriptEvent);
+
+
+			scriptOpen.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
 							codeEditor(file, "Java")
 						}
 					});
-		}
-		SeparatorMenuItem separator = new SeparatorMenuItem();
-		scriptsGrp.getItems().add(separator);
 
-		dir.eachFile() { file ->
-			def script = new MenuItem("Run $file.name");
-			scriptsGrp.getItems().add(script);
-			def runScript = new RunScript(init: init, file: file)
-			script.setOnAction(runScript);
+			scriptDel.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+
+							try {
+								def go = accept("Delete script", "Click OK to Delete or Cancel.")
+								if(go) {
+									if(file.exists())
+										file.delete()
+								}
+							}
+							catch(all) {
+								alert("Delete script", "Something went wrong. \n${all}")
+
+							}
+							menu()
+						}
+					});
 		}
+
+
 
 		groupMenu = new Menu("Groups");
 
@@ -799,7 +821,7 @@ class FxPrinter extends Application implements Observer {
 						codeGrp.setDisable(bool)
 						resultGrp.setDisable(bool)
 						settingsGrp.setDisable(bool)
-						
+
 						itemCopy.setDisable(bool)
 						itemPaste.setDisable(bool)
 						itemNew.setDisable(bool)
@@ -893,14 +915,14 @@ class FxPrinter extends Application implements Observer {
 		MenuBar menu = new MenuBar()
 		def fileMenu = new Menu("File")
 		menu.getMenus().add(fileMenu)
-		
+
 		def itemSave = new MenuItem("Save");
-	
+
 		itemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 		fileMenu.getItems().add(itemSave);
-		
+
 		CodeEditor editor = new CodeEditor(file.text, type);
-		
+
 		VBox editorBox = new VBox()
 		editorBox.getChildren().addAll(menu, editor);
 
@@ -912,19 +934,19 @@ class FxPrinter extends Application implements Observer {
 		stage.show();
 
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			public void handle(WindowEvent we) {
-				if(editor.editingCode != editor.getCode()) {
-					if(accept("Code changed", "Do you want to save the file before closing?")) {
-						file.newWriter().withWriter { w ->
-							w << editor.getCodeAndSnapshot()
+					public void handle(WindowEvent we) {
+						if(editor.editingCode != editor.getCode()) {
+							if(accept("Code changed", "Do you want to save the file before closing?")) {
+								file.newWriter().withWriter { w ->
+									w << editor.getCodeAndSnapshot()
+								}
+							}
 						}
+
 					}
-				}
-				
-			}
-		});
-		
-		
+				});
+
+
 		itemSave.setOnAction(new CodeEditorSave(init: init, file: file, editor: editor))
 
 	}
@@ -943,7 +965,7 @@ class FxPrinter extends Application implements Observer {
 						@Override public void run() {
 							tv?.getItems()?.removeAll(arg0.testCases)
 							tv?.setItems(FXCollections.observableArrayList(arg0.testCases))
-							
+
 						}
 					});
 		}
@@ -952,7 +974,7 @@ class FxPrinter extends Application implements Observer {
 		if(arg0 instanceof TestCase) {
 			Platform.runLater(new Runnable() {
 						@Override public void run() {
-							
+
 							def items = []
 							tv?.getItems().each {testCase -> items << testCase }
 
