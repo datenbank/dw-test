@@ -53,8 +53,9 @@ class CopyTestCase implements EventHandler<ActionEvent> {
 					beforeCopy << before.text
 				}
 				
-				init.summary.testCases << new TestCase(name: testCase.name+"${newName}")
-				
+				def cp = new TestCase(name: testCase.name+"${newName}")
+				cp.addObserver(init.ui)
+				init.summary.testCases.add(cp)
 				init.summary.ready()
 				init.ui.menu()
 				

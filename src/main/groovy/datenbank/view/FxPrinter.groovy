@@ -935,6 +935,7 @@ class FxPrinter extends Application implements Observer {
 						@Override public void run() {
 							tv?.getItems()?.removeAll(arg0.testCases)
 							tv?.setItems(FXCollections.observableArrayList(arg0.testCases))
+							
 						}
 					});
 		}
@@ -943,7 +944,7 @@ class FxPrinter extends Application implements Observer {
 		if(arg0 instanceof TestCase) {
 			Platform.runLater(new Runnable() {
 						@Override public void run() {
-
+							
 							def items = []
 							tv?.getItems().each {testCase -> items << testCase }
 

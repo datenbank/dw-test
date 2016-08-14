@@ -19,7 +19,9 @@ class NewTestCase implements EventHandler<ActionEvent> {
 					it.writeLine ""
 			
 				}
-				init.summary.testCases << new TestCase(name: tcName)
+				def n = new TestCase(name: tcName)
+				n.ready()
+				init.summary.testCases << n
 				init.summary.ready()
 				init.ui.menu()
 			} else {
