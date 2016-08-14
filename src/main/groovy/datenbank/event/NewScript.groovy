@@ -20,6 +20,7 @@ class NewScript implements EventHandler<ActionEvent> {
 				}
 				
 				init.ui.menu()
+				init.ui.codeEditor(file, 'Java')
 			} else {
 				init.ui.alert("New script", "A script with that name already exists.")
 			}
