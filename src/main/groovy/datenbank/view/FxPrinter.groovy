@@ -73,15 +73,20 @@ class FxPrinter extends Application implements Observer {
 	def progressFinished
 	def progressTotal
 	def progressLabel
+	def progressCancel
 
 	def testCaseCopy
 
+	def cancel = false
+	
 	def progressStart(i) {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
-
+						progressCancel.setDisable(false)
+						cancel = false
 						progress.setProgress(0)
 						progress.setVisible(true)
+						progressCancel.setVisible(true)
 						progressTotal = i
 						progressFinished = 0
 						progressLabel.setText("$progressFinished / $progressTotal")
@@ -92,7 +97,10 @@ class FxPrinter extends Application implements Observer {
 	def progressStop() {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
+						cancel = false
+						progressCancel.setDisable(false)
 						progress.setVisible(false)
+						progressCancel.setVisible(false)
 						progressLabel.setText("")
 					}
 				})
@@ -143,8 +151,14 @@ class FxPrinter extends Application implements Observer {
 		progress.setVisible(false)
 		progress.setProgress(0)
 		progressLabel = new Label("")
+		
+		progressCancel = new Button()
+		progressCancel.setVisible(false)
+		progressCancel.setTooltip(new Tooltip("Cancel"))
+		progressCancel.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("cancel-16.png"))))
+		
 
-		ToolBar toolBar = new ToolBar(newButton, execButton, compButton, bothButton, progress, progressLabel);
+		ToolBar toolBar = new ToolBar(newButton, execButton, compButton, bothButton, progress, progressLabel, progressCancel);
 
 
 		/**
@@ -420,7 +434,13 @@ class FxPrinter extends Application implements Observer {
 		bothButton.setOnAction(executeCompareAll);
 
 
-
+		progressCancel.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						cancel = true
+						progressCancel.setDisable(true)
+					}
+		})
 
 
 
@@ -634,7 +654,8 @@ class FxPrinter extends Application implements Observer {
 						Variables.load()
 						summary = init.init()
 						menu();
-
+						btnUpdate(false)
+						cancel = false
 
 					}
 				});
@@ -712,7 +733,7 @@ class FxPrinter extends Application implements Observer {
 								progressStart(init.summary.testCases.findAll {it.group == groupName}.size())
 								init.summary.testCases.each { testCase ->
 
-									if(testCase.group == groupName) {
+									if(!cancel && testCase.group == groupName) {
 										init.ex.runOne(testCase)
 										progressIncrement()
 									}
@@ -736,7 +757,7 @@ class FxPrinter extends Application implements Observer {
 								progressStart(init.summary.testCases.findAll {it.group == groupName}.size())
 								init.summary.testCases.each { testCase ->
 
-									if(testCase.group == groupName) {
+									if(!cancel && testCase.group == groupName) {
 										init.rt.runOne(testCase)
 										progressIncrement()
 									}
@@ -757,8 +778,8 @@ class FxPrinter extends Application implements Observer {
 								btnUpdate(true)
 								progressStart(init.summary.testCases.findAll {it.group == groupName}.size())
 								init.summary.testCases.each { testCase ->
-
-									if(testCase.group == groupName) {
+									
+									if(!cancel && testCase.group == groupName) {
 										init.ex.runOne(testCase)
 										init.rt.runOne(testCase)
 										progressIncrement()

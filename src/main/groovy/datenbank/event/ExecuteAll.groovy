@@ -17,9 +17,10 @@ class ExecuteAll implements EventHandler<ActionEvent> {
 			if(init.summary.testCases.size() > 0) {
 				init.ui.btnUpdate(true)
 				init.summary.testCases.each { testCase ->
-					
-					init.ex.runOne(testCase)
-					init.ui.progressIncrement()
+					if(!init.ui.cancel) {
+						init.ex.runOne(testCase)
+						init.ui.progressIncrement()
+					}
 					
 				}
 				init.summary.ready()

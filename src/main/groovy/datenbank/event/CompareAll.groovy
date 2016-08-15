@@ -19,9 +19,10 @@ class CompareAll implements EventHandler<ActionEvent> {
 				
 
 				init.summary.testCases.each { testCase ->
-					
-					init.rt.runOne(testCase)
-					init.ui.progressIncrement()
+					if(!init.ui.cancel) {
+						init.rt.runOne(testCase)
+						init.ui.progressIncrement()
+					}
 					
 				}
 				

@@ -18,9 +18,11 @@ class ExecuteCompareAll implements EventHandler<ActionEvent> {
 				init.ui.btnUpdate(true)
 				
 				init.summary.testCases.each { testCase ->
-					init.ex.runOne(testCase)
-					init.rt.runOne(testCase)
-					init.ui.progressIncrement()
+					if(!init.ui.cancel) {
+						init.ex.runOne(testCase)
+						init.rt.runOne(testCase)
+						init.ui.progressIncrement()
+					}
 				}
 				init.summary.ready()
 				init.ui.btnUpdate(false)
