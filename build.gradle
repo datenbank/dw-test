@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 
 mainClassName = "datenbank.Test"
 
-version = '1.2.10'
+version = '1.2.11'
 
 repositories {
    mavenCentral()
