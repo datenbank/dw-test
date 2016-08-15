@@ -27,14 +27,15 @@ class Init {
 		summary.addObserver(ui)
 		
 		def dir = new File("${Variables.path}Target")
-				
+		
 		dir.eachFile() { file ->
+			log.info("Loop init $file")
 			if(file.getName().endsWith(".sql")) {
 				def name= file.getName().substring(0, file.getName().length()-4)
 				
 				def testCase = new TestCase(name: name)
 				testCase.addObserver(ui)
-				
+				log.info("add $testCase")
 				summary.testCases << testCase
 			}
 				

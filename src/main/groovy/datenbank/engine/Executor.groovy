@@ -23,6 +23,7 @@ class Executor {
 		if(fileName.endsWith(".sql")) {			
 			def bat = new File("${Variables.path}Target/"+fileName.replace(".sql", "_Before.bat"))
 			if(bat.exists() && bat.text.length() > 0)	{
+				log.info("Before Callback: $bat.text")
 				def cmd = "$bat".execute()
 				cmd.waitFor()
 				println cmd.in.text
@@ -43,6 +44,8 @@ class Executor {
 				
 				sql.withStatement{ stmt -> stmt.fetchSize = Variables.sqlFetchSize }			
 				sql.eachRow(file.text){ row ->
+					
+					log.info("Target loop row: $row")
 					(0..row.getMetaData().columnCount-1).each {
 						def attr = row[it]
 						
@@ -58,16 +61,18 @@ class Executor {
 					
 				} 
 			} catch (Exception e) {
+				log.info("Error in Target: $e")
 				result << e
 				error = 1
 			}
 			
 			def batAfter = new File("${Variables.path}Target/"+fileName.replace(".sql", "_After.bat"))
 			if(batAfter.exists() && batAfter.text.length() > 0)	{
-				def cmd = "$bat".execute()
-				cmd.waitFor()
-				println cmd.in.text
-				println cmd.err.text
+				log.info("After Callback: $batAfter.text")
+				def cmdAfter = "$batAfter".execute()
+				cmdAfter.waitFor()
+				println cmdAfter.in.text
+				println cmdAfter.err.text
 			}
 			def resultSource = new File("${Variables.path}Source/Result/"+fileName.replace(".sql", ".csv"))	
 			try {
@@ -84,6 +89,7 @@ class Executor {
 					
 					sqlSource.withStatement{ stmt -> stmt.fetchSize = Variables.sqlFetchSize }
 					sqlSource.eachRow(sourceFile.text){ row ->
+						log.info("Source loop row: $row")
 						(0..row.getMetaData().columnCount-1).each {
 							def attrSource = row[it]
 						
@@ -101,6 +107,7 @@ class Executor {
 					
 				}
 			} catch (Exception e) { 
+				log.info("Error in Source: $e")
 				resultSource << e
 				error = 1
 				

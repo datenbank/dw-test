@@ -29,7 +29,7 @@ class ResultTester {
 			def sourceFile = new File(sourceFileName)
 			if(sourceFile.exists()) {
 				resultFlag = 0
-
+				
 				def sourceResult = sourceFile.text.split("\n")
 				
 				def outputFile = new File("${Variables.path}Report/"+fileName) 
@@ -41,12 +41,15 @@ class ResultTester {
 					outputFile << "Not in Source${Variables.csvSeperator}${runDate.format('YYYY-MM-dd')}${Variables.csvSeperator}${runDate.format('HH')}:${runDate.format('mm')}${Variables.csvSeperator}"+it+"\n"
 					linesNotInSource += 1 
 				}
+				log.info("Finished notInSource")
+				
 				def notInTarget = (sourceResult - result)
 				
 				notInTarget.each {
 					outputFile << "Not in Target${Variables.csvSeperator}${runDate.format('YYYY-MM-dd')}${Variables.csvSeperator}${runDate.format('HH')}:${runDate.format('mm')}${Variables.csvSeperator}"+it+"\n"
 					linesNotInTarget += 1 
-				}	
+				}
+				log.info("Finished notInTarget")
 				if(linesNotInSource > 0) 
 					resultFlag +=1
 					
@@ -58,6 +61,7 @@ class ResultTester {
 					errors = 2
 				compared++
 			} else { //skip
+				log.info("Skip compare: $fileName")
 				skipped++
 				errors = 2
 			}
