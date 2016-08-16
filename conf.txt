@@ -47,7 +47,7 @@
 */
 
 	//csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"
-	csvReader = "notepad"
+	//csvReader = "notepad"
 	csvSeperator = ";"
 
 //	********************************************

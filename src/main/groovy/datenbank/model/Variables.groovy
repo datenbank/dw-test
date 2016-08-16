@@ -11,7 +11,7 @@ class Variables {
 	static targetConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
 	static sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
 	static targetDriver = "net.sourceforge.jtds.jdbc.Driver"
-	static csvReader = "\"C:/Program Files (x86)/Microsoft Office/Office14/excel.exe\" /e /r"
+	static csvReader = ""
 	static csvSeperator = ";"
 	
 	static sqlProgramTarget = ""
@@ -30,7 +30,7 @@ class Variables {
 		targetConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
 		sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
 		targetDriver = "net.sourceforge.jtds.jdbc.Driver"
-		csvReader = "\"C:/Program Files (x86)/Microsoft Office/Office14/excel.exe\" /e /r"
+		csvReader = ""
 		csvSeperator = ";"
 		
 		sqlProgramTarget = ""
