@@ -10,12 +10,15 @@ import datenbank.model.TestCase
 import datenbank.model.Variables
 
 import java.util.Observer;
+import java.util.function.Predicate
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
+import javafx.scene.input.KeyEvent 
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.Control
@@ -26,6 +29,7 @@ import javafx.scene.control.Callback
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Label
+import javafx.scene.control.TextField
 import javafx.scene.control.Menu
 import javafx.scene.control.ProgressBar
 import javafx.scene.control.ProgressIndicator
@@ -47,6 +51,7 @@ import javafx.scene.input.KeyCombination
 import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.HBox
+import javafx.scene.layout.Region
 import javafx.scene.layout.VBox;
 import javafx.util.Callback
 import javafx.scene.paint.Color;
@@ -78,6 +83,8 @@ class FxPrinter extends Application implements Observer {
 	def testCaseCopy
 
 	def cancel = false
+	def filter = ""
+	def filterText 
 	
 	def progressStart(i) {
 		Platform.runLater(new Runnable() {
@@ -157,9 +164,19 @@ class FxPrinter extends Application implements Observer {
 		progressCancel.setTooltip(new Tooltip("Cancel"))
 		progressCancel.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("cancel-16.png"))))
 		
+		filterText = new TextField()
+		filterText.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			public void handle(KeyEvent ke) {
+				filter = filterText.getText()
+				init.summary.ready()
+			}
+		});
 
-		ToolBar toolBar = new ToolBar(newButton, execButton, compButton, bothButton, progress, progressLabel, progressCancel);
-
+		Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);     
+        spacer.setMinWidth(Region.USE_PREF_SIZE);
+		ToolBar toolBar = new ToolBar(newButton, execButton, compButton, bothButton, progress, progressLabel, progressCancel, spacer, new Label("Filter: "), filterText);
+		
 
 		/**
 		 * 
@@ -212,7 +229,7 @@ class FxPrinter extends Application implements Observer {
 								super.updateItem(item, empty);
 								setText("")
 								if(item) {
-
+									
 									def fileSplit = item.split("#")
 									if(fileSplit.size()>1) {
 
@@ -226,8 +243,22 @@ class FxPrinter extends Application implements Observer {
 
 										setText(display.join("#"))
 									}
-									else
+									else {
 										setText(item)
+									}
+									def tooltip = ""
+									
+									def file = new File("${Variables.path}Target/${item}.sql")
+									def fileSrc = new File("${Variables.path}Source/${item}.sql")
+									
+									if(file.exists())
+										tooltip += "${file}\n ${file.text}"
+									tooltip += "\n-----------------------------------------\n"									
+									if(fileSrc.exists())
+										tooltip += "${fileSrc}\n ${fileSrc.text}"
+									Tooltip tip = new Tooltip(tooltip);
+									setTooltip(tip);
+				  
 								}
 
 							}
@@ -309,6 +340,8 @@ class FxPrinter extends Application implements Observer {
 
 		tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY)
 		tv.getColumns().addAll(colGrp, colFile, colError, colResultFlag, colElapsed, colElapsedTest)
+		
+		
 
 		/**
 		 *
@@ -320,8 +353,8 @@ class FxPrinter extends Application implements Observer {
 		itemComp = new MenuItem("Compare");
 
 
-		itemExec.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.SHIFT_DOWN));
-		itemComp.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHIFT_DOWN));
+		itemExec.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
+		itemComp.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
 
 
 		menu.getItems().add(itemExec);
@@ -329,10 +362,10 @@ class FxPrinter extends Application implements Observer {
 
 		codeGrp = new Menu("Code");
 		itemOpenTgt = new MenuItem("Open/Create target SQL");
-		itemOpenTgt.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.SHIFT_DOWN));
+		itemOpenTgt.setAccelerator(new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
 
 		itemOpenSrc = new MenuItem("Open/Create source SQL");
-		itemOpenSrc.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN));
+		itemOpenSrc.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
 
 		Menu callbackGrp = new Menu("Callback");
 		itemOpenBefore = new MenuItem("Open/Create before (.bat)");
@@ -341,8 +374,8 @@ class FxPrinter extends Application implements Observer {
 		callbackGrp.getItems().add(itemOpenAfter);
 
 
-		itemOpenAfter.setAccelerator(new KeyCodeCombination(KeyCode.A, KeyCombination.SHIFT_DOWN));
-		itemOpenBefore.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.SHIFT_DOWN));
+		itemOpenAfter.setAccelerator(new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
+		itemOpenBefore.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
 
 		resultGrp = new Menu("Result");
 
@@ -989,8 +1022,22 @@ class FxPrinter extends Application implements Observer {
 		if(arg0 instanceof Summary) {
 			Platform.runLater(new Runnable() {
 						@Override public void run() {
-							tv?.getItems()?.removeAll(arg0.testCases)
-							tv?.setItems(FXCollections.observableArrayList(arg0.testCases))
+							
+							def l = FXCollections.observableArrayList(arg0.testCases)
+							FilteredList fl = new FilteredList(l);
+							
+							tv?.setItems(fl)
+							
+							fl.setPredicate(
+								new Predicate<TestCase>(){
+									public boolean test(TestCase t){
+										if (t.name.toLowerCase().contains(filter.toLowerCase()))
+											return true
+										else
+											return false; 
+									}
+								}
+							);
 
 						}
 					});
@@ -998,16 +1045,7 @@ class FxPrinter extends Application implements Observer {
 
 
 		if(arg0 instanceof TestCase) {
-			Platform.runLater(new Runnable() {
-						@Override public void run() {
-
-							def items = []
-							tv?.getItems().each {testCase -> items << testCase }
-
-							tv?.getItems().removeAll(items)
-							tv?.setItems(FXCollections.observableArrayList(items))
-						}
-					});
+			init.summary.ready()
 		}
 	}
 }
