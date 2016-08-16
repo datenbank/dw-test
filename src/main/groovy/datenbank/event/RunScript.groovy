@@ -24,7 +24,7 @@ class RunScript implements EventHandler<ActionEvent> {
 			init.ui.summary = init.init()
 			init.ui.menu()
 		} catch(all) {
-			init.ui.alert("Open file error", "Couldn't open file. Please check that it exists!")
+			init.ui.alert("Open file error", "Couldn't run file. Please check that it exists!\n$all")
 		}
 	}
 }
