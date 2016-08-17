@@ -706,7 +706,7 @@ class FxPrinter extends Application implements Observer {
 		menuBar.getMenus().add(settingsGrp)
 		menuBar.getMenus().add(scriptsGrp)
 		
-		def openModelItem = new MenuItem("Open model.csv");
+		def openModelItem = new MenuItem("Open ${Variables.model}");
 		openModelItem.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN));
 		scriptsGrp.getItems().add(openModelItem);
 		openModelItem.setOnAction(new EventHandler<ActionEvent>() {
