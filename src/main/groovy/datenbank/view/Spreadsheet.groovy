@@ -13,8 +13,15 @@ import org.controlsfx.control.spreadsheet.SpreadsheetCellType
 
 class Spreadsheet {
 
-	def setup(file) {
-
+	SpreadsheetView spv
+	
+	def getData() {
+		
+		spv.getGrid().getRows()
+	}
+	
+	def Spreadsheet(file) {
+		
 		def lst
 		file.withReader { reader ->
 
@@ -30,8 +37,16 @@ class Spreadsheet {
 				columnCount = it.size()
 		}
 
+		int columnAdd = 10 - columnCount  
+		if(columnAdd < 0)
+			columnAdd = 0
+		
+		int rowAdd = 20 - rowCount
+		if(rowAdd < 0)
+			rowAdd = 0
+				
+		GridBase grid = new GridBase(rowCount+rowAdd, columnCount+columnAdd);
 
-		GridBase grid = new GridBase(rowCount, columnCount);
 
 		def rows = FXCollections.observableArrayList();
 
@@ -40,8 +55,11 @@ class Spreadsheet {
 			final def list = FXCollections.observableArrayList();
 
 			for (int column = 0; column < grid.getColumnCount(); ++column) {
-
-				list.add(SpreadsheetCellType.STRING.createCell(row, column, 1, 1,lst[row][column]));
+				
+				if(row < rowCount && column <columnCount)
+					list.add(SpreadsheetCellType.STRING.createCell(row, column, 1, 1, lst[row][column]));
+				else 
+					list.add(SpreadsheetCellType.STRING.createCell(row, column, 1, 1,""));
 			}
 
 			rows.add(list);
@@ -51,7 +69,11 @@ class Spreadsheet {
 
 
 
-		SpreadsheetView spv = new SpreadsheetView(grid);
-		return spv
+		spv = new SpreadsheetView(grid);
+		
+		spv.getColumns().each {
+			it.setPrefWidth(100) 
+		}
+
 	}
 }
