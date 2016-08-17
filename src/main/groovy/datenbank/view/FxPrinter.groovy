@@ -712,11 +712,11 @@ class FxPrinter extends Application implements Observer {
 		openModelItem.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				def f = new File("${Variables.path}model.csv")
+				def f = new File("${Variables.path}${Variables.model}")
 				if(f.exists())
 					spreadsheetSaveable(f)
 				else 
-					alert("File doesn't exists", "Please make sure the file ${Variables.path}model.csv exists")
+					alert("File doesn't exists", "Please make sure the file ${Variables.path}${Variables.model} exists")
 			}
 		});
 		
