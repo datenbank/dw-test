@@ -571,19 +571,19 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							
-								btnUpdate(true)
-								if(new File("${Variables.path}Target/Result/${testCase.name}.csv").exists()) {
-									if(Variables.csvReader=="")
-										spreadsheet(new File("${Variables.path}Target/Result/${testCase.name}.csv"))
-									else
-										"${Variables.csvReader} \"${Variables.path}Target/Result/${testCase.name}.csv\"".execute()
-								} else {
-									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Target/Result/${testCase.name}.csv")
-								}
 
-								btnUpdate(false)
-							
+							btnUpdate(true)
+							if(new File("${Variables.path}Target/Result/${testCase.name}.csv").exists()) {
+								if(Variables.csvReader=="")
+									spreadsheet(new File("${Variables.path}Target/Result/${testCase.name}.csv"))
+								else
+									"${Variables.csvReader} \"${Variables.path}Target/Result/${testCase.name}.csv\"".execute()
+							} else {
+								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Target/Result/${testCase.name}.csv")
+							}
+
+							btnUpdate(false)
+
 						} else {
 							alert("Couldn't open", "No test case selected.")
 						}
@@ -595,19 +595,19 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							
-								btnUpdate(true)
-								if(new File("${Variables.path}Source/Result/${testCase.name}.csv").exists()) {
-									if(Variables.csvReader=="")
-										spreadsheet(new File("${Variables.path}Source/Result/${testCase.name}.csv"))
-									else
-										"${Variables.csvReader} \"${Variables.path}Source/Result/${testCase.name}.csv\"".execute()
-								} else {
-									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Source/Result/${testCase.name}.csv")
-								}
 
-								btnUpdate(false)
-							
+							btnUpdate(true)
+							if(new File("${Variables.path}Source/Result/${testCase.name}.csv").exists()) {
+								if(Variables.csvReader=="")
+									spreadsheet(new File("${Variables.path}Source/Result/${testCase.name}.csv"))
+								else
+									"${Variables.csvReader} \"${Variables.path}Source/Result/${testCase.name}.csv\"".execute()
+							} else {
+								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Source/Result/${testCase.name}.csv")
+							}
+
+							btnUpdate(false)
+
 						} else {
 							alert("Couldn't open", "No test case selected.")
 						}
@@ -621,19 +621,19 @@ class FxPrinter extends Application implements Observer {
 
 						def testCase = (TestCase) tv.getSelectionModel().getSelectedItem();
 						if(testCase) {
-							
-								btnUpdate(true)
-								if(new File("${Variables.path}Report/${testCase.name}.csv").exists()) {
-									if(Variables.csvReader=="")
-										spreadsheet(new File("${Variables.path}Report/${testCase.name}.csv"))
-									else
-										"${Variables.csvReader} \"${Variables.path}Report/${testCase.name}.csv\"".execute()
-								} else {
-									alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Report/${testCase.name}.csv")
-								}
 
-								btnUpdate(false)
-							
+							btnUpdate(true)
+							if(new File("${Variables.path}Report/${testCase.name}.csv").exists()) {
+								if(Variables.csvReader=="")
+									spreadsheet(new File("${Variables.path}Report/${testCase.name}.csv"))
+								else
+									"${Variables.csvReader} \"${Variables.path}Report/${testCase.name}.csv\"".execute()
+							} else {
+								alert("Open file error", "Couldn't open file. Please check that it exists!\n${Variables.path}Report/${testCase.name}.csv")
+							}
+
+							btnUpdate(false)
+
 						}
 						else {
 							alert("Couldn't open", "No test case selected.")
@@ -705,8 +705,21 @@ class FxPrinter extends Application implements Observer {
 		menuBar.getMenus().add(fileGrp)
 		menuBar.getMenus().add(settingsGrp)
 		menuBar.getMenus().add(scriptsGrp)
-
-
+		
+		def openModelItem = new MenuItem("Open model.csv");
+		openModelItem.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN));
+		scriptsGrp.getItems().add(openModelItem);
+		openModelItem.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				def f = new File("${Variables.path}model.csv")
+				if(f.exists())
+					spreadsheetSaveable(f)
+				else 
+					alert("File doesn't exists", "Please make sure the file ${Variables.path}model.csv exists")
+			}
+		});
+		
 		def dir = new File("${Variables.path}Scripts")
 		dir.eachFile() { file ->
 			def scriptName = new Menu("$file.name");
@@ -748,7 +761,7 @@ class FxPrinter extends Application implements Observer {
 						}
 					});
 		}
-
+		
 
 
 		groupMenu = new Menu("Groups");
@@ -970,14 +983,50 @@ class FxPrinter extends Application implements Observer {
 
 	def spreadsheet(file) {
 
+		
+		def sheet = new Spreadsheet(file)
+		VBox.setVgrow(sheet.spv, Priority.ALWAYS);
+		VBox sheetBox = new VBox()
+		sheetBox.getChildren().addAll(sheet.spv);
+
 		Stage stage = new Stage();
 		stage.setTitle(file.name);
 		stage.getIcons().add(icon);
-		stage.setScene(new Scene(new Spreadsheet().setup(file)));
-		//stage.sizeToScene();
+		stage.setScene(new Scene(sheetBox,600,400));
+		
 		
 		stage.show();
 
+
+	}
+
+	def spreadsheetSaveable(file) {
+
+		MenuBar menu = new MenuBar()
+		def fileMenu = new Menu("File")
+		menu.getMenus().add(fileMenu)
+
+		def itemSave = new MenuItem("Save");
+
+		itemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+		fileMenu.getItems().add(itemSave);
+
+		def sheet = new Spreadsheet(file)
+
+		VBox.setVgrow(sheet.spv, Priority.ALWAYS);
+		
+		
+		VBox sheetBox = new VBox()
+		sheetBox.getChildren().addAll(menu, sheet.spv);
+
+		Stage stage = new Stage();
+		stage.setTitle(file.name);
+		stage.getIcons().add(icon);
+		stage.setScene(new Scene(sheetBox,600,400));
+		
+		stage.show();
+
+		itemSave.setOnAction(new SpreadsheetSave(init: init, file: file, spreadsheet: sheet, stage: stage, saveItem: itemSave, fileMenu: fileMenu))
 
 	}
 
