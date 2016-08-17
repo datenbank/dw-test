@@ -1066,8 +1066,10 @@ class FxPrinter extends Application implements Observer {
 								file.newWriter().withWriter { w ->
 									w << editor.getCodeAndSnapshot()
 								}
-								if(file.name == "conf.txt")
+								if(file.name == "conf.txt") {
 									Variables.load()
+									menu()
+								}
 							}
 						}
 

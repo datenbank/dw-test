@@ -17,8 +17,10 @@ class CodeEditorSave implements EventHandler<ActionEvent> {
 		file.newWriter().withWriter { w ->
 			w << editor.getCodeAndSnapshot()
 		}
-		if(file.name == "conf.txt")
+		if(file.name == "conf.txt") {
 			Variables.load()
+			init.ui.menu()
+		}
 		init.ui.confirm("Saved", "The file is saved.")
 	}
 }
