@@ -1144,68 +1144,14 @@ class FxPrinter extends Application implements Observer {
 	}
 
 	def srcColumns
+	def tgtColumns
 	ComboBox srcComboBox
-	def modelEditor() {
+	ComboBox tgtComboBox
 
-		def m = new Model()
-		m.loadModelFromFile()
-
-		VBox srcBox = new VBox()
-		VBox tgtBox = new VBox()
-		def srcTablesOption = FXCollections.observableArrayList(m.srcTables);
-		srcComboBox = new ComboBox(srcTablesOption);
-
-		srcComboBox.setValue(m.srcTables[0])
-
-		def tgtTablesOption = FXCollections.observableArrayList(m.tables);
-		final ComboBox tgtComboBox = new ComboBox(tgtTablesOption);
-		tgtBox.getChildren().add(tgtComboBox)
-		tgtComboBox.setValue(m.tables[0])
-
-
-		srcComboBox.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-
-
-						def selected =  srcComboBox.getValue().toString()
-						
-						println "selected: "+selected
-						
-						def t
-
-						m.srcTables.each {
-							println "==>"+it.toString() 
-							if(it.toString() == selected) {
-								t = it
-							}
-						}
-
-
-						println "found: "+t
-						srcBox.getChildren().clear()
-						srcColumns = sourceColumns(t)
-						srcBox.getChildren().addAll(srcComboBox, srcColumns);
-
-					}
-				})
-
-		tgtComboBox.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						println "change select "+tgtComboBox.getValue()
-
-					}
-				})
-		srcColumns = sourceColumns(m.srcTables[0])
-		srcBox.getChildren().addAll(srcComboBox, srcColumns);
-
-
-
-		m.tables[0].columns.each { col ->
-
-
-
+	def targetColumns(table) {
+		VBox vbox = new VBox()
+		table.columns.each { col ->
+			println "COLUMN REF: "+col.columnRef
 			def l = new Label(col.toString())
 
 			l.setOnDragEntered(new EventHandler <DragEvent>() {
@@ -1265,11 +1211,83 @@ class FxPrinter extends Application implements Observer {
 					});
 
 
-			tgtBox.getChildren().addAll(l);
+			vbox.getChildren().addAll(l);
 		}
+		return vbox
+	}
+
+	def m 
+	def modelEditor() {
+
+		m = new Model()
+		m.loadModelFromFile()
+
+		VBox srcBox = new VBox()
+		VBox tgtBox = new VBox()
+		def srcTablesOption = FXCollections.observableArrayList(m.srcTables);
+		srcComboBox = new ComboBox(srcTablesOption);
+		srcComboBox.setValue(m.srcTables[0])
+
+		def tgtTablesOption = FXCollections.observableArrayList(m.tables);
+		tgtComboBox = new ComboBox(tgtTablesOption);
+		tgtComboBox.setValue(m.tables[0])
+
+
+		srcComboBox.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+
+
+						def selected =  srcComboBox.getValue().toString()
+
+						println "selected: "+selected
+
+						def t
+
+						m.srcTables.each {
+							println "==>"+it.toString()
+							if(it.toString() == selected) {
+								t = it
+							}
+						}
+
+
+						println "found: "+t
+						srcBox.getChildren().clear()
+						srcColumns = sourceColumns(t)
+						srcBox.getChildren().addAll(srcComboBox, srcColumns);
+
+					}
+				})
+
+		tgtComboBox.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						def selected =  tgtComboBox.getValue().toString()
+						def t
+
+						m.tables.each {
+							println "==>"+it.toString()
+							if(it.toString() == selected) {
+								t = it
+							}
+						}
+						tgtBox.getChildren().clear()
+						tgtColumns = targetColumns(t)
+						tgtBox.getChildren().addAll(tgtComboBox, tgtColumns);
+
+					}
+				})
+		srcColumns = sourceColumns(m.srcTables[0])
+		tgtColumns = targetColumns(m.tables[0])
+		srcBox.getChildren().addAll(srcComboBox, srcColumns);
+		tgtBox.getChildren().addAll(tgtComboBox, tgtColumns);
+
+
+
 
 		Stage stage = new Stage();
-		stage.setTitle("Model editor");
+		stage.setTitle("Model Mapper");
 		stage.getIcons().add(icon);
 		HBox hbox = new HBox()
 		hbox.getChildren().addAll(srcBox,tgtBox);
