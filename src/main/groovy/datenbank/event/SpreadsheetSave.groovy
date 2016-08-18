@@ -16,9 +16,8 @@ class SpreadsheetSave implements EventHandler<ActionEvent> {
 	def stage
 	def fileMenu
 	def saveItem
-
-	@Override
-	public void handle(ActionEvent arg0) {
+	
+	def save() {
 		Thread.start {
 			try {
 				
@@ -72,5 +71,11 @@ class SpreadsheetSave implements EventHandler<ActionEvent> {
 				})
 			}
 		}
+	}
+	
+
+	@Override
+	public void handle(ActionEvent arg0) {
+		save()
 	}
 }

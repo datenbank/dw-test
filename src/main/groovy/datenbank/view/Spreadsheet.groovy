@@ -3,10 +3,12 @@ package datenbank.view
 import datenbank.model.Variables
 
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler
 import org.apache.commons.csv.CSVParser
 import org.apache.commons.csv.CSVFormat
 
 import org.controlsfx.control.spreadsheet.GridBase
+import org.controlsfx.control.spreadsheet.GridChange
 import org.controlsfx.control.spreadsheet.SpreadsheetCell
 import org.controlsfx.control.spreadsheet.SpreadsheetView
 import org.controlsfx.control.spreadsheet.SpreadsheetCellType
@@ -14,6 +16,8 @@ import org.controlsfx.control.spreadsheet.SpreadsheetCellType
 class Spreadsheet {
 
 	SpreadsheetView spv
+	
+	def wasChanged = false
 	
 	def getData() {
 		
@@ -75,5 +79,14 @@ class Spreadsheet {
 			it.setPrefWidth(100) 
 		}
 
+		grid.addEventHandler(GridChange.GRID_CHANGE_EVENT, new EventHandler<GridChange>() {
+			
+			public void handle(GridChange change) {
+				 wasChanged = true
+				}
+			});
+   
+		
+		
 	}
 }

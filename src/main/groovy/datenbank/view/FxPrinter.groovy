@@ -1025,6 +1025,18 @@ class FxPrinter extends Application implements Observer {
 		stage.setScene(new Scene(sheetBox,600,400));
 		
 		stage.show();
+		
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent we) {
+				if(sheet.wasChanged) {
+					if(accept("Data changed", "Do you want to save the file before closing?")) {
+						new SpreadsheetSave(init: init, file: file, spreadsheet: sheet, stage: stage, saveItem: itemSave, fileMenu: fileMenu).save()
+					}
+				}
+
+			}
+		});
+		
 
 		itemSave.setOnAction(new SpreadsheetSave(init: init, file: file, spreadsheet: sheet, stage: stage, saveItem: itemSave, fileMenu: fileMenu))
 
