@@ -1,10 +1,8 @@
-0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18
-0TargetDatabase;TargetSchema;TargetTable;TargetColumn;TargetColumnOrdinal;TargetColumnNullable;TargetColumnDataType;TargetIsPrimaryKey;SourceDatabase;SourceSchema;SourceTable;SourceColumn;SourceColumnOrdinal;SourceColumnNullable;SourceColumnDataType;SourceIsPrimaryKey;TestType;TargetTableWhere;SourceTableWhere
 dw-test;dbo;Population;Quarter;1;YES;char;0;dw-test;dbo;Population;Quarter;1;YES;char;0;COUNT,HASH;-;-
-dw-test;dbo;Population;Age;2;YES;int;0;dw-test;dbo;Population;Age;2;YES;int;0;GROUPBY,NONSENSE;-;-
-dw-test;dbo;Population;Male;3;YES;int;0;dw-test;dbo;Population;Male;3;YES;int;0;SUMBY;-;-
-dw-test;dbo;Population;Female;4;YES;int;0;dw-test;dbo;Population;Female;4;YES;int;0;SUMBY;-;-
+dw-test;dbo;Population;Age;1;YES;int;0;dw-test;dbo;Population;Age;1;YES;int;0;GROUPBY,NONSENSE;-;-
+dw-test;dbo;Population;Male;1;YES;int;0;dw-test;dbo;Population;Male;1;YES;int;0;SUMBY;-;-
+dw-test;dbo;Population;Female;1;YES;int;0;dw-test;dbo;Population;Female;1;YES;int;0;SUMBY;-;-
 dw-test;dbo;Population2;Quarter;1;YES;char;0;dw-test;dbo;Population2;Quarter;1;YES;char;0;COUNT,HASH;-;-
-dw-test;dbo;Population2;Age;2;YES;int;0;dw-test;dbo;Population2;Age;2;YES;int;0;GROUPBY,NONSENSE;-;-
-dw-test;dbo;Population2;Male;3;YES;int;0;dw-test;dbo;Population2;Male;3;YES;int;0;SUMBY;-;-
-dw-test;dbo;Population2;Female;4;YES;int;0;dw-test;dbo;Population2;Female2;4;YES;int;0;SUMBY;-;-
+dw-test;dbo;Population2;Age;1;YES;int;0;dw-test;dbo;Population2;Age;1;YES;int;0;GROUPBY,NONSENSE;-;-
+dw-test;dbo;Population2;Male;1;YES;int;0;dw-test;dbo;Population2;Male;1;YES;int;0;SUMBY;-;-
+dw-test;dbo;Population2;Female;1;YES;int;0;dw-test;dbo;Population2;Female2;1;YES;int;0;SUMBY;-;-

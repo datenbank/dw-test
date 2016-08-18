@@ -45,6 +45,21 @@ class Model {
 		}
 	}
 
+	def writeModelToFile() {
+		def file = new File("${Variables.path}${Variables.model}")
+		file.write("")
+		file <<"\r\n"
+		file <<"\r\n"
+		
+		tables.each { t ->
+			t.columns.each { c ->
+				file << "${t.database};${t.schema};${t.table};${c.column};1;YES;${c.dataType};${c.isPrimaryKey};${c.columnRef.tableRef.database};${c.columnRef.tableRef.schema};${c.columnRef.tableRef.table};${c.columnRef.column};1;YES;${c.columnRef.dataType};${c.columnRef.isPrimaryKey};${c.testType};${t.where};${t.tableRef.where}\r\n"
+			}
+			
+		}
+		
+	}
+	
 	def loadModelFromFile() {
 		def i = 1
 		def file = new File("${Variables.path}${Variables.model}")

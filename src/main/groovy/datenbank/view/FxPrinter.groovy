@@ -44,6 +44,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip
 import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog
+import javafx.scene.input.MouseButton
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -63,6 +64,7 @@ import javafx.scene.layout.Region
 import javafx.scene.layout.VBox;
 import javafx.util.Callback
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font
 import javafx.scene.Cursor
 import javafx.scene.layout.Priority;
 
@@ -208,21 +210,21 @@ class FxPrinter extends Application implements Observer {
 					public TableCell<TestCase, String> call(TableColumn<TestCase, String> param) {
 						return new TableCell<TestCase, String>() {
 
-									@Override
-									protected void updateItem(String item, boolean empty) {
-										super.updateItem(item, empty);
-										setText("")
-										if(item) {
+							@Override
+							protected void updateItem(String item, boolean empty) {
+								super.updateItem(item, empty);
+								setText("")
+								if(item) {
 
-											def fileSplit = item.split("#")
-											if(fileSplit.size()>1)
-												setText(fileSplit[0])
-											else
-												setText("Default")
-										}
+									def fileSplit = item.split("#")
+									if(fileSplit.size()>1)
+										setText(fileSplit[0])
+									else
+										setText("Default")
+								}
 
-									}
-								};
+							}
+						};
 					}
 				});
 
@@ -231,45 +233,45 @@ class FxPrinter extends Application implements Observer {
 					public TableCell<TestCase, String> call(TableColumn<TestCase, String> param) {
 						return new TableCell<TestCase, String>() {
 
-									@Override
-									protected void updateItem(String item, boolean empty) {
-										super.updateItem(item, empty);
-										setText("")
-										if(item) {
+							@Override
+							protected void updateItem(String item, boolean empty) {
+								super.updateItem(item, empty);
+								setText("")
+								if(item) {
 
-											def fileSplit = item.split("#")
-											if(fileSplit.size()>1) {
+									def fileSplit = item.split("#")
+									if(fileSplit.size()>1) {
 
-												def display = []
-												def i = 1
-												fileSplit.each {
-													if(i>1)
-														display << it
-													i++
-												}
-
-												setText(display.join("#"))
-											}
-											else {
-												setText(item)
-											}
-											def tooltip = ""
-
-											def file = new File("${Variables.path}Target/${item}.sql")
-											def fileSrc = new File("${Variables.path}Source/${item}.sql")
-
-											if(file.exists())
-												tooltip += "${file}\n ${file.text}"
-											tooltip += "\n-----------------------------------------\n"
-											if(fileSrc.exists())
-												tooltip += "${fileSrc}\n ${fileSrc.text}"
-											Tooltip tip = new Tooltip(tooltip);
-											setTooltip(tip);
-
+										def display = []
+										def i = 1
+										fileSplit.each {
+											if(i>1)
+												display << it
+											i++
 										}
 
+										setText(display.join("#"))
 									}
-								};
+									else {
+										setText(item)
+									}
+									def tooltip = ""
+
+									def file = new File("${Variables.path}Target/${item}.sql")
+									def fileSrc = new File("${Variables.path}Source/${item}.sql")
+
+									if(file.exists())
+										tooltip += "${file}\n ${file.text}"
+									tooltip += "\n-----------------------------------------\n"
+									if(fileSrc.exists())
+										tooltip += "${fileSrc}\n ${fileSrc.text}"
+									Tooltip tip = new Tooltip(tooltip);
+									setTooltip(tip);
+
+								}
+
+							}
+						};
 					}
 				});
 
@@ -278,34 +280,34 @@ class FxPrinter extends Application implements Observer {
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
 						return new TableCell<TestCase, Integer>() {
 
-									@Override
-									protected void updateItem(Integer item, boolean empty) {
-										setText("")
-										super.updateItem(item, empty);
-										if(item == -1 || item == null) {
-											setTextFill(Color.BLACK);
-											setText("")
-										}
-										if(item == 1) {
-											setTextFill(Color.RED);
-											setText("FAILURE Execute")
-										}
-										if(item == 2) {
-											setTextFill(Color.RED);
-											setText("FAILURE Compare")
-										}
+							@Override
+							protected void updateItem(Integer item, boolean empty) {
+								setText("")
+								super.updateItem(item, empty);
+								if(item == -1 || item == null) {
+									setTextFill(Color.BLACK);
+									setText("")
+								}
+								if(item == 1) {
+									setTextFill(Color.RED);
+									setText("FAILURE Execute")
+								}
+								if(item == 2) {
+									setTextFill(Color.RED);
+									setText("FAILURE Compare")
+								}
 
-										if(item == 3) {
-											setTextFill(Color.GREEN);
-											setText("SUCCESS Execute")
-										}
+								if(item == 3) {
+									setTextFill(Color.GREEN);
+									setText("SUCCESS Execute")
+								}
 
-										if(item == 4) {
-											setTextFill(Color.GREEN);
-											setText("SUCCESS Compare")
-										}
-									}
-								};
+								if(item == 4) {
+									setTextFill(Color.GREEN);
+									setText("SUCCESS Compare")
+								}
+							}
+						};
 					}
 				});
 
@@ -314,28 +316,28 @@ class FxPrinter extends Application implements Observer {
 					public TableCell<TestCase, Integer> call(TableColumn<TestCase, Integer> param) {
 						return new TableCell<TestCase, Integer>() {
 
-									@Override
-									protected void updateItem(Integer item, boolean empty) {
-										super.updateItem(item, empty);
-										setText("")
-										if(item == -1) {
-											setTextFill(Color.BLACK);
-											setText("Couldn't compare results!")
-										}
-										if(item == 1) {
-											setTextFill(Color.BLACK);
-											setText("Missing rows in source")
-										}
-										if(item == 2) {
-											setTextFill(Color.BLACK);
-											setText("Missing rows in target")
-										}
-										if(item == 3) {
-											setTextFill(Color.BLACK);
-											setText("Missing rows in both")
-										}
-									}
-								};
+							@Override
+							protected void updateItem(Integer item, boolean empty) {
+								super.updateItem(item, empty);
+								setText("")
+								if(item == -1) {
+									setTextFill(Color.BLACK);
+									setText("Couldn't compare results!")
+								}
+								if(item == 1) {
+									setTextFill(Color.BLACK);
+									setText("Missing rows in source")
+								}
+								if(item == 2) {
+									setTextFill(Color.BLACK);
+									setText("Missing rows in target")
+								}
+								if(item == 3) {
+									setTextFill(Color.BLACK);
+									setText("Missing rows in both")
+								}
+							}
+						};
 					}
 				});
 		colGrp.setCellValueFactory(new PropertyValueFactory("name"))
@@ -1106,6 +1108,7 @@ class FxPrinter extends Application implements Observer {
 		table.columns.each {
 
 			def l = new Label(it.column)
+			l.setFont(new Font("Arial", 15));
 
 			l.setOnDragDetected(new EventHandler<MouseEvent>() {
 						@Override
@@ -1151,8 +1154,22 @@ class FxPrinter extends Application implements Observer {
 	def targetColumns(table) {
 		VBox vbox = new VBox()
 		table.columns.each { col ->
-			println "COLUMN REF: "+col.columnRef
+			
 			def l = new Label(col.toString())
+
+			l.setFont(new Font("Arial", 15));
+
+			l.setOnMouseClicked(new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent mouseEvent) {
+							if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+								if(mouseEvent.getClickCount() == 2){
+									col.columnRef = null
+									l.setText(col.toString());
+								}
+							}
+						}
+					})
 
 			l.setOnDragEntered(new EventHandler <DragEvent>() {
 						public void handle(DragEvent event) {
@@ -1216,8 +1233,21 @@ class FxPrinter extends Application implements Observer {
 		return vbox
 	}
 
-	def m 
+	def m
 	def modelEditor() {
+		
+		MenuBar menu = new MenuBar()
+		def fileMenu = new Menu("File")
+		menu.getMenus().add(fileMenu)
+
+		def itemSave = new MenuItem("Save");
+
+		itemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+		fileMenu.getItems().add(itemSave);
+
+
+		VBox editorBox = new VBox()
+		
 
 		m = new Model()
 		m.loadModelFromFile()
@@ -1240,8 +1270,6 @@ class FxPrinter extends Application implements Observer {
 
 						def selected =  srcComboBox.getValue().toString()
 
-						println "selected: "+selected
-
 						def t
 
 						m.srcTables.each {
@@ -1252,7 +1280,6 @@ class FxPrinter extends Application implements Observer {
 						}
 
 
-						println "found: "+t
 						srcBox.getChildren().clear()
 						srcColumns = sourceColumns(t)
 						srcBox.getChildren().addAll(srcComboBox, srcColumns);
@@ -1267,7 +1294,6 @@ class FxPrinter extends Application implements Observer {
 						def t
 
 						m.tables.each {
-							println "==>"+it.toString()
 							if(it.toString() == selected) {
 								t = it
 							}
@@ -1292,9 +1318,21 @@ class FxPrinter extends Application implements Observer {
 		HBox hbox = new HBox()
 		hbox.getChildren().addAll(srcBox,tgtBox);
 
-		stage.setScene(new Scene(hbox, 800, 770));
+		editorBox.getChildren().addAll(menu, hbox);
+		
+		
+		stage.setScene(new Scene(editorBox, 800, 770));
 		stage.setResizable(false)
 		stage.show();
+		
+		itemSave.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							m.writeModelToFile()
+							confirm("Saved", "The file is saved.")
+							
+						}
+		})
 
 	}
 
