@@ -17,11 +17,13 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList
 import javafx.event.ActionEvent
+import javafx.event.Event
 import javafx.event.EventHandler
 import javafx.scene.input.KeyEvent
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.Control
+import javafx.scene.control.ComboBox
 import javafx.scene.control.MenuItem
 import javafx.scene.control.MenuBar
 import javafx.scene.control.ToolBar
@@ -29,6 +31,7 @@ import javafx.scene.control.Callback
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Label
+import javafx.scene.control.ListView
 import javafx.scene.control.TextField
 import javafx.scene.control.Menu
 import javafx.scene.control.ProgressBar
@@ -46,6 +49,11 @@ import javafx.stage.WindowEvent
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+
+import javafx.scene.input.ClipboardContent
+import javafx.scene.input.DragEvent
+import javafx.scene.input.Dragboard
+import javafx.scene.input.TransferMode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import javafx.scene.input.KeyCode
@@ -57,7 +65,6 @@ import javafx.util.Callback
 import javafx.scene.paint.Color;
 import javafx.scene.Cursor
 import javafx.scene.layout.Priority;
-
 
 class FxPrinter extends Application implements Observer {
 	def vbox
@@ -705,21 +712,21 @@ class FxPrinter extends Application implements Observer {
 		menuBar.getMenus().add(fileGrp)
 		menuBar.getMenus().add(settingsGrp)
 		menuBar.getMenus().add(scriptsGrp)
-		
+
 		def openModelItem = new MenuItem("Open ${Variables.model}");
 		openModelItem.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN));
 		scriptsGrp.getItems().add(openModelItem);
 		openModelItem.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				def f = new File("${Variables.path}${Variables.model}")
-				if(f.exists())
-					spreadsheetSaveable(f)
-				else 
-					alert("File doesn't exists", "Please make sure the file ${Variables.path}${Variables.model} exists")
-			}
-		});
-		
+					@Override
+					public void handle(ActionEvent event) {
+						def f = new File("${Variables.path}${Variables.model}")
+						if(f.exists())
+							spreadsheetSaveable(f)
+						else
+							alert("File doesn't exists", "Please make sure the file ${Variables.path}${Variables.model} exists")
+					}
+				});
+
 		def dir = new File("${Variables.path}Scripts")
 		dir.eachFile() { file ->
 			def scriptName = new Menu("$file.name");
@@ -761,7 +768,7 @@ class FxPrinter extends Application implements Observer {
 						}
 					});
 		}
-		
+
 
 
 		groupMenu = new Menu("Groups");
@@ -983,7 +990,7 @@ class FxPrinter extends Application implements Observer {
 
 	def spreadsheet(file) {
 
-		
+
 		def sheet = new Spreadsheet(file)
 		VBox.setVgrow(sheet.spv, Priority.ALWAYS);
 		VBox sheetBox = new VBox()
@@ -993,15 +1000,15 @@ class FxPrinter extends Application implements Observer {
 		stage.setTitle(file.name);
 		stage.getIcons().add(icon);
 		stage.setScene(new Scene(sheetBox,600,400));
-		
-		
+
+
 		stage.show();
 
 
 	}
 
 	def spreadsheetSaveable(file) {
-
+		modelEditor()
 		MenuBar menu = new MenuBar()
 		def fileMenu = new Menu("File")
 		menu.getMenus().add(fileMenu)
@@ -1014,8 +1021,8 @@ class FxPrinter extends Application implements Observer {
 		def sheet = new Spreadsheet(file)
 
 		VBox.setVgrow(sheet.spv, Priority.ALWAYS);
-		
-		
+
+
 		VBox sheetBox = new VBox()
 		sheetBox.getChildren().addAll(menu, sheet.spv);
 
@@ -1023,20 +1030,20 @@ class FxPrinter extends Application implements Observer {
 		stage.setTitle(file.name);
 		stage.getIcons().add(icon);
 		stage.setScene(new Scene(sheetBox,600,400));
-		
-		stage.show();
-		
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			public void handle(WindowEvent we) {
-				if(sheet.wasChanged) {
-					if(accept("Data changed", "Do you want to save the file before closing?")) {
-						new SpreadsheetSave(init: init, file: file, spreadsheet: sheet, stage: stage, saveItem: itemSave, fileMenu: fileMenu).save()
-					}
-				}
 
-			}
-		});
-		
+		stage.show();
+
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+					public void handle(WindowEvent we) {
+						if(sheet.wasChanged) {
+							if(accept("Data changed", "Do you want to save the file before closing?")) {
+								new SpreadsheetSave(init: init, file: file, spreadsheet: sheet, stage: stage, saveItem: itemSave, fileMenu: fileMenu).save()
+							}
+						}
+
+					}
+				});
+
 
 		itemSave.setOnAction(new SpreadsheetSave(init: init, file: file, spreadsheet: sheet, stage: stage, saveItem: itemSave, fileMenu: fileMenu))
 
@@ -1090,6 +1097,186 @@ class FxPrinter extends Application implements Observer {
 
 
 		itemSave.setOnAction(new CodeEditorSave(init: init, file: file, editor: editor))
+
+	}
+
+
+	def sourceColumns(table) {
+		VBox vbox = new VBox()
+		table.columns.each {
+
+			def l = new Label(it.column)
+
+			l.setOnDragDetected(new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent dragEvent) {
+							Dragboard db = l.startDragAndDrop(TransferMode.ANY);
+
+							/* put a string on dragboard */
+							ClipboardContent content = new ClipboardContent();
+							content.putString(l.getText());
+							db.setContent(content);
+
+							dragEvent.consume();
+						}
+					})
+
+
+			l.setOnDragDone(new EventHandler <DragEvent>() {
+						public void handle(DragEvent event) {
+							/* the drag-and-drop gesture ended */
+
+							Dragboard db = event.getDragboard();
+
+
+							/* if the data was successfully moved, clear it */
+							if (event.getTransferMode() == TransferMode.MOVE) {
+								//l.setText("");
+							}
+
+							event.consume();
+						}
+					});
+
+			vbox.getChildren().addAll(l);
+		}
+		return vbox
+	}
+
+	def srcColumns
+	ComboBox srcComboBox
+	def modelEditor() {
+
+		def m = new Model()
+		m.loadModelFromFile()
+
+		VBox srcBox = new VBox()
+		VBox tgtBox = new VBox()
+		def srcTablesOption = FXCollections.observableArrayList(m.srcTables);
+		srcComboBox = new ComboBox(srcTablesOption);
+
+		srcComboBox.setValue(m.srcTables[0])
+
+		def tgtTablesOption = FXCollections.observableArrayList(m.tables);
+		final ComboBox tgtComboBox = new ComboBox(tgtTablesOption);
+		tgtBox.getChildren().add(tgtComboBox)
+		tgtComboBox.setValue(m.tables[0])
+
+
+		srcComboBox.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+
+
+						def selected =  srcComboBox.getValue().toString()
+						
+						println "selected: "+selected
+						
+						def t
+
+						m.srcTables.each {
+							println "==>"+it.toString() 
+							if(it.toString() == selected) {
+								t = it
+							}
+						}
+
+
+						println "found: "+t
+						srcBox.getChildren().clear()
+						srcColumns = sourceColumns(t)
+						srcBox.getChildren().addAll(srcComboBox, srcColumns);
+
+					}
+				})
+
+		tgtComboBox.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						println "change select "+tgtComboBox.getValue()
+
+					}
+				})
+		srcColumns = sourceColumns(m.srcTables[0])
+		srcBox.getChildren().addAll(srcComboBox, srcColumns);
+
+
+
+		m.tables[0].columns.each { col ->
+
+
+
+			def l = new Label(col.toString())
+
+			l.setOnDragEntered(new EventHandler <DragEvent>() {
+						public void handle(DragEvent event) {
+							/* the drag-and-drop gesture entered the target */
+							//System.out.println("onDragEntered");
+							/* show to the user that it is an actual gesture target */
+							if (event.getGestureSource() != l &&
+							event.getDragboard().hasString()) {
+								l.setTextFill(Color.GREEN);
+							}
+
+							event.consume();
+						}
+					});
+
+			l.setOnDragExited(new EventHandler <DragEvent>() {
+						public void handle(DragEvent event) {
+							/* mouse moved away, remove the graphical cues */
+							l.setTextFill(Color.BLACK);
+
+							event.consume();
+						}
+					});
+
+			l.setOnDragDropped(new EventHandler <DragEvent>() {
+						public void handle(DragEvent event) {
+							/* data dropped */
+
+							/* if there is a string data on dragboard, read it and use it */
+							Dragboard db = event.getDragboard();
+							boolean success = false;
+							if (db.hasString()) {
+
+								def map = m.srcTables.find {it.toString() == srcComboBox.getValue().toString()}.columns.find { it.column == db.getString() }
+								col.columnRef = map
+								l.setText(col.toString());
+								success = true;
+							}
+							/* let the source know whether the string was successfully
+					 * transferred and used */
+							event.setDropCompleted(success);
+
+							event.consume();
+						}
+					});
+			l.setOnDragOver(new EventHandler <DragEvent>() {
+						public void handle(DragEvent event) {
+							if (event.getGestureSource() != l &&
+							event.getDragboard().hasString()) {
+								/* allow for both copying and moving, whatever user chooses */
+								event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+							}
+
+							event.consume();
+						}
+					});
+
+
+			tgtBox.getChildren().addAll(l);
+		}
+
+		Stage stage = new Stage();
+		stage.setTitle("Model editor");
+		stage.getIcons().add(icon);
+		HBox hbox = new HBox()
+		hbox.getChildren().addAll(srcBox,tgtBox);
+
+		stage.setScene(new Scene(hbox, 800, 770));
+		stage.setResizable(false)
+		stage.show();
 
 	}
 

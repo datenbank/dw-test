@@ -23,10 +23,10 @@ class Table extends Observable {
 	}
 
 	def boolean equals(def o) {
-		return o.table == table //add schema also
+		return o?.table == table //add schema also
 	}
 	
 	def String toString() {
-		return "${table}"	
+		return "${database}.${schema}.${table}"	
 	}
 }

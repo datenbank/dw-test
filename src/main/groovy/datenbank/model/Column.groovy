@@ -7,20 +7,25 @@ import org.apache.log4j.Logger
 
 @Log4j
 class Column extends Observable {
-	
+
 	def column, dataType
 	def isPrimaryKey = 0
-	
+
 	def columnRef
 	def tableRef
-	
+
 	def testType
-	
+
 	def boolean equals(def o) {
 		return o.column == column
 	}
+	
 	def String toString() {
-		return "${column}"	
-	}
+		def txt = "${column}"
 
+		if(columnRef) {
+			txt = "${columnRef.tableRef}.${columnRef.column} -> ${column}"
+		}
+		return txt
+	}
 }

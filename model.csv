@@ -4,3 +4,7 @@ dw-test;dbo;Population;Quarter;1;YES;char;0;dw-test;dbo;Population;Quarter;1;YES
 dw-test;dbo;Population;Age;2;YES;int;0;dw-test;dbo;Population;Age;2;YES;int;0;GROUPBY,NONSENSE;-;-
 dw-test;dbo;Population;Male;3;YES;int;0;dw-test;dbo;Population;Male;3;YES;int;0;SUMBY;-;-
 dw-test;dbo;Population;Female;4;YES;int;0;dw-test;dbo;Population;Female;4;YES;int;0;SUMBY;-;-
+dw-test;dbo;Population2;Quarter;1;YES;char;0;dw-test;dbo;Population2;Quarter;1;YES;char;0;COUNT,HASH;-;-
+dw-test;dbo;Population2;Age;2;YES;int;0;dw-test;dbo;Population2;Age;2;YES;int;0;GROUPBY,NONSENSE;-;-
+dw-test;dbo;Population2;Male;3;YES;int;0;dw-test;dbo;Population2;Male;3;YES;int;0;SUMBY;-;-
+dw-test;dbo;Population2;Female;4;YES;int;0;dw-test;dbo;Population2;Female2;4;YES;int;0;SUMBY;-;-
