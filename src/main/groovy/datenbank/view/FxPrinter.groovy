@@ -1248,7 +1248,7 @@ class FxPrinter extends Application implements Observer {
 									if(!tt.columnRef)
 										confirm("No column mapping", "Map a source column to the target column before adding a test type.")
 									if(tt.testType != "-" && !tt.testType.contains(db.getString()))									
-										tt.testType += ", ${db.getString()}"
+										tt.testType += " | ${db.getString()}"
 									else if(!tt.testType.contains(db.getString())) 
 										tt.testType = "${db.getString()}"
 								}

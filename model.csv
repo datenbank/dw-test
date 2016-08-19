@@ -1,8 +1,8 @@
 dw-test;dbo;Population;Quarter;1;YES;char;0;dw-test;dbo;Population;Age;1;YES;int;0;GROUPBY;-;-
-dw-test;dbo;Population;Age;1;YES;int;0;dw-test;dbo;Population;Age;1;YES;int;0;SUMBY, NONSENSE;-;-
+dw-test;dbo;Population;Age;1;YES;int;0;dw-test;dbo;Population;Age;1;YES;int;0;SUMBY | NONSENSE;-;-
 dw-test;dbo;Population;Male;1;YES;int;0;dw-test;dbo;Population;Female;1;YES;int;0;HASH;-;-
 dw-test;dbo;Population;Female;1;YES;int;0;dw-test;dbo;Population;Female;1;YES;int;0;COUNT;-;-
 dw-test;dbo;PopulationY;Quarter;1;YES;char;0;dw-test;dbo;PopulationX;Quarter;1;YES;char;0;HASH;-;-
-dw-test;dbo;PopulationY;Age;1;YES;int;0;dw-test;dbo;PopulationX;Age;1;YES;int;0;SUMBY;-;-
+dw-test;dbo;PopulationY;Age;1;YES;int;0;dw-test;dbo;PopulationX;Age;1;YES;int;0;SUMBY | NONSENSE;-;-
 dw-test;dbo;PopulationY;Male;1;YES;int;0;dw-test;dbo;PopulationX;Male;1;YES;int;0;GROUPBY;-;-
 dw-test;dbo;PopulationY;Female;1;YES;int;0;dw-test;dbo;PopulationX;Female;1;YES;int;0;COUNT;-;-
