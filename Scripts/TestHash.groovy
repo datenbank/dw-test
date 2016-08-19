@@ -1,5 +1,15 @@
+println "Target: "
 model.tables.each {
-	def sql = "SELECT BINARY_CHECKSUM(${it.columns.findAll{ it.testType.contains('HASH') }.join(', ')}) \r\nFROM ${it.schema}.${it.table}\r\n"
+  
+  	def col = it.columns.findAll{it.testType.contains('HASH') }
+    
+    def ref = []
+      
+    col.each {
+    	ref << it.column
+    }
+  
+	def sql = "SELECT BINARY_CHECKSUM(${ref.join(', ')}) \r\nFROM ${it.schema}.${it.table}\r\n"
     if(it.where != "-")	
 		sql += "WHERE ${it.where}\r\n"
     def file = new File("${path}Target/${it.database}#${it.table}_HASH.sql")
@@ -7,30 +17,39 @@ model.tables.each {
       
     if (!file.exists() && it.columns.findAll{ it.testType.contains('HASH')}.size() > 0 ) { 
       file << sql
+       
     	  
     }
-      
-    println sql
+  	if(it.columns.findAll{ it.testType.contains('HASH')}.size() > 0 )
+      	println sql
 			
 } 
 
-
+println "Source: "
 model.tables.each {
 
-  	
-
-	def sqlSrc = "SELECT BINARY_CHECKSUM(${it.tableRef.columns.findAll{it.testType.contains('HASH') }.join(', ')}) \r\nFROM ${it.tableRef.schema}.${it.tableRef.table}\r\n"
+  	def col = it.columns.findAll{it.testType.contains('HASH') }
     
-    if(it.tableRef.where != "-")	
-		sqlSrc += "WHERE ${it.tableRef.where}\r\n"
+    def ref = []
       
-    def fileSrc = new File("${path}Source/${it.database}#${it.table}_HASH.sql")
-      
-    if (!fileSrc.exists() && it.columns.findAll{ it.testType.contains('HASH')}.size() > 0 ) { 
-      fileSrc << sqlSrc
-    	  
+    col.each {
+    	ref << it.columnRef.column
+    }
+	if(it.tableRef) {
+      def sqlSrc = "SELECT BINARY_CHECKSUM(${ref.join(', ')}) \r\nFROM ${it.tableRef.schema}.${it.tableRef.table}\r\n"
+
+      if(it.tableRef.where != "-")	
+          sqlSrc += "WHERE ${it.tableRef.where}\r\n"
+
+      def fileSrc = new File("${path}Source/${it.database}#${it.table}_HASH.sql")
+
+      if (!fileSrc.exists() && it.columns.findAll{ it.testType.contains('HASH')}.size() > 0 ) { 
+        fileSrc << sqlSrc
+
+      }
+      println sqlSrc
     }
       
-    println sqlSrc
+    
 			
 } 

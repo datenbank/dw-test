@@ -13,9 +13,9 @@ model.tables.each {
 	it.columns.findAll{ it.testType.contains('GROUPBY') }.each { col ->
 		
 		if(groupBy == "") {
-			groupBy += " $col.columnRef.column\r\n"
+			groupBy += " $col.column\r\n"
 		} else {
-			groupBy += ", $col.columnRef.column\r\n"
+			groupBy += ", $col.column\r\n"
 		}
 			
 		
