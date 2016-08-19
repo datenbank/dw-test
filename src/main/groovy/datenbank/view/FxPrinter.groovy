@@ -1300,7 +1300,7 @@ class FxPrinter extends Application implements Observer {
 
 						srcBox.getChildren().clear()
 						srcColumns = sourceColumns(t)
-						srcBox.getChildren().addAll(srcComboBox, srcColumns);
+						srcBox.getChildren().addAll(new Label("Source:"),srcComboBox, srcColumns);
 
 					}
 				})
@@ -1318,14 +1318,14 @@ class FxPrinter extends Application implements Observer {
 						}
 						tgtBox.getChildren().clear()
 						tgtColumns = targetColumns(t)
-						tgtBox.getChildren().addAll(tgtComboBox, tgtColumns);
+						tgtBox.getChildren().addAll(new Label("Target:"), tgtComboBox, tgtColumns);
 
 					}
 				})
 		srcColumns = sourceColumns(m.srcTables[0])
 		tgtColumns = targetColumns(m.tables[0])
-		srcBox.getChildren().addAll(srcComboBox, srcColumns);
-		tgtBox.getChildren().addAll(tgtComboBox, tgtColumns);
+		srcBox.getChildren().addAll(new Label("Source:"),srcComboBox, srcColumns);
+		tgtBox.getChildren().addAll(new Label("Target:"),tgtComboBox, tgtColumns);
 
 
 
@@ -1338,9 +1338,10 @@ class FxPrinter extends Application implements Observer {
 
 		editorBox.getChildren().addAll(menu, hbox);
 		
+		def scene = new Scene(editorBox, 800, 770,  Color.WHITE)
 		
-		stage.setScene(new Scene(editorBox, 800, 770));
-		stage.setResizable(false)
+		stage.setScene(scene);
+		//stage.setResizable(false)
 		stage.show();
 		
 		itemSave.setOnAction(new EventHandler<ActionEvent>() {
