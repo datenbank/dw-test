@@ -55,6 +55,8 @@ distZip {
 		include 'Scripts/*'
 		include 'conf.txt'
 		include 'model.csv'
+		include 'source.csv'
+		include 'target.csv'
 		include 'model.sql'
 		
 	}
@@ -76,6 +78,8 @@ installDist {
 		include 'Scripts/*'
 		include 'conf.txt'
 		include 'model.csv'
+		include 'source.csv'
+		include 'target.csv'
 		include 'model.sql'
 		
 	}
