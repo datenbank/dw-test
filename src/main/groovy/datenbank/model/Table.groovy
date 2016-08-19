@@ -10,9 +10,23 @@ class Table extends Observable {
 	def columns = []
 	
 	def tableRef
-	
-	def testType
+		
 	def where
+	
+	def String getTestType() {
+		def testTypeTmp = ""
+		int i = 0
+		columns.each { col ->
+			if(!testTypeTmp.contains(col.testType)) {
+				if(i>0)
+					testTypeTmp =  testTypeTmp+" | "+col.testType
+				else 
+					testTypeTmp = col.testType
+				i++
+			}
+		}
+		return testTypeTmp
+	}
 	
 	def addColumn(def column) {
 		

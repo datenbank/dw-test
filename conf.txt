@@ -67,6 +67,7 @@
 */
 
 	model = "model.csv"
+	testType = ["COUNT", "NONSENSE", "HASH", "SUMBY", "GROUPBY"]
 
 
 //	********************************************

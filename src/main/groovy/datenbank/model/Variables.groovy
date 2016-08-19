@@ -23,6 +23,9 @@ class Variables {
 	
 	static saveCompareHistory = false
 	
+	static testType = ["COUNT", "NONSENSE", "HASH", "SUMBY", "GROUPBY"]
+	
+	
 	static config
 	
 	def static void load()
@@ -95,6 +98,9 @@ class Variables {
 		}
 		if(config.saveCompareHistory) {
 			saveCompareHistory = config.saveCompareHistory
+		}
+		if(config.testType) {
+			testType = config.testType
 		}
 	}
 	

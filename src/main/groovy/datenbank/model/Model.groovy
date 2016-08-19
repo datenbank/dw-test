@@ -64,7 +64,7 @@ class Model {
 		if(fileSrc.exists()) {
 			fileSrc.eachLine { line, number ->
 				def row = line.split("${Variables.csvSeperator}")
-				def st = new Table(table: row[2], schema: row[1], database: row[0], where: "-", testType: "-")
+				def st = new Table(table: row[2], schema: row[1], database: row[0], where: "-")
 				addSrc st
 
 				st = getSrc(st.table, st.schema, st.database)
@@ -77,7 +77,7 @@ class Model {
 		if(fileTgt.exists()) {
 			fileTgt.eachLine { line, number ->
 				def row = line.split("${Variables.csvSeperator}")
-				def t = new Table(table: row[2], schema: row[1], database: row[0], where: "-", testType: "-")
+				def t = new Table(table: row[2], schema: row[1], database: row[0], where: "-")
 				add t
 				t = get(t.table, t.schema, t.database)
 				t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], tableRef: t, testType: "-"))
@@ -106,7 +106,6 @@ class Model {
 
 					st.where = row[18]
 					t.tableRef = st
-					t.testType = row[16]
 					t.where = row[17]
 
 

@@ -1382,84 +1382,30 @@ class FxPrinter extends Application implements Observer {
 		HBox hbox = new HBox()
 		hbox.getChildren().addAll(srcBox,tgtBox);
 		
+		
 		HBox testTypesBox = new HBox()
-		
-		def countTestType = new Label("COUNT")
-		def space = new Label(" | ")
-		def space2 = new Label(" | ")
-		def space3 = new Label(" | ")
-		def space4 = new Label(" | ")
-		def nonsenseTestType = new Label("NONSENSE")
-		def groupByTestType = new Label("GROUPBY")
-		def sumByTestType = new Label("SUMBY")
-		def hashTestType = new Label("HASH")
-		countTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent dragEvent) {
-				Dragboard db = countTestType.startDragAndDrop(TransferMode.ANY);
+		testTypesBox.getChildren().add(new Label("Test types: |"))
+		Variables.testType.each {
+			def testTypeLabel = new Label(it)
+			def space = new Label(" | ")
+			testTypesBox.getChildren().addAll(testTypeLabel,space)
+			
+			testTypeLabel.setOnDragDetected(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent dragEvent) {
+					Dragboard db = testTypeLabel.startDragAndDrop(TransferMode.ANY);
+	
+					/* put a string on dragboard */
+					ClipboardContent content = new ClipboardContent();
+					content.putString(testTypeLabel.getText());
+					db.setContent(content);
+	
+					dragEvent.consume();
+				}
+			})
+			
+		}
 
-				/* put a string on dragboard */
-				ClipboardContent content = new ClipboardContent();
-				content.putString(countTestType.getText());
-				db.setContent(content);
-
-				dragEvent.consume();
-			}
-		})
-		nonsenseTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent dragEvent) {
-				Dragboard db = nonsenseTestType.startDragAndDrop(TransferMode.ANY);
-
-				/* put a string on dragboard */
-				ClipboardContent content = new ClipboardContent();
-				content.putString(nonsenseTestType.getText());
-				db.setContent(content);
-
-				dragEvent.consume();
-			}
-		})
-		groupByTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent dragEvent) {
-				Dragboard db = groupByTestType.startDragAndDrop(TransferMode.ANY);
-
-				/* put a string on dragboard */
-				ClipboardContent content = new ClipboardContent();
-				content.putString(groupByTestType.getText());
-				db.setContent(content);
-
-				dragEvent.consume();
-			}
-		})
-		sumByTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent dragEvent) {
-				Dragboard db = sumByTestType.startDragAndDrop(TransferMode.ANY);
-
-				/* put a string on dragboard */
-				ClipboardContent content = new ClipboardContent();
-				content.putString(sumByTestType.getText());
-				db.setContent(content);
-
-				dragEvent.consume();
-			}
-		})
-		hashTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent dragEvent) {
-				Dragboard db = hashTestType.startDragAndDrop(TransferMode.ANY);
-
-				/* put a string on dragboard */
-				ClipboardContent content = new ClipboardContent();
-				content.putString(hashTestType.getText());
-				db.setContent(content);
-
-				dragEvent.consume();
-			}
-		})
-		testTypesBox.getChildren().addAll(countTestType,space, nonsenseTestType, space2, sumByTestType, space3, groupByTestType, space4, hashTestType)
-		
 		editorBox.getChildren().addAll(menu, testTypesBox, hbox);
 		
 		def scene = new Scene(editorBox, 800, 500,  Color.WHITE)

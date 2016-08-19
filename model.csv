@@ -1,5 +1,5 @@
 dw-test;dbo;Population;Quarter;1;YES;char;0;dw-test;dbo;Population;Age;1;YES;int;0;GROUPBY;-;-
-dw-test;dbo;Population;Age;1;YES;int;0;dw-test;dbo;Population;Age;1;YES;int;0;SUMBY | NONSENSE;-;-
+dw-test;dbo;Population;Age;1;YES;int;0;dw-test;dbo;Population;Age;1;YES;int;0;SUMBY | NONSENSE | HASH;-;-
 dw-test;dbo;Population;Male;1;YES;int;0;dw-test;dbo;Population;Female;1;YES;int;0;HASH;-;-
 dw-test;dbo;Population;Female;1;YES;int;0;dw-test;dbo;Population;Female;1;YES;int;0;COUNT;-;-
 dw-test;dbo;PopulationY;Quarter;1;YES;char;0;dw-test;dbo;PopulationX;Quarter;1;YES;char;0;HASH;-;-
