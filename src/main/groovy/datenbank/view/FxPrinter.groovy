@@ -1162,13 +1162,13 @@ class FxPrinter extends Application implements Observer {
 
 			vbox.getChildren().addAll(l);
 		}
-		whereSource = new TextArea(table.where)
-		whereSource.setPrefRowCount(5)
+		whereSource = new TextField(table.where)
+		
 		vbox.getChildren().addAll(whereSource);
 		
 		whereSource.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent ke) {
-				table.where = whereSource.getText()
+				table.where = whereSource.getText() == "" ? "-" : whereSource.getText()
 				
 			}
 		});
@@ -1236,10 +1236,10 @@ class FxPrinter extends Application implements Observer {
 							if (db.hasString()) {
 								def map = m.srcTables.find {it.toString() == srcComboBox.getValue().toString()}.columns.find { it.column == db.getString() }
 								def tab = m.tables.find {it.toString() == tgtComboBox.getValue().toString()}
-								tab.where = targetWhere.getText()
+								tab.where = whereTarget.getText() == "" ? "-" : whereTarget.getText()
 								if(map) {
 									col.columnRef = map
-									col.tableRef.where = sourceWhere.getText()
+									col.tableRef.where = whereSource.getText() == "" ? "-" : whereSource.getText()
 								}
 								else {
 									
@@ -1279,14 +1279,14 @@ class FxPrinter extends Application implements Observer {
 
 			vbox.getChildren().addAll(l);
 		}
-		whereTarget = new TextArea(table.where)
-		whereTarget.setPrefRowCount(5)
+		whereTarget = new TextField(table.where)
+		
 		vbox.getChildren().addAll(whereTarget);
 		
 		
 		whereTarget.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent ke) {
-				table.where = whereTarget.getText()
+				table.where = whereTarget.getText() == "" ? "-" : whereTarget.getText()
 				
 			}
 		});
