@@ -7,6 +7,9 @@ import org.apache.log4j.Logger
 class Variables {
 	static path = "./"
 	static model = "model.csv"
+	static sourceModel = "source.csv"
+	static targetModel = "target.csv"
+	
 	static sourceConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
 	static targetConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
 	static sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
@@ -26,6 +29,9 @@ class Variables {
 	{
 		path = "./"
 		model = "model.csv"
+		sourceModel = "source.csv"
+		targetModel = "target.csv"
+		
 		sourceConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
 		targetConnection = "jdbc:jtds:sqlserver://localhost:1433/master"
 		sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
@@ -44,6 +50,13 @@ class Variables {
 		
 		if(config.model) {
 			model = config.model			
+		}
+		
+		if(config.sourceModel) {
+			sourceModel = config.sourceModel
+		}
+		if(config.targetModel) {
+			targetModel = config.targetModel
 		}
 		
 		if(config.path) {

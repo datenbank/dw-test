@@ -714,7 +714,25 @@ class FxPrinter extends Application implements Observer {
 		menuBar.getMenus().add(fileGrp)
 		menuBar.getMenus().add(settingsGrp)
 		menuBar.getMenus().add(scriptsGrp)
-
+		
+		def openModelMapperItem = new MenuItem("Model Mapper Helper");
+		openModelMapperItem.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
+		scriptsGrp.getItems().add(openModelMapperItem);
+		
+		openModelMapperItem.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				
+				def s = new File("${Variables.path}${Variables.sourceModel}")
+				def t = new File("${Variables.path}${Variables.targetModel}")
+				def f = new File("${Variables.path}${Variables.model}")
+				if((s.exists() && f.exists()) || f.exists())
+					modelEditor()
+				else
+					alert("Files doesn't exists", "Please make sure the files exists")
+			}
+		});
+		
 		def openModelItem = new MenuItem("Open ${Variables.model}");
 		openModelItem.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN));
 		scriptsGrp.getItems().add(openModelItem);
@@ -1010,7 +1028,7 @@ class FxPrinter extends Application implements Observer {
 	}
 
 	def spreadsheetSaveable(file) {
-		modelEditor()
+		
 		MenuBar menu = new MenuBar()
 		def fileMenu = new Menu("File")
 		menu.getMenus().add(fileMenu)
@@ -1273,7 +1291,7 @@ class FxPrinter extends Application implements Observer {
 						def t
 
 						m.srcTables.each {
-							println "==>"+it.toString()
+							
 							if(it.toString() == selected) {
 								t = it
 							}
@@ -1313,7 +1331,7 @@ class FxPrinter extends Application implements Observer {
 
 
 		Stage stage = new Stage();
-		stage.setTitle("Model Mapper");
+		stage.setTitle("Model Mapper Helper");
 		stage.getIcons().add(icon);
 		HBox hbox = new HBox()
 		hbox.getChildren().addAll(srcBox,tgtBox);

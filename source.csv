@@ -1,0 +1,8 @@
+﻿dw-test;dbo;Population;Quarter;1;YES;char;0
+dw-test;dbo;Population;Age;2;YES;int;0
+dw-test;dbo;Population;Male;3;YES;int;0
+dw-test;dbo;Population;Female;4;YES;int;0
+dw-test;dbo;PopulationX;Quarter;1;YES;char;0
+dw-test;dbo;PopulationX;Age;2;YES;int;0
+dw-test;dbo;PopulationX;Male;3;YES;int;0
+dw-test;dbo;PopulationX;Female;4;YES;int;0

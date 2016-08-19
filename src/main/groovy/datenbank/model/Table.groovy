@@ -15,15 +15,24 @@ class Table extends Observable {
 	def where
 	
 	def addColumn(def column) {
+		
+		def tmp
+		
 		if(column in columns) {
-			
+			tmp = columns.find {it == column}
+			tmp.columnRef = column.columnRef
+			tmp.testType = column.testType
 		} else {
 			columns << column
 		}
 	}
 
 	def boolean equals(def o) {
-		return o?.table == table //add schema also
+		def eq = false
+		if(o?.database == database  &&	o?.schema == schema && o?.table == table)
+			eq = true
+		
+		return eq  //add schema also
 	}
 	
 	def String toString() {
