@@ -32,6 +32,7 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Label
 import javafx.scene.control.ListView
+import javafx.scene.control.TextArea
 import javafx.scene.control.TextField
 import javafx.scene.control.Menu
 import javafx.scene.control.ProgressBar
@@ -1126,7 +1127,7 @@ class FxPrinter extends Application implements Observer {
 		table.columns.each {
 
 			def l = new Label(it.column)
-			l.setFont(new Font("Arial", 15));
+			
 
 			l.setOnDragDetected(new EventHandler<MouseEvent>() {
 						@Override
@@ -1161,6 +1162,17 @@ class FxPrinter extends Application implements Observer {
 
 			vbox.getChildren().addAll(l);
 		}
+		whereSource = new TextArea(table.where)
+		whereSource.setPrefRowCount(5)
+		vbox.getChildren().addAll(whereSource);
+		
+		whereSource.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			public void handle(KeyEvent ke) {
+				table.where = whereSource.getText()
+				
+			}
+		});
+		
 		return vbox
 	}
 
@@ -1168,14 +1180,15 @@ class FxPrinter extends Application implements Observer {
 	def tgtColumns
 	ComboBox srcComboBox
 	ComboBox tgtComboBox
-
+	def whereSource
+	def whereTarget
 	def targetColumns(table) {
 		VBox vbox = new VBox()
 		table.columns.each { col ->
 			
 			def l = new Label(col.toString())
 
-			l.setFont(new Font("Arial", 15));
+			
 
 			l.setOnMouseClicked(new EventHandler<MouseEvent>() {
 						@Override
@@ -1183,6 +1196,7 @@ class FxPrinter extends Application implements Observer {
 							if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
 								if(mouseEvent.getClickCount() == 2){
 									col.columnRef = null
+									col.testType = "-"
 									l.setText(col.toString());
 								}
 							}
@@ -1220,9 +1234,26 @@ class FxPrinter extends Application implements Observer {
 							Dragboard db = event.getDragboard();
 							boolean success = false;
 							if (db.hasString()) {
-
 								def map = m.srcTables.find {it.toString() == srcComboBox.getValue().toString()}.columns.find { it.column == db.getString() }
-								col.columnRef = map
+								def tab = m.tables.find {it.toString() == tgtComboBox.getValue().toString()}
+								tab.where = targetWhere.getText()
+								if(map) {
+									col.columnRef = map
+									col.tableRef.where = sourceWhere.getText()
+								}
+								else {
+									
+									def tt = m.tables.find {it.toString() == tgtComboBox.getValue().toString()}.columns.find { it.column == l.getText().split(" -> ").reverse()[0].split(" <- ")[0] }
+									
+									if(!tt.columnRef)
+										confirm("No column mapping", "Map a source column to the target column before adding a test type.")
+									if(tt.testType != "-" && !tt.testType.contains(db.getString()))									
+										tt.testType += ", ${db.getString()}"
+									else if(!tt.testType.contains(db.getString())) 
+										tt.testType = "${db.getString()}"
+								}
+								
+								
 								l.setText(col.toString());
 								success = true;
 							}
@@ -1248,6 +1279,18 @@ class FxPrinter extends Application implements Observer {
 
 			vbox.getChildren().addAll(l);
 		}
+		whereTarget = new TextArea(table.where)
+		whereTarget.setPrefRowCount(5)
+		vbox.getChildren().addAll(whereTarget);
+		
+		
+		whereTarget.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			public void handle(KeyEvent ke) {
+				table.where = whereTarget.getText()
+				
+			}
+		});
+		
 		return vbox
 	}
 
@@ -1335,8 +1378,86 @@ class FxPrinter extends Application implements Observer {
 		stage.getIcons().add(icon);
 		HBox hbox = new HBox()
 		hbox.getChildren().addAll(srcBox,tgtBox);
+		
+		HBox testTypesBox = new HBox()
+		
+		def countTestType = new Label("COUNT")
+		def space = new Label(" | ")
+		def space2 = new Label(" | ")
+		def space3 = new Label(" | ")
+		def space4 = new Label(" | ")
+		def nonsenseTestType = new Label("NONSENSE")
+		def groupByTestType = new Label("GROUPBY")
+		def sumByTestType = new Label("SUMBY")
+		def hashTestType = new Label("HASH")
+		countTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent dragEvent) {
+				Dragboard db = countTestType.startDragAndDrop(TransferMode.ANY);
 
-		editorBox.getChildren().addAll(menu, hbox);
+				/* put a string on dragboard */
+				ClipboardContent content = new ClipboardContent();
+				content.putString(countTestType.getText());
+				db.setContent(content);
+
+				dragEvent.consume();
+			}
+		})
+		nonsenseTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent dragEvent) {
+				Dragboard db = nonsenseTestType.startDragAndDrop(TransferMode.ANY);
+
+				/* put a string on dragboard */
+				ClipboardContent content = new ClipboardContent();
+				content.putString(nonsenseTestType.getText());
+				db.setContent(content);
+
+				dragEvent.consume();
+			}
+		})
+		groupByTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent dragEvent) {
+				Dragboard db = groupByTestType.startDragAndDrop(TransferMode.ANY);
+
+				/* put a string on dragboard */
+				ClipboardContent content = new ClipboardContent();
+				content.putString(groupByTestType.getText());
+				db.setContent(content);
+
+				dragEvent.consume();
+			}
+		})
+		sumByTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent dragEvent) {
+				Dragboard db = sumByTestType.startDragAndDrop(TransferMode.ANY);
+
+				/* put a string on dragboard */
+				ClipboardContent content = new ClipboardContent();
+				content.putString(sumByTestType.getText());
+				db.setContent(content);
+
+				dragEvent.consume();
+			}
+		})
+		hashTestType.setOnDragDetected(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent dragEvent) {
+				Dragboard db = hashTestType.startDragAndDrop(TransferMode.ANY);
+
+				/* put a string on dragboard */
+				ClipboardContent content = new ClipboardContent();
+				content.putString(hashTestType.getText());
+				db.setContent(content);
+
+				dragEvent.consume();
+			}
+		})
+		testTypesBox.getChildren().addAll(countTestType,space, nonsenseTestType, space2, sumByTestType, space3, groupByTestType, space4, hashTestType)
+		
+		editorBox.getChildren().addAll(menu, testTypesBox, hbox);
 		
 		def scene = new Scene(editorBox, 800, 770,  Color.WHITE)
 		

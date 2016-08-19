@@ -24,7 +24,7 @@ class Column extends Observable {
 		def txt = "${column}"
 
 		if(columnRef) {
-			txt = "${columnRef.tableRef}.${columnRef.column} -> ${column}"
+			txt = "${columnRef.tableRef}.${columnRef.column} -> ${column} <- [$testType]"
 		}
 		return txt
 	}
