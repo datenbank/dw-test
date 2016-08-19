@@ -19,6 +19,7 @@ import javafx.collections.transformation.FilteredList
 import javafx.event.ActionEvent
 import javafx.event.Event
 import javafx.event.EventHandler
+import javafx.geometry.Insets
 import javafx.scene.input.KeyEvent
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu
@@ -1163,8 +1164,9 @@ class FxPrinter extends Application implements Observer {
 			vbox.getChildren().addAll(l);
 		}
 		whereSource = new TextField(table.where)
-		
-		vbox.getChildren().addAll(whereSource);
+		vbox.setPadding(new Insets(10, 10, 10, 10));
+		vbox.setSpacing(10)
+		vbox.getChildren().addAll(new Label("WHERE:"), whereSource);
 		
 		whereSource.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent ke) {
@@ -1280,8 +1282,9 @@ class FxPrinter extends Application implements Observer {
 			vbox.getChildren().addAll(l);
 		}
 		whereTarget = new TextField(table.where)
-		
-		vbox.getChildren().addAll(whereTarget);
+		vbox.setPadding(new Insets(10, 10, 10, 10));
+		vbox.setSpacing(10)
+		vbox.getChildren().addAll(new Label("WHERE:"),whereTarget);
 		
 		
 		whereTarget.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -1308,7 +1311,7 @@ class FxPrinter extends Application implements Observer {
 
 
 		VBox editorBox = new VBox()
-		
+		editorBox.setSpacing(20)
 
 		m = new Model()
 		m.loadModelFromFile()
@@ -1459,7 +1462,7 @@ class FxPrinter extends Application implements Observer {
 		
 		editorBox.getChildren().addAll(menu, testTypesBox, hbox);
 		
-		def scene = new Scene(editorBox, 800, 770,  Color.WHITE)
+		def scene = new Scene(editorBox, 800, 500,  Color.WHITE)
 		
 		stage.setScene(scene);
 		//stage.setResizable(false)
