@@ -10,6 +10,8 @@ class Column extends Observable {
 
 	def column, dataType
 	def isPrimaryKey = 0
+	
+	def ordinal = 0
 
 	def columnRef
 	def tableRef

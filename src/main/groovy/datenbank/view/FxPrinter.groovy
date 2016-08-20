@@ -716,25 +716,25 @@ class FxPrinter extends Application implements Observer {
 		menuBar.getMenus().add(fileGrp)
 		menuBar.getMenus().add(settingsGrp)
 		menuBar.getMenus().add(scriptsGrp)
-		
+
 		def openModelMapperItem = new MenuItem("Model Mapper Helper");
 		openModelMapperItem.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
 		scriptsGrp.getItems().add(openModelMapperItem);
-		
+
 		openModelMapperItem.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				
-				def s = new File("${Variables.path}${Variables.sourceModel}")
-				def t = new File("${Variables.path}${Variables.targetModel}")
-				def f = new File("${Variables.path}${Variables.model}")
-				if((s.exists() && f.exists()) || f.exists())
-					modelEditor()
-				else
-					alert("Files doesn't exists", "Please make sure the files exists")
-			}
-		});
-		
+					@Override
+					public void handle(ActionEvent event) {
+
+						def s = new File("${Variables.path}${Variables.sourceModel}")
+						def t = new File("${Variables.path}${Variables.targetModel}")
+						def f = new File("${Variables.path}${Variables.model}")
+						if((s.exists() && f.exists()) || f.exists())
+							modelEditor()
+						else
+							alert("Files doesn't exists", "Please make sure the files exists")
+					}
+				});
+
 		def openModelItem = new MenuItem("Open ${Variables.model}");
 		openModelItem.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN));
 		scriptsGrp.getItems().add(openModelItem);
@@ -1030,7 +1030,7 @@ class FxPrinter extends Application implements Observer {
 	}
 
 	def spreadsheetSaveable(file) {
-		
+
 		MenuBar menu = new MenuBar()
 		def fileMenu = new Menu("File")
 		menu.getMenus().add(fileMenu)
@@ -1125,56 +1125,57 @@ class FxPrinter extends Application implements Observer {
 
 	def sourceColumns(table) {
 		VBox vbox = new VBox()
-		table.columns.each {
+		if(table) {
+			table.columns.each {
 
-			def l = new Label(it.column)
-			
-
-			l.setOnDragDetected(new EventHandler<MouseEvent>() {
-						@Override
-						public void handle(MouseEvent dragEvent) {
-							Dragboard db = l.startDragAndDrop(TransferMode.ANY);
-
-							/* put a string on dragboard */
-							ClipboardContent content = new ClipboardContent();
-							content.putString(l.getText());
-							db.setContent(content);
-
-							dragEvent.consume();
-						}
-					})
+				def l = new Label(it.column)
 
 
-			l.setOnDragDone(new EventHandler <DragEvent>() {
-						public void handle(DragEvent event) {
-							/* the drag-and-drop gesture ended */
+				l.setOnDragDetected(new EventHandler<MouseEvent>() {
+							@Override
+							public void handle(MouseEvent dragEvent) {
+								Dragboard db = l.startDragAndDrop(TransferMode.ANY);
 
-							Dragboard db = event.getDragboard();
+								/* put a string on dragboard */
+								ClipboardContent content = new ClipboardContent();
+								content.putString(l.getText());
+								db.setContent(content);
 
-
-							/* if the data was successfully moved, clear it */
-							if (event.getTransferMode() == TransferMode.MOVE) {
-								//l.setText("");
+								dragEvent.consume();
 							}
+						})
 
-							event.consume();
+
+				l.setOnDragDone(new EventHandler <DragEvent>() {
+							public void handle(DragEvent event) {
+								/* the drag-and-drop gesture ended */
+
+								Dragboard db = event.getDragboard();
+
+
+								/* if the data was successfully moved, clear it */
+								if (event.getTransferMode() == TransferMode.MOVE) {
+									//l.setText("");
+								}
+
+								event.consume();
+							}
+						});
+
+				vbox.getChildren().addAll(l);
+			}
+			whereSource = new TextField(table.where)
+			vbox.setPadding(new Insets(10, 10, 10, 10));
+			vbox.setSpacing(10)
+			vbox.getChildren().addAll(new Label("WHERE:"), whereSource);
+
+			whereSource.setOnKeyPressed(new EventHandler<KeyEvent>() {
+						public void handle(KeyEvent ke) {
+							table.where = whereSource.getText() == "" ? "-" : whereSource.getText()
+
 						}
 					});
-
-			vbox.getChildren().addAll(l);
 		}
-		whereSource = new TextField(table.where)
-		vbox.setPadding(new Insets(10, 10, 10, 10));
-		vbox.setSpacing(10)
-		vbox.getChildren().addAll(new Label("WHERE:"), whereSource);
-		
-		whereSource.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent ke) {
-				table.where = whereSource.getText() == "" ? "-" : whereSource.getText()
-				
-			}
-		});
-		
 		return vbox
 	}
 
@@ -1186,123 +1187,130 @@ class FxPrinter extends Application implements Observer {
 	def whereTarget
 	def targetColumns(table) {
 		VBox vbox = new VBox()
-		table.columns.each { col ->
-			
-			def l = new Label(col.toString())
+		if(table) {
 
-			
+			table.columns.each { col ->
 
-			l.setOnMouseClicked(new EventHandler<MouseEvent>() {
-						@Override
-						public void handle(MouseEvent mouseEvent) {
-							if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-								if(mouseEvent.getClickCount() == 2){
-									col.columnRef = null
-									col.testType = "-"
+				def l = new Label(col.toString())
+
+
+
+				l.setOnMouseClicked(new EventHandler<MouseEvent>() {
+							@Override
+							public void handle(MouseEvent mouseEvent) {
+								if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+									if(mouseEvent.getClickCount() == 2){
+										col.columnRef = null
+										col.testType = "-"
+										l.setText(col.toString());
+									}
+								}
+							}
+						})
+
+				l.setOnDragEntered(new EventHandler <DragEvent>() {
+							public void handle(DragEvent event) {
+								/* the drag-and-drop gesture entered the target */
+								//System.out.println("onDragEntered");
+								/* show to the user that it is an actual gesture target */
+								if (event.getGestureSource() != l &&
+								event.getDragboard().hasString()) {
+									l.setTextFill(Color.GREEN);
+								}
+
+								event.consume();
+							}
+						});
+
+				l.setOnDragExited(new EventHandler <DragEvent>() {
+							public void handle(DragEvent event) {
+								/* mouse moved away, remove the graphical cues */
+								l.setTextFill(Color.BLACK);
+
+								event.consume();
+							}
+						});
+
+				l.setOnDragDropped(new EventHandler <DragEvent>() {
+							public void handle(DragEvent event) {
+								/* data dropped */
+
+								/* if there is a string data on dragboard, read it and use it */
+								Dragboard db = event.getDragboard();
+								boolean success = false;
+								if (db.hasString()) {
+									def map = m.srcTables.find {it.toString() == srcComboBox.getValue().toString()}.columns.find { it.column == db.getString() }
+									def tab = m.tables.find {it.toString() == tgtComboBox.getValue().toString()}
+									tab.where = whereTarget.getText() == "" ? "-" : whereTarget.getText()
+									if(map) {
+										col.columnRef = map
+										col.tableRef.where = whereSource.getText() == "" ? "-" : whereSource.getText()
+									}
+									else {
+
+										def tt = m.tables.find {it.toString() == tgtComboBox.getValue().toString()}.columns.find { it.column == l.getText().split(" -> ").reverse()[0].split(" <- ")[0] }
+
+										if(!tt.columnRef)
+											confirm("No column mapping", "Map a source column to the target column before adding a test type.")
+										if(tt.testType != "-" && !tt.testType.contains(db.getString()))
+											tt.testType += " | ${db.getString()}"
+										else if(!tt.testType.contains(db.getString()))
+											tt.testType = "${db.getString()}"
+									}
+
+
 									l.setText(col.toString());
+									success = true;
 								}
+								/* let the source know whether the string was successfully
+						 * transferred and used */
+								event.setDropCompleted(success);
+
+								event.consume();
 							}
-						}
-					})
-
-			l.setOnDragEntered(new EventHandler <DragEvent>() {
-						public void handle(DragEvent event) {
-							/* the drag-and-drop gesture entered the target */
-							//System.out.println("onDragEntered");
-							/* show to the user that it is an actual gesture target */
-							if (event.getGestureSource() != l &&
-							event.getDragboard().hasString()) {
-								l.setTextFill(Color.GREEN);
-							}
-
-							event.consume();
-						}
-					});
-
-			l.setOnDragExited(new EventHandler <DragEvent>() {
-						public void handle(DragEvent event) {
-							/* mouse moved away, remove the graphical cues */
-							l.setTextFill(Color.BLACK);
-
-							event.consume();
-						}
-					});
-
-			l.setOnDragDropped(new EventHandler <DragEvent>() {
-						public void handle(DragEvent event) {
-							/* data dropped */
-
-							/* if there is a string data on dragboard, read it and use it */
-							Dragboard db = event.getDragboard();
-							boolean success = false;
-							if (db.hasString()) {
-								def map = m.srcTables.find {it.toString() == srcComboBox.getValue().toString()}.columns.find { it.column == db.getString() }
-								def tab = m.tables.find {it.toString() == tgtComboBox.getValue().toString()}
-								tab.where = whereTarget.getText() == "" ? "-" : whereTarget.getText()
-								if(map) {
-									col.columnRef = map
-									col.tableRef.where = whereSource.getText() == "" ? "-" : whereSource.getText()
+						});
+				l.setOnDragOver(new EventHandler <DragEvent>() {
+							public void handle(DragEvent event) {
+								if (event.getGestureSource() != l &&
+								event.getDragboard().hasString()) {
+									/* allow for both copying and moving, whatever user chooses */
+									event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
 								}
-								else {
-									
-									def tt = m.tables.find {it.toString() == tgtComboBox.getValue().toString()}.columns.find { it.column == l.getText().split(" -> ").reverse()[0].split(" <- ")[0] }
-									
-									if(!tt.columnRef)
-										confirm("No column mapping", "Map a source column to the target column before adding a test type.")
-									if(tt.testType != "-" && !tt.testType.contains(db.getString()))									
-										tt.testType += " | ${db.getString()}"
-									else if(!tt.testType.contains(db.getString())) 
-										tt.testType = "${db.getString()}"
-								}
-								
-								
-								l.setText(col.toString());
-								success = true;
+
+								event.consume();
 							}
-							/* let the source know whether the string was successfully
-					 * transferred and used */
-							event.setDropCompleted(success);
-
-							event.consume();
-						}
-					});
-			l.setOnDragOver(new EventHandler <DragEvent>() {
-						public void handle(DragEvent event) {
-							if (event.getGestureSource() != l &&
-							event.getDragboard().hasString()) {
-								/* allow for both copying and moving, whatever user chooses */
-								event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-							}
-
-							event.consume();
-						}
-					});
+						});
 
 
-			vbox.getChildren().addAll(l);
-		}
-		whereTarget = new TextField(table.where)
-		vbox.setPadding(new Insets(10, 10, 10, 10));
-		vbox.setSpacing(10)
-		vbox.getChildren().addAll(new Label("WHERE:"),whereTarget);
-		
-		
-		whereTarget.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent ke) {
-				table.where = whereTarget.getText() == "" ? "-" : whereTarget.getText()
-				
+				vbox.getChildren().addAll(l);
 			}
-		});
-		
+			whereTarget = new TextField(table.where)
+			vbox.setPadding(new Insets(10, 10, 10, 10));
+			vbox.setSpacing(10)
+			vbox.getChildren().addAll(new Label("WHERE:"),whereTarget);
+
+
+			whereTarget.setOnKeyPressed(new EventHandler<KeyEvent>() {
+						public void handle(KeyEvent ke) {
+							table.where = whereTarget.getText() == "" ? "-" : whereTarget.getText()
+
+						}
+					});
+		}
 		return vbox
 	}
 
-	def m
+	def m 
 	def modelEditor() {
-		
+		m = new Model()
 		MenuBar menu = new MenuBar()
 		def fileMenu = new Menu("File")
-		menu.getMenus().add(fileMenu)
+		def loadMenu = new Menu("Groups")
+		loadMenu.setDisable(true)
+		menu.getMenus().addAll(fileMenu, loadMenu)
+
+
+
 
 		def itemSave = new MenuItem("Save");
 
@@ -1313,7 +1321,6 @@ class FxPrinter extends Application implements Observer {
 		VBox editorBox = new VBox()
 		editorBox.setSpacing(20)
 
-		m = new Model()
 		m.loadModelFromFile()
 
 		VBox srcBox = new VBox()
@@ -1337,7 +1344,7 @@ class FxPrinter extends Application implements Observer {
 						def t
 
 						m.srcTables.each {
-							
+
 							if(it.toString() == selected) {
 								t = it
 							}
@@ -1376,52 +1383,118 @@ class FxPrinter extends Application implements Observer {
 
 
 
+
 		Stage stage = new Stage();
 		stage.setTitle("Model Mapper Helper");
 		stage.getIcons().add(icon);
 		HBox hbox = new HBox()
 		hbox.getChildren().addAll(srcBox,tgtBox);
-		
-		
+
+
 		HBox testTypesBox = new HBox()
 		testTypesBox.getChildren().add(new Label("Test types: |"))
 		Variables.testType.each {
 			def testTypeLabel = new Label(it)
 			def space = new Label(" | ")
 			testTypesBox.getChildren().addAll(testTypeLabel,space)
-			
+
 			testTypeLabel.setOnDragDetected(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent dragEvent) {
-					Dragboard db = testTypeLabel.startDragAndDrop(TransferMode.ANY);
-	
-					/* put a string on dragboard */
-					ClipboardContent content = new ClipboardContent();
-					content.putString(testTypeLabel.getText());
-					db.setContent(content);
-	
-					dragEvent.consume();
-				}
-			})
-			
+						@Override
+						public void handle(MouseEvent dragEvent) {
+							Dragboard db = testTypeLabel.startDragAndDrop(TransferMode.ANY);
+
+							/* put a string on dragboard */
+							ClipboardContent content = new ClipboardContent();
+							content.putString(testTypeLabel.getText());
+							db.setContent(content);
+
+							dragEvent.consume();
+						}
+					})
+
 		}
 
 		editorBox.getChildren().addAll(menu, testTypesBox, hbox);
-		
+
 		def scene = new Scene(editorBox, 800, 500,  Color.WHITE)
-		
+
 		stage.setScene(scene);
 		//stage.setResizable(false)
 		stage.show();
-		
+
 		itemSave.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						loadMenu.setDisable(true)
+						fileMenu.setDisable(true)
+						itemSave.setDisable(true)
+						stage.getScene().setCursor(Cursor.WAIT);
+						m.writeModelToFile()
+						confirm("Saved", "The file is saved.")
+						loadMenu.setDisable(false)
+						fileMenu.setDisable(false)
+						itemSave.setDisable(false)
+						stage.getScene().setCursor(Cursor.DEFAULT);
+
+					}
+				})
+
+		def lstGrp = ["Default"]
+		Variables.config.groups.each {
+			
+			lstGrp << it.key
+			
+		}
+		lstGrp.each {
+
+			loadMenu.setDisable(false)
+
+			def grp ="$it"
+			def itemGroup = new MenuItem("Load from $grp");
+
+
+			loadMenu.getItems().add(itemGroup);
+
+			itemGroup.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent event) {
-							m.writeModelToFile()
-							confirm("Saved", "The file is saved.")
-							
+							Thread.start {
+								loadMenu.setDisable(true)
+								fileMenu.setDisable(true)
+								itemSave.setDisable(true)
+								stage.getScene().setCursor(Cursor.WAIT);
+								
+								try {
+									m.loadModelFromDb(grp)
+									
+	
+									def tgt = FXCollections.observableArrayList(m.tables);
+									def src = FXCollections.observableArrayList(m.srcTables);
+									Platform.runLater(new Runnable() {
+												@Override public void run() {
+													tgtComboBox.setItems(tgt)
+													tgtComboBox.setValue(m.tables[0])
+													srcComboBox.setItems(src);
+													srcComboBox.setValue(m.srcTables[0])
+												}
+									})
+	
+	
+									
+									confirm("Load from Database", "Model is updated")
+								} catch (all) {
+									alert("Load error", "$all")
+								}
+								stage.getScene().setCursor(Cursor.DEFAULT);
+								loadMenu.setDisable(false)
+								fileMenu.setDisable(false)
+								itemSave.setDisable(false)
+							}
+
 						}
-		})
+					})
+
+		}
 
 	}
 

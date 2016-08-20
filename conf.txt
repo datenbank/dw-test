@@ -22,9 +22,9 @@
 		}
 		
 		demo2 {
-				target = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
+				target = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest2"
 				targetDriver = "net.sourceforge.jtds.jdbc.Driver"
-				source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
+				source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest2"
 				sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
 		}
 	}

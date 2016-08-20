@@ -1,5 +1,6 @@
 package datenbank.model
 
+import groovy.sql.Sql
 import groovy.util.logging.Log4j
 import org.apache.log4j.Logger
 
@@ -52,8 +53,90 @@ class Model {
 		tables.each { t ->
 			t.columns.each { c -> 
 				if(c.columnRef)
-					file << "${t.database}${Variables.csvSeperator}${t.schema}${Variables.csvSeperator}${t.table}${Variables.csvSeperator}${c.column}${Variables.csvSeperator}1${Variables.csvSeperator}YES${Variables.csvSeperator}${c.dataType}${Variables.csvSeperator}${c.isPrimaryKey}${Variables.csvSeperator}${c.columnRef.tableRef.database}${Variables.csvSeperator}${c.columnRef.tableRef.schema}${Variables.csvSeperator}${c.columnRef.tableRef.table}${Variables.csvSeperator}${c.columnRef.column}${Variables.csvSeperator}1${Variables.csvSeperator}YES${Variables.csvSeperator}${c.columnRef.dataType}${Variables.csvSeperator}${c.columnRef.isPrimaryKey}${Variables.csvSeperator}${c.testType}${Variables.csvSeperator}${t.where}${Variables.csvSeperator}${c.columnRef.tableRef.where}\r\n" }
+					file << "${t.database}${Variables.csvSeperator}${t.schema}${Variables.csvSeperator}${t.table}${Variables.csvSeperator}${c.column}${Variables.csvSeperator}${c.ordinal}${Variables.csvSeperator}YES${Variables.csvSeperator}${c.dataType}${Variables.csvSeperator}${c.isPrimaryKey}${Variables.csvSeperator}${c.columnRef.tableRef.database}${Variables.csvSeperator}${c.columnRef.tableRef.schema}${Variables.csvSeperator}${c.columnRef.tableRef.table}${Variables.csvSeperator}${c.columnRef.column}${Variables.csvSeperator}${c.columnRef.ordinal}${Variables.csvSeperator}YES${Variables.csvSeperator}${c.columnRef.dataType}${Variables.csvSeperator}${c.columnRef.isPrimaryKey}${Variables.csvSeperator}${c.testType}${Variables.csvSeperator}${t.where}${Variables.csvSeperator}${c.columnRef.tableRef.where}\r\n" }
 		}
+	}
+	
+	def loadModelFromDb(group) {
+		
+		def sql 
+		def sqlSrc 
+		
+		if(group == "Default") {
+			sql = Sql.newInstance(Variables.targetConnection, Variables.targetDriver )
+			sqlSrc = Sql.newInstance(Variables.sourceConnection, Variables.sourceDriver )
+			
+			
+		} else {
+			sql = Sql.newInstance(Variables.config.groups."${group}".target, Variables.config.groups."${group}".targetDriver)
+			sqlSrc = Sql.newInstance(Variables.config.groups."${group}".source, Variables.config.groups."${group}".sourceDriver)
+		
+		}
+		sqlSrc.eachRow('''
+			SELECT TABLE_CATALOG,
+			       TABLE_SCHEMA,
+			       TABLE_NAME,
+			       COLUMN_NAME,
+			       ORDINAL_POSITION,
+			       IS_NULLABLE,
+			       DATA_TYPE,
+			       
+			                (SELECT MAX('1')
+			                 FROM [INFORMATION_SCHEMA].[KEY_COLUMN_USAGE] kcu
+								INNER JOIN [INFORMATION_SCHEMA].[TABLE_CONSTRAINTS] tc 
+									ON kcu.CONSTRAINT_NAME=tc.CONSTRAINT_NAME and tc.CONSTRAINT_TYPE='PRIMARY KEY'
+									AND tc.[TABLE_CATALOG]=c.TABLE_CATALOG
+									AND tc.[TABLE_SCHEMA]=c.[TABLE_SCHEMA]
+									AND tc.[TABLE_NAME]=c.[TABLE_NAME]
+			                 WHERE kcu.TABLE_CATALOG=c.TABLE_CATALOG
+			                   AND kcu.TABLE_SCHEMA=c.TABLE_SCHEMA
+			                   AND kcu.TABLE_NAME=c.TABLE_NAME
+			                   AND kcu.COLUMN_NAME=c.COLUMN_NAME) IS_PK
+			FROM [INFORMATION_SCHEMA].[COLUMNS] c
+			order by 1,2,3,5
+			''') { row ->
+			
+			def st = new Table(table: row[2], schema: row[1], database: row[0], where: "-")
+			addSrc st
+
+			st = getSrc(st.table, st.schema, st.database)
+
+			st.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7] == null ? 0 : 1, tableRef: st, ordinal: row[4]))
+
+			}
+			sql.eachRow('''
+			SELECT TABLE_CATALOG,
+			       TABLE_SCHEMA,
+			       TABLE_NAME,
+			       COLUMN_NAME,
+			       ORDINAL_POSITION,
+			       IS_NULLABLE,
+			       DATA_TYPE,
+			       
+			                (SELECT MAX('1')
+			                 FROM [INFORMATION_SCHEMA].[KEY_COLUMN_USAGE] kcu
+								INNER JOIN [INFORMATION_SCHEMA].[TABLE_CONSTRAINTS] tc 
+									ON kcu.CONSTRAINT_NAME=tc.CONSTRAINT_NAME and tc.CONSTRAINT_TYPE='PRIMARY KEY'
+									AND tc.[TABLE_CATALOG]=c.TABLE_CATALOG
+									AND tc.[TABLE_SCHEMA]=c.[TABLE_SCHEMA]
+									AND tc.[TABLE_NAME]=c.[TABLE_NAME]
+			                 WHERE kcu.TABLE_CATALOG=c.TABLE_CATALOG
+			                   AND kcu.TABLE_SCHEMA=c.TABLE_SCHEMA
+			                   AND kcu.TABLE_NAME=c.TABLE_NAME
+			                   AND kcu.COLUMN_NAME=c.COLUMN_NAME) IS_PK
+			FROM [INFORMATION_SCHEMA].[COLUMNS] c
+			order by 1,2,3,5
+			''') { row ->
+			
+			def t = new Table(table: row[2], schema: row[1], database: group, where: "-")
+			add t
+
+			t = get(t.table, t.schema, t.database)
+
+			t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7] == null ? 0 : 1, tableRef: t, ordinal: row[4], testType: "-"))
+
+			}
+			loadModelFromFile()
 	}
 
 	def loadModelFromFile() {
@@ -64,12 +147,12 @@ class Model {
 		if(fileSrc.exists()) {
 			fileSrc.eachLine { line, number ->
 				def row = line.split("${Variables.csvSeperator}")
-				def st = new Table(table: row[2], schema: row[1], database: row[0], where: "-")
-				addSrc st
+				def t = new Table(table: row[2], schema: row[1], database: row[0], where: "-")
+				add t
 
-				st = getSrc(st.table, st.schema, st.database)
+				t = get(t.table, t.schema, t.database)
 
-				st.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], tableRef: st))
+				t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], tableRef: t, ordinal: row[4]))
 			}
 		}
 
@@ -80,7 +163,7 @@ class Model {
 				def t = new Table(table: row[2], schema: row[1], database: row[0], where: "-")
 				add t
 				t = get(t.table, t.schema, t.database)
-				t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], tableRef: t, testType: "-"))
+				t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], tableRef: t, testType: "-", ordinal: row[4]))
 			}
 		}
 		
@@ -102,14 +185,14 @@ class Model {
 					addSrc st
 					st = getSrc(st.table, st.schema, st.database)
 
-					def sc = new Column(column: row[11], dataType: row[14], isPrimaryKey: row[15], tableRef: st, testType: row[16])
+					def sc = new Column(column: row[11], dataType: row[14], isPrimaryKey: row[15], tableRef: st, testType: row[16], ordinal: row[12])
 
 					st.where = row[18]
 					t.tableRef = st
 					t.where = row[17]
 
 
-					t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], columnRef: sc, tableRef: t, testType: row[16]))
+					t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], columnRef: sc, tableRef: t, testType: row[16], ordinal: row[4]))
 					st.addColumn(sc)
 				} catch (Exception e) {
 					println "skipping row #$i $e"
