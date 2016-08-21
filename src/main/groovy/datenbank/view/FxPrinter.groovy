@@ -68,7 +68,9 @@ import javafx.util.Callback
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font
 import javafx.scene.Cursor
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.Priority
+import javafx.scene.control.ScrollPane
+import javafx.scene.control.ScrollPane.ScrollBarPolicy
 
 class FxPrinter extends Application implements Observer {
 	def vbox
@@ -1415,8 +1417,13 @@ class FxPrinter extends Application implements Observer {
 		}
 
 		editorBox.getChildren().addAll(menu, testTypesBox, hbox);
-
-		def scene = new Scene(editorBox, 800, 500,  Color.WHITE)
+		
+		def sp = new ScrollPane()
+		sp.setFitToWidth(true);
+		sp.setHbarPolicy(ScrollBarPolicy.ALWAYS);
+		sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+		sp.setContent(editorBox);
+		def scene = new Scene(sp, 800, 500,  Color.WHITE)
 
 		stage.setScene(scene);
 		//stage.setResizable(false)

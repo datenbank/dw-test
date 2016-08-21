@@ -37,9 +37,9 @@
 */
 	
 	//source = "jdbc:oracle:thin:<user>/<password>@//localhost:1521/xe"
-	target = "jdbc:oracle:thin:<user>/<password>@//localhost:1521/xe"
+	//target = "jdbc:oracle:thin:<user>/<password>@//localhost:1521/xe"
 	//sourceDriver = "oracle.jdbc.driver.OracleDriver"
-	targetDriver = "oracle.jdbc.driver.OracleDriver"
+	//targetDriver = "oracle.jdbc.driver.OracleDriver"
 
 //	********************************************
 /*
