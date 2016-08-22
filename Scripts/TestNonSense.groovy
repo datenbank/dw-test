@@ -13,7 +13,7 @@ model.tables.each {
 		sql += "FROM ${it.schema}.${it.table}\r\n"
 		if(it.where != "-")	
 			sql += "WHERE ${it.where}\r\n"	
-		def file = new File("${path}Target/${it.tableRef.database}#${it.table}_NONSENSE.sql")
+		def file = new File("${path}Target/${it.database}#${it.table}_NONSENSE.sql")
 		if(!file.exists()) {
 			file << sql
 		}
@@ -35,7 +35,7 @@ model.tables.each {
 		sql += "FROM ${it.tableRef.schema}.${it.tableRef.table}\r\n"
 		if(it.tableRef.where != "-")	
 			sql += "WHERE ${it.tableRef.where}\r\n"	
-		def file = new File("${path}Source/${it.tableRef.database}#${it.table}_NONSENSE.sql")
+		def file = new File("${path}Source/${it.database}#${it.table}_NONSENSE.sql")
 		if(!file.exists()) {
 			file << sql
 		}
