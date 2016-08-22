@@ -9,11 +9,11 @@ class Model {
 	def tables = []
 	def srcTables = []
 
-	def Table get(def tableName, def schema, def database) {
+	def Table get(def tableName, def schema, def database, def group) {
 		def t
 
 		tables.each {
-			if(it.table == tableName && it.schema == schema && it.database == database) {
+			if(it.table == tableName && it.schema == schema && it.database == database && it.group == group) {
 				t = it
 			}
 		}
@@ -53,7 +53,7 @@ class Model {
 		tables.each { t ->
 			t.columns.each { c ->
 				if(c.columnRef)
-					file << "${t.database}${Variables.csvSeperator}${t.schema}${Variables.csvSeperator}${t.table}${Variables.csvSeperator}${c.column}${Variables.csvSeperator}${c.ordinal}${Variables.csvSeperator}YES${Variables.csvSeperator}${c.dataType}${Variables.csvSeperator}${c.isPrimaryKey}${Variables.csvSeperator}${c.columnRef.tableRef.database}${Variables.csvSeperator}${c.columnRef.tableRef.schema}${Variables.csvSeperator}${c.columnRef.tableRef.table}${Variables.csvSeperator}${c.columnRef.column}${Variables.csvSeperator}${c.columnRef.ordinal}${Variables.csvSeperator}YES${Variables.csvSeperator}${c.columnRef.dataType}${Variables.csvSeperator}${c.columnRef.isPrimaryKey}${Variables.csvSeperator}${c.testType}${Variables.csvSeperator}${t.where}${Variables.csvSeperator}${c.columnRef.tableRef.where}\r\n"
+					file << "${t.database}${Variables.csvSeperator}${t.schema}${Variables.csvSeperator}${t.table}${Variables.csvSeperator}${c.column}${Variables.csvSeperator}${c.ordinal}${Variables.csvSeperator}YES${Variables.csvSeperator}${c.dataType}${Variables.csvSeperator}${c.isPrimaryKey}${Variables.csvSeperator}${c.columnRef.tableRef.database}${Variables.csvSeperator}${c.columnRef.tableRef.schema}${Variables.csvSeperator}${c.columnRef.tableRef.table}${Variables.csvSeperator}${c.columnRef.column}${Variables.csvSeperator}${c.columnRef.ordinal}${Variables.csvSeperator}YES${Variables.csvSeperator}${c.columnRef.dataType}${Variables.csvSeperator}${c.columnRef.isPrimaryKey}${Variables.csvSeperator}${c.testType}${Variables.csvSeperator}${t.where}${Variables.csvSeperator}${c.columnRef.tableRef.where}${Variables.csvSeperator}${c.tableRef.group}\r\n"
 			}
 		}
 	}
@@ -197,10 +197,10 @@ class Model {
 		}
 		sql.eachRow(tgtQuery) { row ->
 
-					def t = new Table(table: row[2], schema: row[1], database: group, where: "-")
+					def t = new Table(table: row[2], schema: row[1], database: row[0], where: "-", group: group)
 					add t
 
-					t = get(t.table, t.schema, t.database)
+					t = get(t.table, t.schema, t.database, t.group)
 
 					t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7] == null ? 0 : 1, tableRef: t, ordinal: row[4], testType: "-"))
 				}
@@ -228,9 +228,9 @@ class Model {
 		if(fileTgt.exists()) {
 			fileTgt.eachLine { line, number ->
 				def row = line.split("${Variables.csvSeperator}")
-				def t = new Table(table: row[2], schema: row[1], database: row[0], where: "-")
+				def t = new Table(table: row[2], schema: row[1], database: row[0], where: "-", group: row[0])
 				add t
-				t = get(t.table, t.schema, t.database)
+				t = get(t.table, t.schema, t.database, t.group)
 				t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], tableRef: t, testType: "-", ordinal: row[4]))
 			}
 		}
@@ -246,9 +246,9 @@ class Model {
 				try {
 					def row = line.split("${Variables.csvSeperator}")
 					def st = new Table(table: row[10], schema: row[9], database: row[8])
-					def t = new Table(table: row[2], schema: row[1], database: row[0])
+					def t = new Table(table: row[2], schema: row[1], database: row[0], group: row[19])
 					add t
-					t = get(t.table, t.schema, t.database)
+					t = get(t.table, t.schema, t.database, t.group)
 
 					addSrc st
 					st = getSrc(st.table, st.schema, st.database)

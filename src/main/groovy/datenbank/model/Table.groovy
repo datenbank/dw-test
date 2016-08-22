@@ -6,7 +6,7 @@ import org.apache.log4j.Logger
 
 @Log4j
 class Table extends Observable {
-	def table, schema, database
+	def table, schema, database, group
 	def columns = []
 	
 	def tableRef
@@ -43,13 +43,22 @@ class Table extends Observable {
 
 	def boolean equals(def o) {
 		def eq = false
-		if(o?.database == database  &&	o?.schema == schema && o?.table == table)
+		
+		if(group) {
+			if(o?.database == database  &&	o?.schema == schema && o?.table == table && o?.group == group)
+				eq = true
+		} else {		
+			if(o?.database == database  &&	o?.schema == schema && o?.table == table)
 			eq = true
+		}
 		
 		return eq  //add schema also
 	}
 	
 	def String toString() {
-		return "${database}.${schema}.${table}"	
+		if(group)
+			return "${group} - ${database}.${schema}.${table}"
+		else
+			return "${database}.${schema}.${table}"	
 	}
 }

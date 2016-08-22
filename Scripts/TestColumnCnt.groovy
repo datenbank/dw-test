@@ -9,7 +9,7 @@ model.tables.each {
 		if(it.where != "-")	
 			sql += "WHERE ${it.where}\r\n"	
 		sql += "GROUP BY $col.column\r\n"
-          def file = new File("${path}Target/${it.database}#${it.table}_${col.column}_COLUMN_CNT.sql")
+          def file = new File("${path}Target/${it.group}#${it.table}_${col.column}_COLUMN_CNT.sql")
 		if(!file.exists()) {
 			file << sql
 		}
@@ -26,7 +26,7 @@ model.tables.each {
 		if(it.tableRef.where != "-")	
 			sql += "WHERE ${it.tableRef.where}\r\n"	
 		sql += "GROUP BY $col.columnRef.column\r\n"
-          def file = new File("${path}Source/${it.database}#${it.table}_${col.column}_COLUMN_CNT.sql")
+          def file = new File("${path}Source/${it.group}#${it.table}_${col.column}_COLUMN_CNT.sql")
 		if(!file.exists()) {
 			file << sql
 		}

@@ -12,7 +12,7 @@ model.tables.each {
 	def sql = "SELECT BINARY_CHECKSUM(${ref.join(', ')}) \r\nFROM ${it.schema}.${it.table}\r\n"
     if(it.where != "-")	
 		sql += "WHERE ${it.where}\r\n"
-    def file = new File("${path}Target/${it.database}#${it.table}_HASH.sql")
+    def file = new File("${path}Target/${it.group}#${it.table}_HASH.sql")
        
       
     if (!file.exists() && it.columns.findAll{ it.testType.contains('HASH')}.size() > 0 ) { 
@@ -41,7 +41,7 @@ model.tables.each {
       if(it.tableRef.where != "-")	
           sqlSrc += "WHERE ${it.tableRef.where}\r\n"
 
-      def fileSrc = new File("${path}Source/${it.database}#${it.table}_HASH.sql")
+      def fileSrc = new File("${path}Source/${it.group}#${it.table}_HASH.sql")
 
       if (!fileSrc.exists() && it.columns.findAll{ it.testType.contains('HASH')}.size() > 0 ) { 
         fileSrc << sqlSrc
