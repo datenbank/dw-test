@@ -109,9 +109,18 @@ To execute a script go to Scripts->Run [script name].groovy
 <p>See the scripts in the distribution for examples.</p>
 <p>The Model Mapper Helper can be used to create the model.csv file. Load tables information through the Groups menu - it will use the connections set up in the settings. To map columns and test types, drag and drop on target column.
 File->Save will save the mapping to model.csv. When the model/mapping is set up the scripts can be executed in order to create test cases. This automation is very helpful and alot can be tested with little effort.
-<img src="./images/Mapper.JPG" />
-  
 </p>
+<img src="./images/Mapper.JPG" />
+<p>
+Here is a description of the Scripts provided in the distribution:  
+<ul>
+  <li>TestCount.groovy generates SELECT COUNT(*) queries per table. Use test type COUNT</li>
+  <li>TestDistict.groovy generates SELECT DISTINCT column1, column2 queries per table. Use test type DISTINCT</li>
+  <li>TestNonsense.groovy generates SELECT SUM(column1), SUM(column2) queries per table (no GROUP BY is added). Use test type NONSENSE</li>
+  <li>TestHash.groovy generates SELECT BINARY_CHECKSUM(column1, column2) queries per table. Use test type HASH</li>
+  <li>TestSumBy.groovy generates SELECT SUM(column1), column2 queries per table (columns marked by SUMBY are aggregated and columns marked by GROUPBY are added to the GROUP BY clause). Use test type SUMBY and GROUPBY</li>
+<li>TestColumnCnt.groovy generates SELECT column1, COUNT(*) queries per column. Use test type COLUMN_CNT.</li>
+</ul>
 </p>
 <h1>Multiple Connections Sets</h1>
 <p>
