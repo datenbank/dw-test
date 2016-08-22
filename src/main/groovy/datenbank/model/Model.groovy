@@ -69,7 +69,7 @@ class Model {
 			sqlSrc = Sql.newInstance(Variables.sourceConnection, Variables.sourceDriver )
 
 			if(Variables.targetDriver.contains("Oracle")) {
-				tgtQuery = "select '-', '-', table_name, column_name, 1, nullable, data_type, 0 from cols"
+				tgtQuery = "select '-', '-', table_name, column_name, 1, nullable, data_type, 0 from cols  order by table_name, column_name"
 			} else {
 				tgtQuery = '''
 			SELECT TABLE_CATALOG,
@@ -92,11 +92,12 @@ class Model {
 			                   AND kcu.TABLE_NAME=c.TABLE_NAME
 			                   AND kcu.COLUMN_NAME=c.COLUMN_NAME) IS_PK
 			FROM INFORMATION_SCHEMA.COLUMNS c
+				ORDER BY TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME, ORDINAL_POSITION
 			'''
 			}
 
 			if(Variables.sourceDriver.contains("Oracle")) {
-				srcQuery = "select '-', '-', table_name, column_name, 1, nullable, data_type, '0' from cols"
+				srcQuery = "select '-', '-', table_name, column_name, 1, nullable, data_type, '0' from cols  order by table_name, column_name"
 			} else {
 				srcQuery = '''
 			SELECT TABLE_CATALOG,
@@ -119,6 +120,7 @@ class Model {
 			                   AND kcu.TABLE_NAME=c.TABLE_NAME
 			                   AND kcu.COLUMN_NAME=c.COLUMN_NAME) IS_PK
 			FROM INFORMATION_SCHEMA.COLUMNS c
+				ORDER BY TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME, ORDINAL_POSITION
 			'''
 			}
 		} else {
@@ -126,7 +128,7 @@ class Model {
 			sqlSrc = Sql.newInstance(Variables.config.groups."${group}".source, Variables.config.groups."${group}".sourceDriver)
 
 			if(Variables.config.groups."${group}".targetDriver.contains("Oracle")) {
-				tgtQuery = "select '-', '-', table_name, column_name, 1, nullable, data_type, '0' from cols"
+				tgtQuery = "select '-', '-', table_name, column_name, 1, nullable, data_type, '0' from cols  order by table_name, column_name"
 			} else {
 				tgtQuery = '''
 			SELECT TABLE_CATALOG,
@@ -149,11 +151,12 @@ class Model {
 			                   AND kcu.TABLE_NAME=c.TABLE_NAME
 			                   AND kcu.COLUMN_NAME=c.COLUMN_NAME) IS_PK
 			FROM INFORMATION_SCHEMA.COLUMNS c
+				ORDER BY TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME, ORDINAL_POSITION
 			'''
 			}
 
 			if(Variables.config.groups."${group}".sourceDriver.contains("Oracle")) {
-				srcQuery = "select '-', '-', table_name, column_name, 1, nullable, data_type, '0' from cols"
+				srcQuery = "select '-', '-', table_name, column_name, 1, nullable, data_type, '0' from cols order by table_name, column_name"
 			} else {
 				srcQuery = '''
 			SELECT TABLE_CATALOG,
@@ -176,6 +179,7 @@ class Model {
 			                   AND kcu.TABLE_NAME=c.TABLE_NAME
 			                   AND kcu.COLUMN_NAME=c.COLUMN_NAME) IS_PK
 			FROM INFORMATION_SCHEMA.COLUMNS c
+				ORDER BY TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME, ORDINAL_POSITION
 			'''
 			}
 		}
