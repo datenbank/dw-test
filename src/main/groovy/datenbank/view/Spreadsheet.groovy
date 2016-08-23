@@ -24,6 +24,12 @@ class Spreadsheet {
 		spv.getGrid().getRows()
 	}
 	
+	
+	def setModelHeaders() {
+		
+		spv.getGrid().getColumnHeaders().setAll("database", "schema", "table", "column", "orginal", "nullable", "dataType", "isPrimaryKey", "database", "schema", "table", "column", "orginal", "nullable", "dataType", "isPrimaryKey", "testType", "where (target)", "where (source)", "group")
+	}
+	
 	def Spreadsheet(file) {
 		
 		def lst

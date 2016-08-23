@@ -165,6 +165,7 @@ class ModelMapper {
 		testTypesBox.getChildren().add(new Label("Test types: |"))
 		Variables.testType.each {
 			def testTypeLabel = new Label(it)
+			testTypeLabel.setTooltip(new Tooltip("Drag and drop on target column to add test type."))
 			def space = new Label(" | ")
 			testTypesBox.getChildren().addAll(testTypeLabel,space)
 
@@ -279,7 +280,7 @@ class ModelMapper {
 			table.columns.each {
 
 				def l = new Label(it.column)
-
+				l.setTooltip(new Tooltip("Drag and drop on target column to map the two."))
 
 				l.setOnDragDetected(new EventHandler<MouseEvent>() {
 							@Override

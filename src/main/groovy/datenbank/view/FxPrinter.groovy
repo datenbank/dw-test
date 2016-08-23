@@ -1044,7 +1044,7 @@ class FxPrinter extends Application implements Observer {
 		fileMenu.getItems().add(itemSave);
 
 		def sheet = new Spreadsheet(file)
-
+		sheet.setModelHeaders()
 		VBox.setVgrow(sheet.spv, Priority.ALWAYS);
 
 
