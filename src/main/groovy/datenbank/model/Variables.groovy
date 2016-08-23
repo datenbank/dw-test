@@ -23,7 +23,7 @@ class Variables {
 	
 	static saveCompareHistory = false
 	
-	static testType = ["COUNT", "NONSENSE", "HASH", "SUMBY", "GROUPBY"]
+	static testType = ["DISTINCT", "COLUMN_CNT", "HASH", "COUNT", "GROUPBY", "SUMBY", "NONSENSE"]
 	
 	
 	static config
@@ -32,6 +32,8 @@ class Variables {
 	{
 		path = "./"
 		model = "model.csv"
+		testType = ["DISTINCT", "COLUMN_CNT", "HASH", "COUNT", "GROUPBY", "SUMBY", "NONSENSE"].sort()
+		
 		sourceModel = "source.csv"
 		targetModel = "target.csv"
 		
