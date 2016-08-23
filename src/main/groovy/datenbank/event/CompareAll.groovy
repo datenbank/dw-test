@@ -20,32 +20,30 @@ class CompareAll implements EventHandler<ActionEvent> {
 
 				init.summary.testCases.each { testCase ->
 					i++
-					while(i>Variables.degreeOfparallelism) {
-						println "wait for $testCase.name $i>$Variables.degreeOfparallelism"
-						Thread.sleep(100)
+					while(i>Variables.degreeOfParallelism) {
+						//Thread.sleep(100)
 					}
 					Thread.start {
 					
 						if(!init.ui.cancel) {
 							init.rt.runOne(testCase)
+							init.ui.progressIncrement()
+						} else {
+							init.ui.progressIncrement()
 							
 						}
 						i--
-						init.ui.progressIncrement()
+						
 					}
 					
 					
 				}
-				
-				//init.summary.ready()
-				
-				
-				//init.ui.btnUpdate(false)
+
 				
 			} else {
 				init.ui.alert("No test cases", "No test cases to compare.")
 			}
-			//init.ui.progressStop()
+			
 		}
 		
 	}

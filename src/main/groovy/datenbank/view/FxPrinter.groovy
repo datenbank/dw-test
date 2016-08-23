@@ -117,7 +117,7 @@ class FxPrinter extends Application implements Observer {
 	def progressStop() {
 		Platform.runLater(new Runnable() {
 					@Override public void run() {
-						cancel = false
+						//cancel = false
 						progressCancel.setDisable(false)
 						progress.setVisible(false)
 						progressCancel.setVisible(false)
@@ -823,24 +823,23 @@ class FxPrinter extends Application implements Observer {
 								btnUpdate(true)
 								progressStart(init.summary.testCases.findAll {it.group == groupName}.size())
 								def i=0
-								init.summary.testCases.each { testCase ->
+								init.summary.testCases.findAll {it.group == groupName}.each { testCase ->
 									i++
-									while(i>Variables.degreeOfparallelism) {
-										println "wait for $testCase.name $i>$Variables.degreeOfparallelism"
-										Thread.sleep(100)
+									while(i>Variables.degreeOfParallelism) {
+										//Thread.sleep(100)
 									}
 									Thread.start {
-										if(!cancel && testCase.group == groupName) {
+										if(!cancel) {
 											init.ex.runOne(testCase)
 											
+											progressIncrement()
+										} else {
+											progressIncrement()
 										}
 										i--
-										progressIncrement()
 									}
 								}
-								//progressStop()
-
-								//btnUpdate(false)
+								
 
 							}
 						}
@@ -856,23 +855,24 @@ class FxPrinter extends Application implements Observer {
 								btnUpdate(true)
 								progressStart(init.summary.testCases.findAll {it.group == groupName}.size())
 								def i=0
-								init.summary.testCases.each { testCase ->
+								init.summary.testCases.findAll {it.group == groupName}.each { testCase ->
 									i++
-									while(i>Variables.degreeOfparallelism) {
-										println "wait for $testCase.name $i>$Variables.degreeOfparallelism"
-										Thread.sleep(100)
+									while(i>Variables.degreeOfParallelism) {
+										//Thread.sleep(100)
 									}
 									Thread.start {
-										if(!cancel && testCase.group == groupName) {
+										if(!cancel) {
 											init.rt.runOne(testCase)
+											progressIncrement()
 											
 										}
-										progressIncrement()
+										else {
+											progressIncrement()
+										}
 										i--
 									}
 								}
-								//progressStop()
-								//btnUpdate(false)
+								
 
 							}
 						}
@@ -887,24 +887,24 @@ class FxPrinter extends Application implements Observer {
 								btnUpdate(true)
 								progressStart(init.summary.testCases.findAll {it.group == groupName}.size())
 								def i=0
-								init.summary.testCases.each { testCase ->
+								init.summary.testCases.findAll {it.group == groupName}.each { testCase ->
 									i++
-									while(i>Variables.degreeOfparallelism) {
-										println "wait for $testCase.name $i>$Variables.degreeOfparallelism"
-										Thread.sleep(100)
+									while(i>Variables.degreeOfParallelism) {
+										//Thread.sleep(100)
 									}
 									Thread.start {
-										if(!cancel && testCase.group == groupName) {
+										if(!cancel) {
 											init.ex.runOne(testCase)
 											init.rt.runOne(testCase)
-											
+											progressIncrement()
+										} else {
+											progressIncrement()
 										}
 										i--
-										progressIncrement()
+										
 									}
 								}
-								//progressStop()
-								//btnUpdate(false)
+								
 
 							}
 						}

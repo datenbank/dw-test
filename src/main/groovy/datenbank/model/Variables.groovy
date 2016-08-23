@@ -25,7 +25,7 @@ class Variables {
 	
 	static testType = ["DISTINCT", "COLUMN_CNT", "HASH", "COUNT", "GROUPBY", "SUMBY", "NONSENSE"]
 	
-	static degreeOfparallelism = 1
+	static degreeOfParallelism = 1
 	
 	static config
 	
@@ -52,7 +52,7 @@ class Variables {
 		
 		saveCompareHistory = false
 		
-		degreeOfparallelism = 1
+		degreeOfParallelism = 1
 		
 		config = new ConfigSlurper().parse(new File("./conf.txt").text)
 		
@@ -108,8 +108,8 @@ class Variables {
 			testType = config.testType
 		}
 		
-		if(config.degreeOfparallelism) {
-			degreeOfparallelism = config.degreeOfparallelism
+		if(config.degreeOfParallelism) {
+			degreeOfParallelism = config.degreeOfParallelism
 		}
 	}
 	
