@@ -1,5 +1,5 @@
 package datenbank.event
-
+import datenbank.model.Variables
 import datenbank.engine.ResultTester
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
@@ -16,25 +16,36 @@ class CompareAll implements EventHandler<ActionEvent> {
 			
 			if(init.summary.testCases.size() > 0) {
 				init.ui.btnUpdate(true)
-				
+				def i = 0
 
 				init.summary.testCases.each { testCase ->
-					if(!init.ui.cancel) {
-						init.rt.runOne(testCase)
+					i++
+					while(i>Variables.degreeOfparallelism) {
+						println "wait for $testCase.name $i>$Variables.degreeOfparallelism"
+						Thread.sleep(100)
+					}
+					Thread.start {
+					
+						if(!init.ui.cancel) {
+							init.rt.runOne(testCase)
+							
+						}
+						i--
 						init.ui.progressIncrement()
 					}
 					
+					
 				}
 				
-				init.summary.ready()
+				//init.summary.ready()
 				
 				
-				init.ui.btnUpdate(false)
+				//init.ui.btnUpdate(false)
 				
 			} else {
 				init.ui.alert("No test cases", "No test cases to compare.")
 			}
-			init.ui.progressStop()
+			//init.ui.progressStop()
 		}
 		
 	}

@@ -75,6 +75,7 @@
 */
 
 	sqlFetchSize = 10
+	degreeOfparallelism = 1
 
 
 //	********************************************
