@@ -85,9 +85,6 @@ class ModelMapper {
 		loadMenu.setDisable(true)
 		menu.getMenus().addAll(fileMenu, loadMenu)
 
-
-
-
 		def itemSave = new MenuItem("Save");
 
 		itemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
@@ -155,10 +152,6 @@ class ModelMapper {
 		tgtColumns = targetColumns(m.tables[0])
 		srcBox.getChildren().addAll(new Label("Source:"),srcComboBox, srcColumns);
 		tgtBox.getChildren().addAll(new Label("Target:"),tgtComboBox, tgtColumns);
-
-
-
-
 
 		Stage stage = new Stage();
 		stage.setTitle("Model Mapper Helper");
@@ -344,7 +337,7 @@ class ModelMapper {
 			table.columns.each { col ->
 
 				def l = new Label(col.toString())
-
+				l.setTooltip(new Tooltip("Drag source columns and drop on target column to map the two. Also add test types by dragging and dropping on target column."))
 
 
 				l.setOnMouseClicked(new EventHandler<MouseEvent>() {
