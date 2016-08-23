@@ -138,6 +138,139 @@ If you name our test cases [group]#[test case] it will match your queries to a g
 Here is an example of naming a test case to be put into a specific group.
 <img src="./images/CreateGroup.JPG" />
 </p>
+<h1>Settings</h1>
+<p>In the table below the application settings are listed. The settings can be changed in the conf.txt file, or through the Settings menu in the application.</p>
+<table>
+<tr>
+<th>parameter</th>
+<th>default</th>
+<th>possible</th>
+<th>description</th>
+</tr>
+<tr>
+<td>path</td>
+<td>./</td>
+<td>Path to where model.csv and Source and Target folders are placed.</td>
+<td>Can be used to point to folders outside of the install directory. To a shared drive etc.</td>
+</tr>
+
+<tr>
+<td>model</td>
+<td>model.csv</td>
+<td>Name of the model file</td>
+<td>If you want to switch between model files you can use this parameter</td>
+</tr>
+
+<tr>
+<td>sourceModel</td>
+<td>source.csv</td>
+<td>Name of the source model file</td>
+<td>If you want to read in data from a file to the Model Mapper instead of reading meta data from the database.</td>
+</tr>
+
+<tr>
+<td>targetModel</td>
+<td>target.csv</td>
+<td>Name of the target model file</td>
+<td>If you want to read in data from a file to the Model Mapper instead of reading meta data from the database.</td>
+</tr>
+
+<tr>
+<td>source</td>
+<td>jdbc:jtds:sqlserver://localhost:1433/master</td>
+<td>Any JDBC connection string</td>
+<td>The connection string to the Default source database</td>
+</tr>
+
+<tr>
+<td>target</td>
+<td>jdbc:jtds:sqlserver://localhost:1433/master</td>
+<td>Any JDBC connection string</td>
+<td>The connection string to the Default target database</td>
+</tr>
+
+<tr>
+<td>sourceDriver</td>
+<td>net.sourceforge.jtds.jdbc.Driver</td>
+<td>Any JDBC driver</td>
+<td>The driver for the Default source database</td>
+</tr>
+
+<tr>
+<td>targetDriver</td>
+<td>net.sourceforge.jtds.jdbc.Driver</td>
+<td>Any JDBC driver</td>
+<td>The driver for the Default target database</td>
+</tr>
+
+<tr>
+<td>csvReader</td>
+<td><blank></td>
+<td>Path to a CSV Reader program</td>
+<td>If set the query results will open with this program.</td>
+</tr>
+
+<tr>
+<td>csvSeperator</td>
+<td>;</td>
+<td>Any character fx ; or ,</td>
+<td>How do you wan the columns to be seperated.</td>
+</tr>
+
+<tr>
+<td>sqlProgramTarget</td>
+<td><blank></td>
+<td>Path to any SQL editor</td>
+<td>If set the queries within the Default group will open with this program</td>
+</tr>
+
+
+
+<tr>
+<td>sqlProgramSource</td>
+<td><blank></td>
+<td>Path to any SQL editor</td>
+<td>If set the queries within the Default group will open with this program</td>
+</tr>
+
+<tr>
+<td>sqlFetchSize</td>
+<td>10</td>
+<td>Any number</td>
+<td>How should the JDBC driver fetch the results. Some drivers don't support this or ignore this feature.</td>
+</tr>
+
+
+<tr>
+<td>degreeOfParallelism</td>
+<td>1</td>
+<td>Any number</td>
+<td>Enables queries to run in parallel. Set to 5 if you want to run 5 concurrent queries against the database.</td>
+</tr>
+
+
+<tr>
+<td>saveCompareHistory</td>
+<td>false</td>
+<td>true or false</td>
+<td>Should you append to the difference file (true) or write to a clean file (false)</td>
+</tr>
+
+<tr>
+<td>testType</td>
+<td>["DISTINCT", "COLUMN_CNT", "HASH", "COUNT", "GROUPBY", "SUMBY", "NONSENSE"]</td>
+<td>A list of String</td>
+<td>Add more test types if you want to implement your own scripts to generate test cases.</td>
+</tr>
+
+<tr>
+<td>groups</td>
+<td>-</td>
+<td>target, targetDriver, source, sourceDriver, sqlProgramTarget, sqlProgramSource</td>
+<td>You can put the parameter in a group to differentiate between groups of test cases.</td>
+</tr>
+
+</table>
 <h1>Help</h1>
 <p>You can get help by writing to <ul>
 <li>Write queustions: <a href="mailto:dw-test-toolkit@googlegroups.com">dw-test-toolkit@googlegroups.com</a></li>
