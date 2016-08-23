@@ -263,7 +263,8 @@ class Model {
 					t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], columnRef: sc, tableRef: t, testType: row[16], ordinal: row[4]))
 					st.addColumn(sc)
 				} catch (Exception e) {
-					//println "skipping row #$i $e"
+					 
+					log.info("skipping row #$i $e")
 				}
 				i++
 			}
