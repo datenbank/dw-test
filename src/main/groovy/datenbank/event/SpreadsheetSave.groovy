@@ -18,6 +18,7 @@ class SpreadsheetSave implements EventHandler<ActionEvent> {
 	def saveItem
 	
 	def save() {
+		
 		Thread.start {
 			try {
 				
@@ -58,7 +59,7 @@ class SpreadsheetSave implements EventHandler<ActionEvent> {
 						saveItem.setDisable(false)
 					}
 				})
-				
+				spreadsheet.wasChanged = false
 				init.ui.confirm("Saved", "The file is saved.")
 			} catch(all) {
 				init.ui.alert("Saved", "The file didn't save properly.\n $all")

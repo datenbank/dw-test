@@ -74,6 +74,8 @@ class ModelMapper {
 	def whereSource
 	def whereTarget
 
+	def changed = false
+	
 	
 	def modelEditor() {
 		
@@ -197,10 +199,11 @@ class ModelMapper {
 		stage.setScene(scene);
 		//stage.setResizable(false)
 		stage.show();
-
-		itemSave.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
+		
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent we) {
+				if(changed) {
+					if(init.ui.accept("Model changed", "Do you want to save the file before closing?")) {
 						loadMenu.setDisable(true)
 						fileMenu.setDisable(true)
 						itemSave.setDisable(true)
@@ -211,6 +214,27 @@ class ModelMapper {
 						fileMenu.setDisable(false)
 						itemSave.setDisable(false)
 						stage.getScene().setCursor(Cursor.DEFAULT);
+					}
+				}
+
+			}
+		});
+
+		itemSave.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						
+						loadMenu.setDisable(true)
+						fileMenu.setDisable(true)
+						itemSave.setDisable(true)
+						stage.getScene().setCursor(Cursor.WAIT);
+						m.writeModelToFile()
+						init.ui.confirm("Saved", "The file is saved.")
+						loadMenu.setDisable(false)
+						fileMenu.setDisable(false)
+						itemSave.setDisable(false)
+						stage.getScene().setCursor(Cursor.DEFAULT);
+						changed = false
 
 					}
 				})
@@ -323,6 +347,7 @@ class ModelMapper {
 			whereSource.setOnKeyPressed(new EventHandler<KeyEvent>() {
 						public void handle(KeyEvent ke) {
 							table.where = whereSource.getText() == "" ? "-" : whereSource.getText()
+							changed = true
 
 						}
 					});
@@ -346,6 +371,7 @@ class ModelMapper {
 							public void handle(MouseEvent mouseEvent) {
 								if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
 									if(mouseEvent.getClickCount() == 2){
+										changed = true
 										col.columnRef = null
 										col.testType = "-"
 										l.setText(col.toString());
@@ -403,7 +429,7 @@ class ModelMapper {
 										else if(!tt.testType.contains(db.getString()))
 											tt.testType = "${db.getString()}"
 									}
-
+									changed = true
 
 									l.setText(col.toString());
 									success = true;
@@ -439,7 +465,7 @@ class ModelMapper {
 			whereTarget.setOnKeyPressed(new EventHandler<KeyEvent>() {
 						public void handle(KeyEvent ke) {
 							table.where = whereTarget.getText() == "" ? "-" : whereTarget.getText()
-
+							changed = true
 						}
 					});
 		}
