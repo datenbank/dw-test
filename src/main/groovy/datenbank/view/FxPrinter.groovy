@@ -80,7 +80,7 @@ class FxPrinter extends Application implements Observer {
 	def menu
 	def compButton, newButton, execButton, bothButton
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt,
-	itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew, itemNewScript, itemDel, itemRename, itemCopy, itemPaste, itemExport
+	itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew, itemNewScript, itemDel, itemRename, itemCopy, itemPaste, itemExport, itemImport
 
 	def init
 	def summary
@@ -687,11 +687,15 @@ class FxPrinter extends Application implements Observer {
 
 		itemNewScript.setOnAction(newScript)
 		
+		itemImport = new MenuItem("Import");
+		itemImport.setAccelerator(new KeyCodeCombination(KeyCode.F2, KeyCombination.CONTROL_DOWN));
+		def importAction = new Import(init: init)
+		itemImport.setOnAction(importAction)
+		
 		
 		itemExport = new MenuItem("Export");
 		itemExport.setAccelerator(new KeyCodeCombination(KeyCode.F1, KeyCombination.CONTROL_DOWN));
 		def export = new Export(init: init)
-
 		itemExport.setOnAction(export)
 
 		itemSettings = new MenuItem("Open file");
@@ -702,6 +706,7 @@ class FxPrinter extends Application implements Observer {
 		fileGrp.getItems().add(itemNew);
 		fileGrp.getItems().add(itemNewScript)
 		fileGrp.getItems().add(itemExport)
+		fileGrp.getItems().add(itemImport)
 		settingsGrp.getItems().add(itemSettings);
 		settingsGrp.getItems().add(itemSettingsLoad);
 
@@ -981,6 +986,7 @@ class FxPrinter extends Application implements Observer {
 						itemSettingsLoad.setDisable(bool)
 						itemSettings.setDisable(bool)
 						itemExport.setDisable(bool)
+						itemImport.setDisable(bool)
 
 					}
 				});
