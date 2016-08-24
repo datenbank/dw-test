@@ -80,7 +80,7 @@ class FxPrinter extends Application implements Observer {
 	def menu
 	def compButton, newButton, execButton, bothButton
 	def itemExec, itemComp, itemOpenTgt, itemOpenSrc, itemOpenBefore, itemOpenAfter, itemResultTgt,
-	itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew, itemNewScript, itemDel, itemRename, itemCopy, itemPaste
+	itemResultSrc, itemResult, itemSettings, itemSettingsLoad, itemNew, itemNewScript, itemDel, itemRename, itemCopy, itemPaste, itemExport
 
 	def init
 	def summary
@@ -686,6 +686,13 @@ class FxPrinter extends Application implements Observer {
 		def newScript = new NewScript(init: init)
 
 		itemNewScript.setOnAction(newScript)
+		
+		
+		itemExport = new MenuItem("Export");
+		itemExport.setAccelerator(new KeyCodeCombination(KeyCode.F1, KeyCombination.CONTROL_DOWN));
+		def export = new Export(init: init)
+
+		itemExport.setOnAction(export)
 
 		itemSettings = new MenuItem("Open file");
 		itemSettingsLoad = new MenuItem("Reload");
@@ -694,6 +701,7 @@ class FxPrinter extends Application implements Observer {
 		itemSettingsLoad.setAccelerator(new KeyCodeCombination(KeyCode.F5, KeyCombination.CONTROL_DOWN));
 		fileGrp.getItems().add(itemNew);
 		fileGrp.getItems().add(itemNewScript)
+		fileGrp.getItems().add(itemExport)
 		settingsGrp.getItems().add(itemSettings);
 		settingsGrp.getItems().add(itemSettingsLoad);
 
@@ -909,6 +917,11 @@ class FxPrinter extends Application implements Observer {
 							}
 						}
 					});
+				
+			def menuItemForGroupExport = new MenuItem("Export $it");
+			group.getItems().add(menuItemForGroupExport);
+			menuItemForGroupExport.setOnAction(new Export(init: init, group: it))
+				
 			groupMenu.getItems().add(group);
 
 		}
@@ -967,6 +980,7 @@ class FxPrinter extends Application implements Observer {
 						itemNewScript.setDisable(bool)
 						itemSettingsLoad.setDisable(bool)
 						itemSettings.setDisable(bool)
+						itemExport.setDisable(bool)
 
 					}
 				});

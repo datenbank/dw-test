@@ -19,7 +19,6 @@ dependencies {
 	compile 'org.controlsfx:controlsfx:8.40.10'
 	compile group: 'org.apache.commons', name: 'commons-csv', version: '1.1'
 	
-
 	testCompile 'junit:junit:4.12'
 	
 	new File('libs').eachFile() {
