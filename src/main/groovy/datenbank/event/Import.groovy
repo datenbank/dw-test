@@ -66,7 +66,7 @@ class Import implements EventHandler<ActionEvent> {
 	@Override
 	public void handle(ActionEvent arg0) {
 		try {
-			if(init.ui.accept("Import Started", "This will overwrite existing test cases!")) {
+			if(init.ui.accept("Import Started", "This will overwrite existing test cases by same name!")) {
 				FileChooser fileChooser = new FileChooser();
 				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("ZIP files (*.zip)", "*.zip");
 				fileChooser.getExtensionFilters().add(extFilter);
