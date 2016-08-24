@@ -23,7 +23,7 @@ class Variables {
 	
 	static saveCompareHistory = false
 	
-	static testType = ["DISTINCT", "COLUMN_CNT", "HASH", "COUNT", "GROUPBY", "SUMBY", "NONSENSE"]
+	static testType = ["DISTINCT", "COLUMN_CNT", "HASH", "COUNT", "GROUPBY", "SUMBY", "NONSENSE", "JOIN"]
 	
 	static degreeOfParallelism = 1
 	
@@ -33,7 +33,7 @@ class Variables {
 	{
 		path = "./"
 		model = "model.csv"
-		testType = ["DISTINCT", "COLUMN_CNT", "HASH", "COUNT", "GROUPBY", "SUMBY", "NONSENSE"].sort()
+		testType = ["DISTINCT", "COLUMN_CNT", "HASH", "COUNT", "GROUPBY", "SUMBY", "NONSENSE", "JOIN"].sort()
 		
 		sourceModel = "source.csv"
 		targetModel = "target.csv"

@@ -11,7 +11,7 @@ class Table extends Observable {
 	
 	def tableRef
 		
-	def where
+	def where = "-"
 	
 	def String getTestType() {
 		def testTypeTmp = ""

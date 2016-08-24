@@ -255,9 +255,11 @@ class Model {
 
 					def sc = new Column(column: row[11], dataType: row[14], isPrimaryKey: row[15], tableRef: st, testType: row[16], ordinal: row[12])
 
-					st.where = row[18]
+					if(st.where == "-")
+						st.where = row[18]
 					t.tableRef = st
-					t.where = row[17]
+					if(t.where == "-")
+						t.where = row[17]
 
 
 					t.addColumn(new Column(column: row[3], dataType: row[6], isPrimaryKey: row[7], columnRef: sc, tableRef: t, testType: row[16], ordinal: row[4]))
