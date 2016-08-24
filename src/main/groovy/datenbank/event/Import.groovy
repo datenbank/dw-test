@@ -65,23 +65,28 @@ class Import implements EventHandler<ActionEvent> {
 
 	@Override
 	public void handle(ActionEvent arg0) {
-		try {
-			if(init.ui.accept("Import Started", "This will overwrite existing test cases by same name!")) {
-				FileChooser fileChooser = new FileChooser();
-				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("ZIP files (*.zip)", "*.zip");
-				fileChooser.getExtensionFilters().add(extFilter);
-				File file = fileChooser.showOpenDialog(init.ui.stage);
+		if(init.ui.accept("Import Started", "This will overwrite existing test cases by same name!")) {
+			FileChooser fileChooser = new FileChooser();
+			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("ZIP files (*.zip)", "*.zip");
+			fileChooser.getExtensionFilters().add(extFilter);
+			File file = fileChooser.showOpenDialog(init.ui.stage);
 
+			Thread.start {
+				try {
+	
+					if(file) {
+						init.ui.btnUpdate(true)
+						unZipIt("$file")
+						init.ui.confirm("Import Completed", "Imported $i file(s)")
+						init.init()
+	
+					}
 
-				if(file) {
-					unZipIt("$file")
-					init.ui.confirm("Import Completed", "Imported $i file(s)")
-					init.init()
-					init.ui.menu();
+				} catch(all) {
+					init.ui.alert("Import Error", "$all")
 				}
+				init.ui.btnUpdate(false)
 			}
-		} catch(all) {
-			init.ui.alert("Import Error", "$all")
 		}
 	}
 }
