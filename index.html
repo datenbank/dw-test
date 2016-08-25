@@ -120,7 +120,7 @@ Here is a description of the Scripts provided in the distribution:
   <li>TestHash.groovy generates SELECT BINARY_CHECKSUM(column1, column2) queries per table. Use test type HASH</li>
   <li>TestSumBy.groovy generates SELECT SUM(column1), column2 queries per table (columns marked by SUMBY are aggregated and columns marked by GROUPBY are added to the GROUP BY clause). Use test type SUMBY and GROUPBY</li>
 <li>TestColumnCnt.groovy generates SELECT column1, COUNT(*) queries per column. Use test type COLUMN_CNT.</li>
-<li>TestFactJoinCnt.groovy generates SELECT COUNT(*) queries per table. Use test type JOIN. This type is applied at bit different than the others. Create a group connection with source and target to connection being the same. Then map dimensions keys to fact foreign keys. The script will generate a query where all the dimensions are joined on the fact table. The source query is just a SELECT COUNT(*) without joins. This will test if the fact table is consistent, and not loosing rows on joins or generating more rows. </li>
+<li>TestFactJoinCnt.groovy generates SELECT COUNT(*) queries per table. Use test type JOIN. This type is applied at bit different than the others. Create a group connection with source and target connection being the same. Then map dimensions keys to fact foreign keys. The script will generate a query where all the dimensions are joined on the fact table. The source query is just a SELECT COUNT(*) without joins. This will test if the fact table is consistent, and not loosing rows on joins or generating more rows. </li>
 
 </ul>
 </p>
