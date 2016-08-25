@@ -987,7 +987,7 @@ class FxPrinter extends Application implements Observer {
 						itemSettings.setDisable(bool)
 						itemExport.setDisable(bool)
 						itemImport.setDisable(bool)
-						
+						menu()
 					}
 				});
 	}

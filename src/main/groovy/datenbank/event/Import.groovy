@@ -78,7 +78,7 @@ class Import implements EventHandler<ActionEvent> {
 						init.ui.btnUpdate(true)
 						unZipIt("$file")
 						init.ui.confirm("Import Completed", "Imported $i file(s)")
-						init.init()
+						init.ui.summary = init.init()
 	
 					}
 
