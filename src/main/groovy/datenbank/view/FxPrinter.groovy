@@ -716,6 +716,8 @@ class FxPrinter extends Application implements Observer {
 					public void handle(ActionEvent event) {
 						def file = new File("${Variables.path}conf.txt")
 						codeEditor(file, "BAT")
+						
+						new Settings().settingsEditor()
 
 					}
 				});
