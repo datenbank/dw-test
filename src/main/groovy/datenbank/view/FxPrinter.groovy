@@ -714,10 +714,10 @@ class FxPrinter extends Application implements Observer {
 		itemSettings.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
-						def file = new File("${Variables.path}conf.txt")
-						codeEditor(file, "BAT")
+						//def file = new File("${Variables.path}conf.txt")
+						//codeEditor(file, "BAT")
 						
-						new Settings().settingsEditor()
+						new Settings(init: init).settingsEditor()
 
 					}
 				});
