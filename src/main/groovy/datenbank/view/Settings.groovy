@@ -1,7 +1,7 @@
 package datenbank.view
 import datenbank.model.Model
 import datenbank.model.Summary
-import datenbank.model.TestCase
+import datenbank.model.Group
 import datenbank.model.Variables
 
 import javafx.scene.input.ClipboardContent
@@ -144,17 +144,48 @@ class Settings {
 		def conLabel = new Label("Connections")
 		conLabel.setFont(new Font("Arial", 18));
 		grid.add(conLabel, 0, 7)
-		def tv = new TableView()
-		def colGrp = new TableColumn("Groups")
-		tv.getColumns().addAll(colGrp)
 		
-		grid.add(tv, 0, 8, 2,2)
+		def addLabel = new Label("Add")
+		addLabel.setFont(new Font("Arial", 9));
+		addLabel.setTextFill(Color.DARKBLUE );
+		grid.add(addLabel, 1, 7)
+		
+		
+		def tv = new TableView()
+		def colGrp = new TableColumn("Group")
+		def colSrc = new TableColumn("Source")
+		def colTgt = new TableColumn("Target")
+		
+		colGrp.setCellValueFactory(new PropertyValueFactory("group"))
+		colSrc.setCellValueFactory(new PropertyValueFactory("source"))
+		colTgt.setCellValueFactory(new PropertyValueFactory("target"))
+		
+		tv.getColumns().addAll(colGrp, colSrc, colTgt)
+		grid.add(tv, 0, 8, 4,2)
+		
+		def ll = []
+		
+		ll << new Group(group: "test", source: "jdbc:jtds:sqlserver://localhost:1433/master", target: "jdbc:jtds:sqlserver://localhost:1433/master")
+		ll << new Group(group: "test2", source: "source2", target: "target2")
+		def l = FXCollections.observableArrayList(ll)
+		FilteredList fl = new FilteredList(l);
+
+		tv.setItems(fl)
+
+		ContextMenu rightMenu = new ContextMenu();
+		MenuItem itemEdit= new MenuItem("Edit");
+		MenuItem itemRemove = new MenuItem("Remove");
+
+		rightMenu.getItems().add(itemEdit);
+		rightMenu.getItems().add(itemRemove);
+		
+		tv.setContextMenu(rightMenu);
 		
 		VBox editorBox = new VBox()
 		editorBox.getChildren().addAll(menu, grid)
 		
 	
-		def scene = new Scene(editorBox)
+		def scene = new Scene(editorBox, 400, 600)
 		Stage stage = new Stage();
 		stage.setTitle("Settings");
 		def icon = new Image(getClass().getResourceAsStream("icon.png"))
