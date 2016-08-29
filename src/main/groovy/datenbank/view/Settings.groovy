@@ -544,7 +544,7 @@ class Settings {
 		setValues()
 		def scene = new Scene(editorBox, 400, 600)
 
-		stage.setTitle("Settings");
+		stage.setTitle("Properties");
 		def icon = new Image(getClass().getResourceAsStream("icon.png"))
 		stage.getIcons().add(icon);
 		stage.setScene(scene);
