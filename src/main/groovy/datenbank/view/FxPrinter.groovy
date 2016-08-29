@@ -698,10 +698,10 @@ class FxPrinter extends Application implements Observer {
 		def export = new Export(init: init)
 		itemExport.setOnAction(export)
 
-		itemSettings = new MenuItem("Open file");
+		itemSettings = new MenuItem("Properties");
 		itemSettingsLoad = new MenuItem("Reload");
 
-		itemSettings.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
+		itemSettings.setAccelerator(new KeyCodeCombination(KeyCode.F4, KeyCombination.CONTROL_DOWN));
 		itemSettingsLoad.setAccelerator(new KeyCodeCombination(KeyCode.F5, KeyCombination.CONTROL_DOWN));
 		fileGrp.getItems().add(itemNew);
 		fileGrp.getItems().add(itemNewScript)
@@ -714,9 +714,7 @@ class FxPrinter extends Application implements Observer {
 		itemSettings.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
-						//def file = new File("${Variables.path}conf.txt")
-						//codeEditor(file, "BAT")
-						
+
 						new Settings(init: init).settingsEditor()
 
 					}
@@ -952,7 +950,7 @@ class FxPrinter extends Application implements Observer {
 						} else {
 							stage.getScene().setCursor(Cursor.DEFAULT);
 						}
-
+						menu() //load it before disabled!
 
 						itemComp.setDisable(bool)
 						itemExec.setDisable(bool)
@@ -989,7 +987,7 @@ class FxPrinter extends Application implements Observer {
 						itemSettings.setDisable(bool)
 						itemExport.setDisable(bool)
 						itemImport.setDisable(bool)
-						menu()
+						
 					}
 				});
 	}

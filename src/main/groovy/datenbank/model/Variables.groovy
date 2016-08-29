@@ -29,6 +29,35 @@ class Variables {
 	
 	static config
 	
+	
+	def static void save() {
+		config.path = path
+		config.source = sourceConnection
+		config.target = targetConnection
+		config.sourceDriver = sourceDriver
+		config.targetDriver = targetDriver
+		
+		config.sqlProgramTarget = sqlProgramTarget
+		config.sqlProgramSource = sqlProgramSource
+		
+		config.csvReader = csvReader
+		config.csvSeperator = csvSeperator
+		
+		config.sqlFetchSize = sqlFetchSize
+		config.degreeOfParallelism = degreeOfParallelism
+		
+		config.testType = testType
+		config.model = model
+		config.sourceModel = sourceModel
+		config.targetModel = targetModel
+		
+		def file = new File("./conf.txt")
+		file.withWriter('UTF-8') { writer ->
+			config.writeTo(writer)
+		}
+		
+	}
+	
 	def static void load()
 	{
 		path = "./"

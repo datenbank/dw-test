@@ -1,80 +1,16 @@
-/*
-	MS SQL Server
-*/
-	
-	target = "jdbc:jtds:sqlserver://localhost:1433/master"
-	targetDriver = "net.sourceforge.jtds.jdbc.Driver"
-	source = "jdbc:jtds:sqlserver://localhost:1433/master"
-	sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
-	
-	groups {
-		'dw-test' {
-				target = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
-				targetDriver = "net.sourceforge.jtds.jdbc.Driver"
-				source = "jdbc:jtds:sqlserver://localhost:1433/dw-test;instance=MSSQL2014;user=test;password=testtest"
-				sourceDriver = "net.sourceforge.jtds.jdbc.Driver"
-				
-				//Uncomment to use Management Studio for editing SQL files
-				//sqlProgramTarget = "C:/Program Files (x86)/Microsoft SQL Server/120/Tools/Binn/ManagementStudio/Ssms.exe -S .\\MSSQL2014 -d dw-test -E -nosplash" 
-				//sqlProgramSource = "C:/Program Files (x86)/Microsoft SQL Server/120/Tools/Binn/ManagementStudio/Ssms.exe -S .\\MSSQL2014 -d dw-test -E -nosplash" 
-				
-				
-		}
-		
-	}
-
-
-//	********************************************
-
-/*
-	Oracle
-*/
-	
-	//source = "jdbc:oracle:thin:<user>/<password>@//localhost:1521/xe"
-	//target = "jdbc:oracle:thin:<user>/<password>@//localhost:1521/xe"
-	//sourceDriver = "oracle.jdbc.driver.OracleDriver"
-	//targetDriver = "oracle.jdbc.driver.OracleDriver"
-
-//	********************************************
-/*
-	CSV Reader
-*/
-
-	//csvReader = "C:/Program Files (x86)/Microsoft Office/Office14/excel.exe /e"
-	//csvReader = "notepad"
-	csvSeperator = ";"
-
-//	********************************************
-/*
-	SQL Editor
-*/
-	
-	//Uncomment to use Management Studio for editing SQL files
-	//sqlProgramTarget = "C:/Program Files (x86)/Microsoft SQL Server/120/Tools/Binn/ManagementStudio/Ssms.exe -S <server> -d <database> -E -nosplash" 
-	//sqlProgramSource = "C:/Program Files (x86)/Microsoft SQL Server/120/Tools/Binn/ManagementStudio/Ssms.exe -S <server> -d <database> -E -nosplash" 
-
-
-
-//	********************************************
-/*
-	Script 
-*/
-
-	model = "model.csv"
-
-
-//	********************************************
-/*
-	Performance
-*/
-
-	sqlFetchSize = 10
-	degreeOfParallelism = 1
-
-
-//	********************************************
-/*
-	Report History
-*/
-
-	saveCompareHistory = false
+target='jdbc:jtds:sqlserver://localhost:1433/master'
+targetDriver='net.sourceforge.jtds.jdbc.Driver'
+source='jdbc:jtds:sqlserver://localhost:1433/master'
+sourceDriver='net.sourceforge.jtds.jdbc.Driver'
+csvSeperator=';'
+model='model.csv'
+sqlFetchSize=10
+degreeOfParallelism=2
+saveCompareHistory=false
+sourceModel='source.csv'
+targetModel='target.csv'
+path='./'
+csvReader=''
+sqlProgramTarget=''
+sqlProgramSource=''
+testType=['COLUMN_CNT', 'COUNT', 'DISTINCT', 'GROUPBY', 'HASH', 'JOIN', 'NONSENSE', 'SUMBY']

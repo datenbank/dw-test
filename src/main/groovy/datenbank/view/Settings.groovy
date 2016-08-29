@@ -3,7 +3,7 @@ import datenbank.model.Model
 import datenbank.model.Summary
 import datenbank.model.Group
 import datenbank.model.Variables
-
+import groovy.sql.Sql
 import javafx.scene.input.ClipboardContent
 import javafx.scene.input.DragEvent
 import javafx.scene.input.Dragboard
@@ -78,6 +78,101 @@ class Settings {
 	def groupList = []
 	def popupStage
 	def tv
+	
+	TextField pathField
+	ComboBox delimiter
+	TextField csvReader
+	CheckBox saveHist
+	Slider sliderFetch
+	Slider sliderDOB
+	
+	def isChanged() {
+		groupList.each {
+			if(Variables.config.groups."$it.group".target != it.target)
+				changed = true		
+				
+			if(Variables.config.groups."$it.group".source != it.source)
+				changed = true
+				
+			if(Variables.config.groups."$it.group".targetDriver != it.targetDriver)
+				changed = true
+			if(Variables.config.groups."$it.group".sourceDriver != it.sourceDriver)
+				changed = true
+			
+			if(Variables.config.groups."$it.group".sqlProgramTarget != it.sqlProgramTarget)
+				changed = true
+			if(Variables.config.groups."$it.group".sqlProgramSource != it.sqlProgramSource)
+				changed = true
+		}
+		
+		if(Variables.csvSeperator != delimiter.getValue().toString())
+			changed = true
+		if(Variables.csvReader != csvReader.getText())
+			changed = true
+		if(Variables.saveCompareHistory != saveHist.isSelected())
+			changed = true
+		if(Variables.sqlFetchSize != (int)sliderFetch.getValue())
+			changed = true
+		if(Variables.degreeOfParallelism != (int)sliderDOB.getValue())
+			changed = true
+			
+		if(Variables.path != pathField.getText())
+			changed = true
+
+		
+	}
+	
+	def saveValues() {
+		Variables.config.remove('groups')
+		groupList.each {
+			Variables.config.groups."$it.group".target = it.target
+			Variables.config.groups."$it.group".source = it.source
+			Variables.config.groups."$it.group".targetDriver = it.targetDriver
+			Variables.config.groups."$it.group".sourceDriver = it.sourceDriver
+			
+			Variables.config.groups."$it.group".sqlProgramTarget = it.sqlProgramTarget
+			Variables.config.groups."$it.group".sqlProgramSource = it.sqlProgramSource
+		}
+		
+		def tmpPath = pathField.getText()
+
+		if(tmpPath.endsWith("/") || tmpPath.endsWith("\\")) {
+			Variables.path = tmpPath
+		} else {
+
+			Variables.path = tmpPath + "/"
+		}		
+		Variables.csvSeperator = delimiter.getValue().toString()
+		Variables.csvReader = csvReader.getText()
+		Variables.saveCompareHistory = saveHist.isSelected()
+		Variables.sqlFetchSize = (int)sliderFetch.getValue()
+		Variables.degreeOfParallelism = (int)sliderDOB.getValue()
+		Variables.save()
+	}
+	
+	def setValues() {
+		pathField.setText(Variables.path)
+		delimiter.setValue(Variables.csvSeperator)
+		csvReader.setText(Variables.csvReader)
+		saveHist.setSelected(Variables.saveCompareHistory)
+		sliderFetch.setValue(Variables.sqlFetchSize)
+		sliderDOB.setValue(Variables.degreeOfParallelism)
+		
+		
+		Variables.config.groups.each {
+		
+			groupList << new Group(group: it.key, target: Variables.config.groups."$it.key".target
+				, source: Variables.config.groups."$it.key".source
+				, targetDriver: Variables.config.groups."$it.key".targetDriver
+				, sourceDriver: Variables.config.groups."$it.key".sourceDriver
+				, sqlProgramSource: Variables.config.groups."$it.key".sqlProgramSource
+				, sqlProgramTarget: Variables.config.groups."$it.key".sqlProgramTarget)
+			
+		}
+		
+	}
+	
+	
 	def groupsPopup(group) {
 
 		if(group.group)
@@ -105,12 +200,30 @@ class Settings {
 		source.setItems(FXCollections.observableArrayList(["jdbc:jtds:sqlserver://<server>:1433/<database>;instance=<instance>;user=<usr>;password=<pwd>", "jdbc:oracle:thin:<user>/<password>@//localhost:1521/xe"]))
 		grid.add(new Label("Source: "), 0, 1)
 		grid.add(source, 1, 1)
+		
+
 
 		ComboBox sourceDriver = new ComboBox()
 		sourceDriver.setEditable(true)
 		sourceDriver.setItems(FXCollections.observableArrayList(["net.sourceforge.jtds.jdbc.Driver", "oracle.jdbc.driver.OracleDriver"]))
 		grid.add(new Label("Source Driver: "), 0, 2)
 		grid.add(sourceDriver, 1, 2)
+		
+		Button sourceTest = new Button("Test")
+		sourceTest.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+				def sql = Sql.newInstance( source.getValue().toString(), sourceDriver.getValue().toString() )
+				init.ui.confirm("Connected", "Connection established.")
+				}
+				catch(all) {
+					init.ui.alert("Couldn't connect","$all")
+				}
+				
+			}
+		});
+		grid.add(sourceTest, 2, 1)
 
 		ComboBox target = new ComboBox()
 		target.setEditable(true)
@@ -124,6 +237,23 @@ class Settings {
 		targetDriver.setItems(FXCollections.observableArrayList(["net.sourceforge.jtds.jdbc.Driver", "oracle.jdbc.driver.OracleDriver"]))
 		grid.add(new Label("Target Driver: "), 0, 4)
 		grid.add(targetDriver, 1, 4)
+		
+		
+		Button targetTest = new Button("Test")
+		targetTest.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+				def sql = Sql.newInstance( target.getValue().toString(), targetDriver.getValue().toString() )
+				init.ui.confirm("Connected", "Connection established.")
+				}
+				catch(all) {
+					init.ui.alert("Couldn't connect","$all")
+				}
+				
+			}
+		});
+		grid.add(targetTest, 2, 3)
 
 		Button fileSrc = new Button("Open..")
 		TextField appSrc = new TextField()
@@ -173,9 +303,9 @@ class Settings {
 		if(group.targetDriver)
 			targetDriver.setValue(group.targetDriver)
 		if(group.sqlProgramSource)
-			appSrc.setValue(group.sqlProgramSource)
+			appSrc.setText(group.sqlProgramSource)
 		if(group.sqlProgramTarget)
-			appTgt.setValue(group.sqlProgramTarget)
+			appTgt.setText(group.sqlProgramTarget)
 
 		btnAdd.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
@@ -240,7 +370,19 @@ class Settings {
 
 		itemSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 		fileMenu.getItems().add(itemSave);
-
+		
+		itemSave.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						try {
+							saveValues()
+							init.ui.confirm("Settings saved", "The settings were saved successfully.")
+						} catch(all) {
+							init.ui.alert("Settings not saved correctly", "$all")
+						}
+						
+					}
+				});
 
 		GridPane grid = new GridPane();
 		grid.setAlignment(Pos.TOP_LEFT);
@@ -253,7 +395,7 @@ class Settings {
 		grid.add(pathLabel, 0, 0)
 
 		Button pathBtn = new Button("Open..")
-		TextField pathField = new TextField()
+		pathField = new TextField()
 		grid.add(new Label("Path: "), 0, 1)
 		grid.add(pathField, 1, 1)
 		grid.add(pathBtn, 2, 1)
@@ -273,14 +415,14 @@ class Settings {
 		csvLabel.setFont(new Font("Arial", 18));
 		grid.add(csvLabel, 0, 2)
 
-		ComboBox delimiter = new ComboBox()
+		delimiter = new ComboBox()
 		delimiter.setItems(FXCollections.observableArrayList([";", ","]))
 		delimiter.setValue(";")
 		grid.add(new Label("CSV Delimiter: "), 0, 3)
 		grid.add(delimiter, 1, 3)
 
 		Button file = new Button("Open..")
-		TextField csvReader = new TextField()
+		csvReader = new TextField()
 		grid.add(new Label("CSV Reader: "), 0, 4)
 		grid.add(csvReader, 1, 4)
 		grid.add(file, 2, 4)
@@ -295,7 +437,7 @@ class Settings {
 					}
 				});
 
-		CheckBox saveHist = new CheckBox()
+		saveHist = new CheckBox()
 		grid.add(new Label("Save compare history: "), 0, 5)
 		grid.add(saveHist, 1, 5)
 
@@ -303,7 +445,7 @@ class Settings {
 		def perfLabel = new Label("Performance")
 		perfLabel.setFont(new Font("Arial", 18));
 		grid.add(perfLabel, 0, 6)
-		Slider sliderFetch = new Slider();
+		sliderFetch = new Slider();
 		sliderFetch.setMin(1);
 		sliderFetch.setMax(1000);
 		sliderFetch.setValue(10)
@@ -315,7 +457,7 @@ class Settings {
 		grid.add(new Label("JDBC Fetch Size: "), 0, 7)
 		grid.add(sliderFetch, 1, 7)
 
-		Slider sliderDOB = new Slider();
+		sliderDOB = new Slider();
 		sliderDOB.setMin(1);
 		sliderDOB.setMax(10);
 		sliderDOB.setValue(1);
@@ -399,7 +541,7 @@ class Settings {
 		VBox editorBox = new VBox()
 		editorBox.getChildren().addAll(menu, grid)
 
-
+		setValues()
 		def scene = new Scene(editorBox, 400, 600)
 
 		stage.setTitle("Settings");
@@ -407,7 +549,26 @@ class Settings {
 		stage.getIcons().add(icon);
 		stage.setScene(scene);
 		stage.setResizable(false)
+		
+		
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent we) {
+				isChanged()
+				if(changed) {
+					if(init.ui.accept("Settings changed", "Do you want to save the file before closing?")) {
+						try {							
+							saveValues()
+						} catch(all) {
+							init.ui.alert("Settings not saved correctly", "$all")
+						}
+					}
+				}
+
+			}
+		});
 		stage.show();
+		
+		
 	}
 
 	def updateGroupTable() {
