@@ -530,6 +530,7 @@ class Settings {
 					public void handle(ActionEvent event) {
 						def grp = (Group) tv.getSelectionModel().getSelectedItem();
 						if(grp) {
+							changed = true
 							groupList.remove(grp)
 							updateGroupTable()
 						} else {
