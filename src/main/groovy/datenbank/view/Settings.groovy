@@ -88,6 +88,8 @@ class Settings {
 	
 	def isChanged() {
 		groupList.each {
+			if(it.group != "Default") {
+			
 			if(Variables.config.groups."$it.group".target != it.target)
 				changed = true		
 				
@@ -103,6 +105,21 @@ class Settings {
 				changed = true
 			if(Variables.config.groups."$it.group".sqlProgramSource != it.sqlProgramSource)
 				changed = true
+				
+			} else {
+				if(Variables.config.target != it.target)
+					changed = true
+				if(Variables.config.source != it.source)
+					changed = true
+				if(Variables.config.targetDriver != it.targetDriver)
+					changed = true
+				if(Variables.config.sourceDriver != it.sourceDriver)
+					changed = true
+				if(Variables.config.sqlProgramTarget != it.sqlProgramTarget)
+					changed = true
+				if(Variables.config.sqlProgramSource != it.sqlProgramSource)
+					changed = true
+			}
 		}
 		
 		if(Variables.csvSeperator != delimiter.getValue().toString())
@@ -125,13 +142,25 @@ class Settings {
 	def saveValues() {
 		Variables.config.remove('groups')
 		groupList.each {
-			Variables.config.groups."$it.group".target = it.target
-			Variables.config.groups."$it.group".source = it.source
-			Variables.config.groups."$it.group".targetDriver = it.targetDriver
-			Variables.config.groups."$it.group".sourceDriver = it.sourceDriver
 			
-			Variables.config.groups."$it.group".sqlProgramTarget = it.sqlProgramTarget
-			Variables.config.groups."$it.group".sqlProgramSource = it.sqlProgramSource
+			if(it.group != "Default") {
+			
+				Variables.config.groups."$it.group".target = it.target
+				Variables.config.groups."$it.group".source = it.source
+				Variables.config.groups."$it.group".targetDriver = it.targetDriver
+				Variables.config.groups."$it.group".sourceDriver = it.sourceDriver
+				
+				Variables.config.groups."$it.group".sqlProgramTarget = it.sqlProgramTarget
+				Variables.config.groups."$it.group".sqlProgramSource = it.sqlProgramSource
+			} else {
+				Variables.targetConnection = it.target
+				Variables.sourceConnection = it.source
+				Variables.targetDriver = it.targetDriver
+				Variables.sourceDriver = it.sourceDriver
+				
+				Variables.sqlProgramTarget = it.sqlProgramTarget
+				Variables.sqlProgramSource = it.sqlProgramSource
+			}
 		}
 		
 		def tmpPath = pathField.getText()
@@ -148,6 +177,7 @@ class Settings {
 		Variables.sqlFetchSize = (int)sliderFetch.getValue()
 		Variables.degreeOfParallelism = (int)sliderDOB.getValue()
 		Variables.save()
+		changed = false
 	}
 	
 	def setValues() {
@@ -169,7 +199,12 @@ class Settings {
 				, sqlProgramTarget: Variables.config.groups."$it.key".sqlProgramTarget)
 			
 		}
-		
+		groupList << new Group(group: "Default", target: Variables.targetConnection
+			, source: Variables.sourceConnection
+			, targetDriver: Variables.targetDriver
+			, sourceDriver: Variables.sourceDriver
+			, sqlProgramSource: Variables.sqlProgramSource
+			, sqlProgramTarget: Variables.sqlProgramTarget)
 	}
 	
 	
