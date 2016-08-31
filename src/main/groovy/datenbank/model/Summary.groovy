@@ -35,7 +35,8 @@ class Summary extends Observable {
 		def skipped = 0
 		testCases.each { testCase ->
 			i++
-			errors += testCase.errors
+			if(testCase.errors < 3 && testCase.errors > 0)
+				errors += 1
 			compared += testCase.compared
 			skipped += testCase.skipped
 		}

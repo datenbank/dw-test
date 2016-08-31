@@ -66,15 +66,18 @@ class TestCase extends Observable {
 	
 	def String toString() {
 		def str = ""
+		def errorDesc = "SUCCESS"
+		if(errors < 3)
+		 	errorDesc = "FAILURE"
 		
 		if(type == 0)
 			str += "${name}"
 				
 		if(type == 1)
-			str += "${name}\t${errors}\t${elapsed}"
+			str += "${name}\t${errorDesc}\t${elapsed}"
 		
 		if(type == 2)
-			str += "${name}\t${errors}\t${compared}\t${skipped}\t${resultFlag}\t${elapsedTest}"
+			str += "${name}\t${errorDesc}\t${compared}\t${skipped}\t${resultFlag}\t${elapsedTest}"
 			
 		return str
 	}
